@@ -1,0 +1,54 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "RouteDesctiption";
+    <div class="container-fluid">
+        <div class="col-12 mx-auto py-3 my-3">
+            <h4 class="text-center">Maršruto aprašymo kūrimas</h4>
+        </div>
+        <div class="row">
+            <div class="col-md-10 mx-auto">
+                <form asp-controller="Routes" asp-action="CreateDescription" method="POST">
+                    <div class="form-group">
+                        <label><strong>Pavadinimas</strong></label>
+                        <input type="text" class="form-control" placeholder="Įveskite maršruto pavadinimą" />
+                    </div>
+                    <div class="form-group">
+                        <label><strong>Aprašymas</strong></label>
+                        <textarea class="form-control" placeholder="Įveskite maršruto aprašymą"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>Laiko įvertis</strong></label>
+                        <select class="form-control">
+                            <option>&lt1h</option>
+                            <option>1-2h</option>
+                            <option>2-5h</option>
+                            <option>5-12h</option>
+                            <option>12h-1d</option>
+                            <option>1-3d</option>
+                            <option>3-7d</option>
+                            <option>&gt7d</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>Išlaidos</strong></label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Nuo</label>
+                                <input type="text" class="form-control" placeholder="Įveskite išlaidų minimumą"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Iki</label>
+                                <input type="text" class="form-control" placeholder="Įveskite išlaidų maksimumą"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary">Sukurti</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}

@@ -12,5 +12,17 @@ namespace IS_Turizmas.Controllers
         {
             return View();
         }
+
+        public IActionResult CreateRouteDescription()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateDescription()
+        {
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
