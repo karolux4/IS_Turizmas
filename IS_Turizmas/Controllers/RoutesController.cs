@@ -10,6 +10,8 @@ using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 
 namespace IS_Turizmas.Controllers
 {
@@ -46,9 +48,14 @@ namespace IS_Turizmas.Controllers
             string line = "address:Kaunas&key=AIzaSyDL5U4rZ7pfwLxxlRWy85rXflMJ93TC5mI";
             string encoded = HttpUtility.UrlEncode(line, Encoding.UTF8);
 
+            var myJsonString = System.IO.File.ReadAllText("..\\config.json");
+            var myJObject = JObject.Parse(myJsonString);
+            var key=myJObject.SelectToken("GeoCodingkey").Value<string>();
+
             string url = "https://maps.googleapis.com/maps/api/geocode/json?";
             url += HttpUtility.UrlPathEncode("address="+address);
-            url += HttpUtility.UrlPathEncode("&key=AIzaSyDL5U4rZ7pfwLxxlRWy85rXflMJ93TC5mI");
+            url += HttpUtility.UrlPathEncode("&key="+key);
+            
 
 
 
@@ -76,5 +83,10 @@ namespace IS_Turizmas.Controllers
         }
 
        
+    }
+
+    public class Keys
+    {
+        public string GeoCodingAPI;
     }
 }
