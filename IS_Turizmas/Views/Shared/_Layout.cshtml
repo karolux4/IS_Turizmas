@@ -27,13 +27,13 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/">Pagrindinis</a>
+                    <li asp-active-controllers="Home" asp-active-actions="Index">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Pagrindinis</a>
                     </li>
-                    <li>
+                    <li asp-active-controllers="Routes" asp-active-actions="Index, CreateDescription, EditDescription, ViewMap">
                         <a class="nav-link" asp-controller="Routes" asp-action="Index">Mano maršrutai</a>
                     </li>
-                    <li>
+                    <li asp-active-controllers="NotImplemented" asp-active-actions="NotImplemented">
                         <a class="nav-link" href="/">Profilis</a>
                     </li>
                 </ul>
