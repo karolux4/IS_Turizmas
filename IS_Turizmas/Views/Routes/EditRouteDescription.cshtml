@@ -2,21 +2,21 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Create Route Desctiption";
+    ViewData["Title"] = "Edit Route Desctiption";
     <div class="container-fluid">
         <div class="col-12 mx-auto py-3 my-3">
-            <h4 class="text-center">Maršruto aprašymo kūrimas</h4>
+            <h4 class="text-center">Maršruto aprašymo redagavimas</h4>
         </div>
         <div class="row">
             <div class="col-md-10 mx-auto">
-                <form asp-controller="Routes" asp-action="CreateDescription" method="POST">
+                <form asp-controller="Routes" asp-action="EditDescription" method="POST">
                     <div class="form-group">
                         <label><strong>Pavadinimas</strong></label>
-                        <input type="text" class="form-control" placeholder="Įveskite maršruto pavadinimą" />
+                        <input type="text" class="form-control" placeholder="Įveskite maršruto pavadinimą" value="Kaunas-Baltstogė-Varšuva-Kaunas" />
                     </div>
                     <div class="form-group">
                         <label><strong>Aprašymas</strong></label>
-                        <textarea class="form-control" placeholder="Įveskite maršruto aprašymą"></textarea>
+                        <textarea class="form-control" placeholder="Įveskite maršruto aprašymą">Išvykstame anksti apie 5 valandą ryto iš Kauno ir t.t.</textarea>
                     </div>
                     <div class="form-group">
                         <label><strong>Laiko įvertis</strong></label>
@@ -26,26 +26,26 @@
                             <option>2-5h</option>
                             <option>5-12h</option>
                             <option>12h-1d</option>
-                            <option>1-3d</option>
+                            <option selected="selected">1-3d</option>
                             <option>3-7d</option>
                             <option>&gt7d</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label><strong>Išlaidos</strong></label>
+                        <label><strong>Išlaidos (€)</strong></label>
                         <div class="row">
                             <div class="col-md-6">
                                 <label>Nuo</label>
-                                <input type="text" class="form-control" placeholder="Įveskite išlaidų minimumą"/>
+                                <input type="text" class="form-control" placeholder="Įveskite išlaidų minimumą" value="200"/>
                             </div>
                             <div class="col-md-6">
                                 <label>Iki</label>
-                                <input type="text" class="form-control" placeholder="Įveskite išlaidų maksimumą"/>
+                                <input type="text" class="form-control" placeholder="Įveskite išlaidų maksimumą" value="500"/>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <button type="submit" class="btn btn-primary">Sukurti</button>
+                        <button type="submit" class="btn btn-primary">Keisti</button>
                     </div>
                 </form>
             </div>

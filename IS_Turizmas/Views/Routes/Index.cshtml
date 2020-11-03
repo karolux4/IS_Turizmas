@@ -3,5 +3,39 @@
 *@
 @{
     ViewData["Title"] = "RouteDesctiption";
-    <h1>Maršrutų langas</h1>
+    <div class="col-md-10 mx-auto text-center py-3 my-3">
+        <h1>Mano sukurtų maršrutų langas</h1>
+    </div>
+    <div class="col-md-10 mx-auto">
+        <a asp-action="CreateRouteDescription">Kurti naują maršrutą</a>
+    </div>
+    <div class="col-md-10 mx-auto">
+        <table class="table table-striped text-center">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Pavadinimas</th>
+                    <th scope="col">Sukūrimo data</th>
+                    <th scope="col">Modifikavimo data</th>
+                    <th scope="col">Veiksmai</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>1</th>
+                    <td>Kaunas-Baltstogė-Varšuva-Kaunas</td>
+                    <td>2020-11-03</td>
+                    <td>2020-11-05</td>
+                    <td><a asp-action="EditRouteDescription">Redaguoti aprašymą</a> | <a asp-action="Index">Redaguoti objektus</a> | <a asp-action="ViewMap"> Žemėlapis</a> | <a asp-action="Index">Šalinti</a></td>
+                </tr>
+                <tr>
+                    <th>2</th>
+                    <td>Vilnius-Kaunas-Vilnius</td>
+                    <td>2020-11-04</td>
+                    <td>2020-11-04</td>
+                    <td><a asp-action="EditRouteDescription">Redaguoti aprašymą</a> | <a asp-action="Index">Pridėti objektus</a> | <a asp-action="Index">Šalinti</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 }
