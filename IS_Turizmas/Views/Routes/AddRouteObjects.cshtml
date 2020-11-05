@@ -2,9 +2,36 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "RouteDesctiption";
-    <form asp-controller="Routes" asp-action="AddObjects" method="POST">
-    <input type="text" name="address" placeholder="Įveskite adresą"/>
-    <button type="submit">Siusti</button>
-    </form>
+    ViewData["Title"] = "RouteObjects";
+    <div class="container-fluid">
+        <div class="col-md-10 mx-auto text-center py-3 my-3">
+            <h4>Maršruto objektų pridėjimas</h4>
+            <h5>Maršrutas: Vilnius-Kaunas-Vilnius</h5>
+        </div>
+        <div class="row">
+            <div class="col-md-10 mx-auto">
+                <form asp-controller="Routes" asp-action="AddObjects" method="POST">
+                    <label><strong>Objektai(-as)</strong></label>
+                    <ul>
+                        <li class="object-row last-object-row form-group">
+                            <div class="row">
+                                <div class="col-md-9 mx-auto">
+                                    <input type="text" class="form-control" name="address[]" placeholder="Įveskite adresą" />
+                                </div>
+                                <div class="col-md-3 mx-auto">
+                                    <button type="button" data-value="object-row" data-hide="add-more" data-last="last-object-row" class="btn btn-primary remove-row">-</button>
+                                    <button type="button" data-value="last-object-row" data-hide="add-more" class="btn btn-primary add-more">+</button>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <button class="btn btn-primary" type="submit">Pridėti objektus</button>
+                </form>
+            </div>
+        </div>
+        <br>
+    </div>
+}
+@section Scripts{ 
+    <script src="@Url.Content("~/js/object-row-manipulation.js")"></script>
 }

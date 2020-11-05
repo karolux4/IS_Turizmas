@@ -37,13 +37,18 @@ namespace IS_Turizmas.Controllers
             return View();
         }
 
+        public IActionResult EditRouteObjects()
+        {
+            return View();
+        }
+
         public IActionResult ViewMap()
         {
             var myJsonString = System.IO.File.ReadAllText("..\\config.json");
             var myJObject = JObject.Parse(myJsonString);
             var key = myJObject.SelectToken("MapEmbeded").Value<string>();
 
-            var url = "https://www.google.com/maps/embed/v1/directions?key=" + key+"&";
+            var url = "https://www.google.com/maps/embed/v1/directions?key=" + key + "&";
             url += "origin=Kaunas,Lithuania&destination=Kaunas,Lithuania&waypoints=Bialystok,Poland|Warsaw,Poland&avoid=tolls|highways";
 
             ViewBag.MapLink = url;
@@ -69,7 +74,7 @@ namespace IS_Turizmas.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddObjects(string address)
         {
-            HttpClient client = new HttpClient();
+            /*HttpClient client = new HttpClient();
 
             string line = "address:Kaunas&key=AIzaSyDL5U4rZ7pfwLxxlRWy85rXflMJ93TC5mI";
             string encoded = HttpUtility.UrlEncode(line, Encoding.UTF8);
@@ -104,10 +109,16 @@ namespace IS_Turizmas.Controllers
                 var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 Console.WriteLine(responseBody);
-            }
+            }*/
             return RedirectToAction(nameof(Index));
         }
 
-       
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditObjects(string address)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

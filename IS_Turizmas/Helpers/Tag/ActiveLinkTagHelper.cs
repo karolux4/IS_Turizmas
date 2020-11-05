@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace IS_Turizmas.Helpers.Tag
@@ -50,9 +51,11 @@ namespace IS_Turizmas.Helpers.Tag
             if (string.IsNullOrEmpty(Controllers))
                 Controllers = currentController;
 
+            Actions = Regex.Replace(Actions, @"\s+", "");
+            Controllers = Regex.Replace(Controllers, @"\s+", "");
 
-            string[] acceptedActions = Actions.Trim().Split(',').Distinct().ToArray();
-            string[] acceptedControllers = Controllers.Trim().Split(',').Distinct().ToArray();
+            string[] acceptedActions = Actions.Split(',').Distinct().ToArray();
+            string[] acceptedControllers = Controllers.Split(',').Distinct().ToArray();
 
 
             var lcComparer = new LowerCaseComparer();
