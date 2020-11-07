@@ -66,6 +66,26 @@ namespace IS_Turizmas.Controllers
             return View();
         }
 
+        public IActionResult ViewAllRouteAnalysis()
+        {
+            return View();
+        }
+
+        public IActionResult FilterRoutes()
+        {
+            return View();
+        }
+
+        public IActionResult SearchRoutes()
+        {
+            return View();
+        }
+
+        public IActionResult FoundRoutes()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CreateDescription()

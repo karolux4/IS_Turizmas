@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "FilterRoutes";
+    <div class="col-md-10 mx-auto text-center py-3 my-3">
+        <h1>Maršrutų paieška pagal filtrą</h1>
+    </div>
+
+
+    <div class="col-md-10 mx-auto">
+        <h3>Paieška pagal šalį</h3>
+        <form>
+            <div class="form-group">
+                <label for="searchCountry">Pasirinkite šalį</label>
+                <select class="form-control" id="searchCountry">
+                    <option>Lietuva</option>
+                    <option>Lenkija</option>
+                    <option>Latvija</option>
+                </select>
+            </div>
+            <a asp-controller="Routes" asp-action="FoundRoutes" class="btn btn-primary">Ieškoti</a>
+            @*<button type="submit" class="btn btn-primary"></button>*@
+        </form>
+
+
+    </div>
+}
+

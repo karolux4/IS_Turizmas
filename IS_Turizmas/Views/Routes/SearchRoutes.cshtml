@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewData["Title"] = "SearchRoutes";
+    <div class="col-md-10 mx-auto text-center py-3 my-3">
+        <h1>Maršrutų paieška pagal raktažodį</h1>
+    </div>
+
+
+    <div class="col-md-10 mx-auto">
+        <form>
+            <div class="form-group">
+                <label for="searchKey">Paieškos laukelis</label>
+                <input type="text" class="form-control" id="searchKey" placeholder="Įveskite paieškos žodį">
+            </div>
+            <a asp-controller="Routes" asp-action="FoundRoutes" class="btn btn-primary">Ieškoti</a>
+            @*<button type="submit" class="btn btn-primary"></button>*@
+        </form>
+
+
+    </div>
+}
+
+
