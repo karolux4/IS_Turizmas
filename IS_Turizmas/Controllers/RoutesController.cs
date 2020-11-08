@@ -56,6 +56,11 @@ namespace IS_Turizmas.Controllers
             return View();
         }
 
+        public IActionResult CalculateRouteUniqueness()
+        {
+            return View();
+        }
+
         public IActionResult ViewAllRoutes()
         {
             return View();

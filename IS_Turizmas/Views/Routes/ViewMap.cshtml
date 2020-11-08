@@ -3,10 +3,29 @@
 *@
 @{
     ViewData["Title"] = "ViewMap";
-    <iframe width="600"
-            height="450"
-            frameborder="0" style="border:0"
-            src="@ViewBag.MapLink" allowfullscreen>
-    </iframe>
+    <div class="row mx-auto my-3 py-3">
+        <div class="col-md-10 mx-auto text-center">
+            <h4>Kaunas-Balstogė-Varšuva-Kaunas</h4>
+        </div>
+    </div>
+    <div class="row mx-auto">
+        <div class="col-md-10 mx-auto">
+            <p><strong>Maršruto objektai:</strong></p>
+            <ol>
+                <li>Kaunas (LTU)</li>
+                <li>Bialystok (POL)</li>
+                <li>Warsaw (POL)</li>
+                <li>Kaunas (LTU)</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row mx-auto">
+        <div class="col-md-10 mx-auto embeded-responsive embed-responsive-1by1 border rounded py-1 px-1 text-center">
+            <iframe width="100%" height="500em" class="embed-responsive-item" frameborder="0"
+                    src="@ViewBag.MapLink" allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+    <br />
 }
 
