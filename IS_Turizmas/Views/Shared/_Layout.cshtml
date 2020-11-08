@@ -48,6 +48,10 @@
                         <a class="nav-link" href="/">Profilis</a>
                     </li>
 
+                    
+                    <li asp-active-controllers="Content" asp-active-actions="ViewAllRouteAnalysis">
+                        <a class="nav-link" asp-controller="Content" asp-action="ViewAllRouteAnalysis">Visų maršrutų analizė</a>
+                    </li>
 
                     <!-- Simono -->
                     <li asp-active-controllers="Content" asp-active-actions="ViewAllRoutes, ViewAllRouteAnalysis, FilterRoutes, SearchRoutes">
@@ -57,7 +61,6 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="nav-link text-dark" asp-controller="Content" asp-action="ViewAllRoutes">Visi maršrutai</a>
-                                <a class="nav-link text-dark" asp-controller="Content" asp-action="ViewAllRouteAnalysis">Visų maršrutų analizė</a>
                                 <a class="nav-link text-dark" asp-controller="Content" asp-action="FilterRoutes">Ieškoti maršrutų pagal filtrą</a>
                                 <a class="nav-link text-dark" asp-controller="Content" asp-action="SearchRoutes">Ieškoti maršrutų pagal raktažodį</a>
                             </div>
