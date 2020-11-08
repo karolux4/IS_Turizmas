@@ -1,0 +1,38 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Adverts";
+    <div class="col-md-10 mx-auto text-center py-3 my-3">
+        <h1>Mano reklamos</h1>
+    </div>
+    <div class="col-md-10 mx-auto">
+        <table class="table table-striped text-center">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Pavadinimas</th>
+                    <th scope="col">Veiksmai</th>
+                </tr>
+                <div class="col-md-10 mx-auto">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <a asp-action="CreateAdvert"> Kurti Reklama</a>
+                        </div>
+                        <div class="col-md-4">
+                            <a asp-action="CreateAdvertPlan"> Kurti plana</a>
+                        </div>
+                        <div class="col-md-4">
+                            <a asp-action="DeleteAdvertPlan"> Trinti plana</a>
+                        </div>
+                    </div>
+                </div>
+                <tr>
+                    <td>1</td>
+                    <td>Mano reklama</td>
+                    <td><a asp-action="ViewAdvertStatistics">Reklamos statistika</a> | <a asp-action="EditAdvert">Redaguoti reklama</a> | <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a></td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+}

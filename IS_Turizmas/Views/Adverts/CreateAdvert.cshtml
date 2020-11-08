@@ -1,0 +1,33 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Create Advert";
+    
+    <div class="container-fluid">
+        <div class="col-md-10 mx-auto text-center py-3 my-3">
+            <h1>Kuriama reklama</h1>
+        </div>
+        <div class="row">
+            <div class="col-md-10 mx-auto">
+                <form asp-controller="Adverts" asp-action="AdvertCreate" method="POST">
+                    <div class="form-group">
+                        <label><strong>Pavadinimas</strong></label>
+                        <input type="text" class="form-control" placeholder="Įveskite reklamos pavadinimą" />
+                    </div>
+                    <div class="form-group">
+                        <label><strong>Paveikslėlis</strong></label>
+                        <input type="file" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label><strong>Tikslo url</strong></label>
+                        <input type="text" class="form-control" placeholder="Įveskite url" />
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary">Sukurti</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}

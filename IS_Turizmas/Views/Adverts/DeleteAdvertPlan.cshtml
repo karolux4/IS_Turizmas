@@ -1,0 +1,29 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Delete Advert Plan";
+    <div class="col-md-10 mx-auto text-center py-3 my-3">
+        <h1>Mano planai</h1>
+    </div>
+    <div class="col-md-10 mx-auto">
+        <table class="table table-striped text-center">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Laikas nuo</th>
+                    <th scope="col">Laikas iki</th>
+                    <th scope="col">Kaina</th>
+                    <th scope="col">Veiksmas</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>2020-11-08 7:52</td>
+                    <td>2020-12-08 7:52</td>
+                    <td>1337.420 Pinigų</td>
+                    <td><a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a></td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+}
