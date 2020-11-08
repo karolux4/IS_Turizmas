@@ -50,10 +50,16 @@
                         <a class="nav-link" asp-controller="Routes" asp-action="SearchRoutes">Ieškoti maršrutų pagal raktažodį</a>
                     </li>
 
+                    <!-- SYMUCIAKAS  -->
+                    <li asp-active-controllers="Adverts" asp-active-actions="AdvertList">
+                        <a class="nav-link" asp-controller="Adverts" asp-action="AdvertList">Reklamų sąrašas</a>
+                    </li>
+
 
                     <li asp-active-controllers="NotImplemented" asp-active-actions="NotImplemented">
                         <a class="nav-link" href="/">Profilis</a>
                     </li>
+
                 </ul>
 
             </div>
