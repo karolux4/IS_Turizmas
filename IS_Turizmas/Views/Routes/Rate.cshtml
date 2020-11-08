@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewData["Title"] = "Rate";
+    <div class="col-md-10 mx-auto text-center py-3 my-3">
+        <h1>Reitingavimo langas</h1>
+    </div>
+
+
+    <div class="col-md-10 mx-auto">
+        <form>
+            <div class="form-group">
+                <label for="rating">Pasirinkite reitingą</label>
+                <select class="form-control" id="rating">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+            </div>
+            <a asp-controller="Routes" asp-action="ViewRouteInfo" class="btn btn-primary">Palikti reitingą</a>
+            @*<button type="submit" class="btn btn-primary"></button>*@
+        </form>
+        <a asp-controller="Routes" asp-action="ViewRouteInfo" class="btn btn-primary">Atgal</a>
+    </div>
+}
+
+
+

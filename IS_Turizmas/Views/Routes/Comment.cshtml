@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewData["Title"] = "Comment";
+    <div class="col-md-10 mx-auto text-center py-3 my-3">
+        <h1>Komentavimo langas</h1>
+    </div>
+
+
+    <div class="col-md-10 mx-auto">
+        <form>
+            <div class="form-group">
+                <label for="comment">Parašykite komentarą</label>
+                <textarea class="form-control" id="comment" rows="3"></textarea>
+            </div>
+            <a asp-controller="Routes" asp-action="ViewRouteInfo" class="btn btn-primary">Komentuoti</a>
+            @*<button type="submit" class="btn btn-primary"></button>*@
+        </form>
+        <a asp-controller="Routes" asp-action="ViewRouteInfo" class="btn btn-primary">Atgal</a>
+    </div>
+}
+
+

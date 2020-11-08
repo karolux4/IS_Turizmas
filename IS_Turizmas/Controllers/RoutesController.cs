@@ -91,6 +91,17 @@ namespace IS_Turizmas.Controllers
             return View();
         }
 
+        public IActionResult Rate()
+        {
+            return View();
+        }
+
+
+        public IActionResult Comment()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CreateDescription()
