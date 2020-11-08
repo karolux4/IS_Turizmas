@@ -2,4 +2,55 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    ViewData["Title"] = "RouteUniqueness";
+    <div class="row mx-auto my-3 py-3">
+        <div class="col-md-10 mx-auto text-center">
+            <h4>Maršruto geografinis unikalumas</h4>
+        </div>
+    </div>
+    <div class="row mx-auto">
+        <div class="col-md-10 mx-auto">
+            <form method="POST" >
+                <div class="form-group">
+                    <label><strong>Pasirinkite maršrutą</strong></label>
+                    <select class="form-control">
+                        <option>
+                            Kaunas-Baltstogė-Varšuva-Kaunas
+                        </option>
+                        <option>
+                            Kaunas-Vilnius-Kaunas
+                        </option>
+                    </select>
+                </div>
+                <div class="row mx-auto px-4">
+                    <label for="intervalChecked">Nurodyti lyginimo intervalą</label>
+                    <input class="form-check-input" type="checkbox" id="intervalChecked" data-toggle="collapse" href="#interval">
+                </div>
+                <div class="form-group collapse" id="interval">
+                    <label><strong>Nurodykite maršruto sukūrimo intervalą</strong></label>
+                    <div class="row input-daterange">
+                        <div class="col-md-6">
+                            <label>Nuo</label>
+                            <input type="text" class="form-control" name="start" placeholder="Pasirinkite pradžios datą" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Iki</label>
+                            <input type="text" class="form-control" name="end" placeholder="Pasirinkite pabaigos datą" />
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-primary" type="button"  data-toggle="collapse" data-target="#score">Skaičiuoti</button>
+                    <a class="btn btn-primary" type="button" asp-action="Index">Grįžti</a>
+                </div>
+            </form>
+            <div class="collapse my-3" id="score">
+                <label><strong>Rezultatas:</strong></label>
+                <p>Maršrutas padengia 75% unikalaus ploto</p>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+                </div>
+            </div>
+        </div>
+    </div>
 }
