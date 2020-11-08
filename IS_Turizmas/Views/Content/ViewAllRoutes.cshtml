@@ -7,7 +7,7 @@
         <h1>Visų sistemos maršrutų langas</h1>
     </div>
     <div class="col-md-10 mx-auto">
-        <a asp-action="CreateRouteDescription">Kurti naują maršrutą</a>
+        <a asp-controller="Routes" asp-action="CreateRouteDescription">Kurti naują maršrutą</a>
     </div>
     <div class="col-md-10 mx-auto">
         <table class="table table-striped text-center">
@@ -26,14 +26,14 @@
                     <td><a>Kaunas-Baltstogė-Varšuva-Kaunas</a></td>
                     <td>2020-11-03</td>
                     <td>2020-11-05</td>
-                    <td><a asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-action="EditRouteDescription">Redaguoti aprašymą</a> | <a asp-action="EditRouteObjects">Redaguoti objektus</a> | <a asp-action="ViewMap"> Žemėlapis</a> | <a asp-action="Index">Šalinti</a></td>
+                    <td><a asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-controller="Routes" asp-action="EditRouteDescription">Redaguoti aprašymą</a> | <a asp-controller="Routes" asp-action="EditRouteObjects">Redaguoti objektus</a> | <a asp-controller="Routes" asp-action="ViewMap"> Žemėlapis</a> | <a asp-controller="Routes" asp-action="Index">Šalinti</a></td>
                 </tr>
                 <tr>
                     <th>2</th>
                     <td>Vilnius-Kaunas-Vilnius</td>
                     <td>2020-11-04</td>
                     <td>2020-11-04</td>
-                    <td><a asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-action="EditRouteDescription">Redaguoti aprašymą</a> | <a asp-action="AddRouteObjects">Pridėti objektus</a> | <a asp-action="Index">Šalinti</a></td>
+                    <td><a asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-controller="Routes" asp-action="EditRouteDescription">Redaguoti aprašymą</a> | <a asp-controller="Routes" asp-action="EditRouteObjects">Redaguoti objektus</a> | <a asp-controller="Routes" asp-action="ViewMap"> Žemėlapis</a> | <a asp-controller="Routes" asp-action="Index">Šalinti</a></td>
                 </tr>
             </tbody>
         </table>

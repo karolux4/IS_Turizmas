@@ -61,51 +61,51 @@ namespace IS_Turizmas.Controllers
             return View();
         }
 
-        public IActionResult ViewAllRoutes()
-        {
-            return View();
-        }
+        //public IActionResult ViewAllRoutes()
+        //{
+        //    return View();
+        //}
 
-        public IActionResult ViewRouteInfo()
-        {
-            return View();
-        }
+        //public IActionResult ViewRouteInfo()
+        //{
+        //    return View();
+        //}
 
-        public IActionResult ViewAllRouteAnalysis()
-        {
-            return View();
-        }
+        //public IActionResult ViewAllRouteAnalysis()
+        //{
+        //    return View();
+        //}
 
-        public IActionResult FilterRoutes()
-        {
-            return View();
-        }
+        //public IActionResult FilterRoutes()
+        //{
+        //    return View();
+        //}
 
-        public IActionResult SearchRoutes()
-        {
-            return View();
-        }
+        //public IActionResult SearchRoutes()
+        //{
+        //    return View();
+        //}
 
-        public IActionResult FoundRoutes()
-        {
-            return View();
-        }
+        //public IActionResult FoundRoutes()
+        //{
+        //    return View();
+        //}
 
-        public IActionResult ShareRoute()
-        {
-            return View();
-        }
+        //public IActionResult ShareRoute()
+        //{
+        //    return View();
+        //}
 
-        public IActionResult Rate()
-        {
-            return View();
-        }
+        //public IActionResult Rate()
+        //{
+        //    return View();
+        //}
 
 
-        public IActionResult Comment()
-        {
-            return View();
-        }
+        //public IActionResult Comment()
+        //{
+        //    return View();
+        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
