@@ -36,19 +36,7 @@
                         <a class="nav-link" asp-controller="Routes" asp-action="Index">Mano maršrutai</a>
                     </li>
 
-                    <!-- Simono -->
-                    <li asp-active-controllers="Content" asp-active-actions="ViewAllRoutes">
-                        <a class="nav-link" asp-controller="Content" asp-action="ViewAllRoutes">Visi maršrutai</a>
-                    </li>
-                    <li asp-active-controllers="Content" asp-active-actions="ViewAllRouteAnalysis">
-                        <a class="nav-link" asp-controller="Content" asp-action="ViewAllRouteAnalysis">Visų maršrutų analizė</a>
-                    </li>
-                    <li asp-active-controllers="Content" asp-active-actions="FilterRoutes">
-                        <a class="nav-link" asp-controller="Content" asp-action="FilterRoutes">Ieškoti maršrutų pagal filtrą</a>
-                    </li>
-                    <li asp-active-controllers="Content" asp-active-actions="SearchRoutes">
-                        <a class="nav-link" asp-controller="Content" asp-action="SearchRoutes">Ieškoti maršrutų pagal raktažodį</a>
-                    </li>
+
 
                     <!-- SYMUCIAKAS  -->
                     <li asp-active-controllers="Adverts" asp-active-actions="AdvertList">
@@ -59,6 +47,36 @@
                     <li asp-active-controllers="NotImplemented" asp-active-actions="NotImplemented">
                         <a class="nav-link" href="/">Profilis</a>
                     </li>
+
+
+                    <!-- Simono -->
+                    <li asp-active-controllers="Content" asp-active-actions="ViewAllRoutes, ViewAllRouteAnalysis, FilterRoutes, SearchRoutes">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Kiti maršrutų paieškos būdai
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="nav-link text-dark" asp-controller="Content" asp-action="ViewAllRoutes">Visi maršrutai</a>
+                                <a class="nav-link text-dark" asp-controller="Content" asp-action="ViewAllRouteAnalysis">Visų maršrutų analizė</a>
+                                <a class="nav-link text-dark" asp-controller="Content" asp-action="FilterRoutes">Ieškoti maršrutų pagal filtrą</a>
+                                <a class="nav-link text-dark" asp-controller="Content" asp-action="SearchRoutes">Ieškoti maršrutų pagal raktažodį</a>
+                            </div>
+                        </div>
+                    </li>
+
+
+                    @*<li asp-active-controllers="Content" asp-active-actions="ViewAllRoutes">
+            <a class="nav-link" asp-controller="Content" asp-action="ViewAllRoutes">Visi maršrutai</a>
+        </li>
+        <li asp-active-controllers="Content" asp-active-actions="ViewAllRouteAnalysis">
+            <a class="nav-link" asp-controller="Content" asp-action="ViewAllRouteAnalysis">Visų maršrutų analizė</a>
+        </li>
+        <li asp-active-controllers="Content" asp-active-actions="FilterRoutes">
+            <a class="nav-link" asp-controller="Content" asp-action="FilterRoutes">Ieškoti maršrutų pagal filtrą</a>
+        </li>
+        <li asp-active-controllers="Content" asp-active-actions="SearchRoutes">
+            <a class="nav-link" asp-controller="Content" asp-action="SearchRoutes">Ieškoti maršrutų pagal raktažodį</a>
+        </li>*@
 
                 </ul>
 
