@@ -3,5 +3,36 @@
 *@
 @{
     ViewData["Title"] = "Index";
-    <h1>Index</h1>
+    <div class="row mx-auto">
+        <div class="jumbotron col-md-10 mx-auto my-3 py-3 text-center">
+            <h4>Sveiki atvyke į "Makalius" - naują megėjams turistams skirtą platformą!</h4>
+            <p class="lead">
+                Tapti kelionių ekspertu niekada nebuvo lengviau!
+            </p>
+        </div>
+    </div>
+    <div class="row mx-auto my-5">
+        <div class="col-md-10 mx-auto">
+            <div class="row text-center">
+                <div class="intro-card col-md-4">
+                    <a asp-controller="Content" asp-action="ViewAllRoutes">
+                    <img class="intro-logo img-thumbnail border rounded-circle" src="~/images/Home/destination.png"/>
+                    <p class="my-2">Rask naujus kelionių maršrutus</p>
+                    </a>
+                </div>
+                <div class="intro-card col-md-4">
+                    <a asp-controller="Routes" asp-action="Index">
+                    <img class="intro-logo img-thumbnail border rounded-circle" src="~/images/Home/suitcases.png" />
+                    <p class="my-2">Pasidalink savo kelionių įspūdžiais</p>
+                    </a>
+                </div>
+                <div class="intro-card col-md-4">
+                    <a asp-controller="Content" asp-action="ViewAllRouteAnalysis">
+                    <img class="intro-logo border rounded-circle" src="~/images/Home/statistics.png" />
+                    <p class="my-2">Atrask įdomiausią informaciją apie kelionių kryptis</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 }

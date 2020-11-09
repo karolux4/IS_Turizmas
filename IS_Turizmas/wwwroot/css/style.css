@@ -1,2 +1,21 @@
 ﻿body {
 }
+
+.intro-logo{
+    object-fit:cover;
+    width:10em;
+    height:10em;
+}
+.intro-card a{
+    text-decoration:none;
+    color: black;
+}
+
+.intro-card:hover img{
+    width:12em;
+    height:12em;
+}
+.intro-card:hover p {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
