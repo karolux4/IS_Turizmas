@@ -21,6 +21,11 @@ namespace IS_Turizmas.Controllers
             return View();
         }
 
+        public IActionResult ConfirmDelete()
+        {
+            return View();
+        }
+
         public IActionResult AdvertList()
         {
             return View();
@@ -73,7 +78,7 @@ namespace IS_Turizmas.Controllers
 
         public IActionResult AdvertPlanDelete()
         {
-            return RedirectToAction(nameof(Confirm));
+            return RedirectToAction(nameof(ConfirmDelete));
         }
 
         [HttpPost]

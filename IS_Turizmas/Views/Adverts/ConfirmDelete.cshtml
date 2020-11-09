@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Patvirtinti plano sukūrimą";
+    ViewData["Title"] = "Patvirtinti plano pašalinimą";
     <div class="container-fluid">
         <div class="col-md-10 mx-auto text-center py-3 my-3">
             <h1>Patvirtinti</h1>
@@ -11,16 +11,13 @@
             <div class="col-md-10 mx-auto">
                 <form asp-controller="Adverts" asp-action="ConfirmActivation" method="POST">
                     <div class="form-group">
-                        <label><strong>Norėdami patvirtinti įrašykite žodi "Patvirtinti"</strong></label>
-                        <input type="text" class="form-control" placeholder="Patvirtinti" />
+                        <label><strong>Norėdami pašalinti įrašykite žodi "Šalinti"</strong></label>
+                        <input type="text" class="form-control" placeholder="Šalinti" />
                     </div>
                     <div>
-                        <button type="submit" class="btn btn-primary">Patvirtinti</button>
+                        <button type="submit" class="btn btn-primary">Šalinti</button>
                     </div>
                 </form>
-                <div class="my-3">
-                    <a asp-action="CreateAdvertPlan" class="btn btn-primary">Atšaukti</a>
-                </div>
             </div>
         </div>
     </div>
