@@ -39,5 +39,10 @@ namespace IS_Turizmas.Controllers
         {
             return View();
         }
+
+        public IActionResult ChangePlan()
+        {
+            return View();
+        }
     }
 }

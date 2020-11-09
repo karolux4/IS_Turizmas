@@ -34,3 +34,15 @@
     background-repeat:repeat;
     background-size: 3em;
 }
+
+.card-img-top{
+    width:10em;
+    height:10em;
+
+}
+
+.social-media{
+    width:10em;
+    height:10em;
+    object-fit:cover;
+}

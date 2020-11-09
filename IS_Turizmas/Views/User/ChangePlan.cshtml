@@ -1,0 +1,48 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "User plan";
+    <div class="row mx-auto my-3 py-3">
+        <div class="col-md-10 mx-auto text-center">
+            <h3>Plano pasirinkimas</h3>
+        </div>
+    </div>
+    <div class="row mx-auto my-3 py-3">
+        <div class="col-md-10 mx-auto">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card px-1 mx-2 my-2">
+                        <img class="mx-auto card-img-top py-1" src="~/images/Plans/free.png"/>
+                        <div class="card-body">
+                            <h5 class="card-title">Nemokamas</h5>
+                            <p class="card-text">Pats paprasčiausias planas skirtas visiems vartotojams</p>
+                            <a asp-action="Index" class="btn btn-primary">Rinktis</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card px-1 mx-2 my-2">
+                        <img class="mx-auto card-img-top py-1" src="~/images/Plans/premium.png" />
+                        <div class="card-body">
+                            <h5 class="card-title">Premium</h5>
+                            <p class="card-text">Nepatinka reklamos - rinkis šį planą!</p>
+                            <br/>
+                            <a asp-action="Index" class="btn btn-primary">Rinktis</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card px-1 mx-2 my-2">
+                        <img class="mx-auto card-img-top py-1" src="~/images/Plans/profits.png" />
+                        <div class="card-body">
+                            <h5 class="card-title">Verslo</h5>
+                            <p class="card-text">Nori reklamuoti savo verslą, kodėl gi nepadžiuos šio plano!</p>
+                            <a asp-action="Index" class="btn btn-primary">Rinktis</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
