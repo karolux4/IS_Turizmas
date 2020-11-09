@@ -17,13 +17,13 @@
                 <div class="col-md-10 mx-auto">
                     <div class="row">
                         <div class="col-md-4">
-                            <a asp-action="CreateAdvert"> Kurti Reklama</a>
+                            <a asp-action="CreateAdvert">Kurti reklamą</a>
                         </div>
                         <div class="col-md-4">
-                            <a asp-action="CreateAdvertPlan"> Kurti plana</a>
+                            <a asp-action="CreateAdvertPlan">Kurti planą</a>
                         </div>
                         <div class="col-md-4">
-                            <a asp-action="DeleteAdvertPlan"> Trinti plana</a>
+                            <a asp-action="DeleteAdvertPlan">Mano planai</a>
                         </div>
                     </div>
                 </div>
@@ -34,5 +34,27 @@
                 </tr>
             </thead>
         </table>
+    </div>
+
+
+    <!--Delete confirmation window-->
+    <div class="modal fade" id="deleteConfirmation" tabindex="-1" role="dialog" aria-labelledby="Delete confirmation window" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmation">Šalinimo patvirtinimas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Ar tikrai norite ištrinti reklamą?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Atšaukti</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Šalinti</button>
+                </div>
+            </div>
+        </div>
     </div>
 }

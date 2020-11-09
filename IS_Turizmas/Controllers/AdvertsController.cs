@@ -71,6 +71,11 @@ namespace IS_Turizmas.Controllers
             return RedirectToAction(nameof(Confirm));
         }
 
+        public IActionResult AdvertPlanDelete()
+        {
+            return RedirectToAction(nameof(Confirm));
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AdvertEdit()
