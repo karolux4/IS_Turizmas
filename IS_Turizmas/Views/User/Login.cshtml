@@ -1,0 +1,31 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Prisijungimas";
+    <div class="col-md-10 mx-auto text-center py-3 my-3">
+        <h1>Prisijungimas</h1>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-10 mx-auto">
+                <form asp-controller="User" asp-action="Index" method="POST">
+                    <div class="form-group">
+                        <label><strong>Prisijungimo vardas</strong></label>
+                        <input type="text" class="form-control" placeholder="Vartotojo vardas" />
+                    </div>
+                    <div class="form-group">
+                        <label><strong>Slaptažodis</strong></label>
+                        <input type="text" class="form-control" placeholder="Vartotojo slaptažodis" />
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary">Prisijungti</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+}

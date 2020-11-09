@@ -1,0 +1,35 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Profilis";
+    <div>
+        <a asp-controller="Home" asp-action="Index">Atsijungti</a> | <a asp-action="EditUser">Redaguoti</a> | <a asp-action="DeleteUser">Anuliuoti profilį</a>
+    </div>
+
+    <div class="col-md-10 mx-auto text-center py-3 my-3">
+        <h1>Mano profilis</h1>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-md-10 mx-auto">
+
+                <div class="form-group">
+                    <label><strong>Prisijungimo vardas: </strong>Vardenis420</label>
+                </div>
+
+                <div class="form-group">
+                    <label><strong>Vardas: </strong>Vardenis</label>
+                </div>
+
+                <div class="form-group">
+                    <label><strong>Pavardė: </strong>Pavardenis</label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+}
