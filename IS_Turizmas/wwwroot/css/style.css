@@ -23,3 +23,8 @@
     width: 2em;
     height: 2em;
 }
+.profile{
+    width: 10em;
+    height: 10em;
+    object-fit:cover;
+}

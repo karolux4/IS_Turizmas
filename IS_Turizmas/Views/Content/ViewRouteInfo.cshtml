@@ -11,7 +11,8 @@
                 <tr>
                     <th scope="col">Pavadinimas</th>
                     <th scope="col">Sukūrimo data</th>
-                    <th scope="col">Modifikavimo data</th>
+                    <th scope="col">Reitingas</th>
+                    <th scope="col">Autorius</th>
                     <th scope="col">Veiksmai</th>
                 </tr>
             </thead>
@@ -19,10 +20,30 @@
                 <tr>
                     <td><a>Kaunas-Baltstogė-Varšuva-Kaunas</a></td>
                     <td>2020-11-03</td>
-                    <td>2020-11-05</td>
+                    <td>4.0/5.0</td>
+                    <td><a asp-controller="User" asp-action="Index">Vardenis420</a></td>
                     <td><a asp-action="ShareRoute">Dalintis</a> | <a asp-action="Comment">Rašyti komentarą</a> | <a asp-action="Rate">Suteikti reitingą</a></td>
                 </tr>
             </tbody>
         </table>
+        <div class="row">
+            <h3>Aprašymas</h3>
+            <div class="col-12 my-3">
+                Aprašymo duomenys
+            </div>
+            <h3>Maršruto objektai</h3>
+            <div class="col-12">
+                <ol>
+                    <li>Kaunas</li>
+                    <li>Balstogė</li>
+                    <li>Varšuva</li>
+                    <li>Kaunas</li>
+                </ol>
+            </div>
+            <h3>Komentarai</h3>
+            <div class="col-12 border rounded">
+                Labai šaunus maršrutas!
+            </div>
+        </div>
     </div>
 }
