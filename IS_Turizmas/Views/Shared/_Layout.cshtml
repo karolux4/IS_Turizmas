@@ -43,12 +43,21 @@
                         <a class="nav-link" asp-controller="Adverts" asp-action="AdvertList">Reklamų sąrašas</a>
                     </li>
 
-
-                    <li asp-active-controllers="NotImplemented" asp-active-actions="NotImplemented">
-                        <a class="nav-link" href="/">Profilis</a>
+                    <!-- Profilis -->
+                    <li asp-active-controllers="User" asp-active-actions="Index">
+                        <a class="nav-link" asp-controller="User" asp-action="Index">Profilis</a>
                     </li>
 
-                    
+                    <li asp-active-controllers="User" asp-active-actions="Register">
+                        <a class="nav-link" asp-controller="User" asp-action="Register">Registruotis</a>
+                    </li>
+
+                    <li asp-active-controllers="User" asp-active-actions="Login">
+                        <a class="nav-link" asp-controller="User" asp-action="Login">Prisijungti</a>
+                    </li>
+                    <!--Profilis-->
+
+
                     <li asp-active-controllers="Content" asp-active-actions="ViewAllRouteAnalysis">
                         <a class="nav-link" asp-controller="Content" asp-action="ViewAllRouteAnalysis">Visų maršrutų analizė</a>
                     </li>
