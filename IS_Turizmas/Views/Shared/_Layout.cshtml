@@ -40,7 +40,7 @@
 
 
                     <!-- SYMUCIAKAS  -->
-                    <li asp-active-controllers="Adverts" asp-active-actions="AdvertList">
+                    <li asp-active-controllers="Adverts" asp-active-actions="AdvertList, Confirm, CreateAdvert, CreateAdvertPlan, DeleteAdvertPlan, EditAdvert, ViewAdvertStatistics">
                         <a class="nav-link" asp-controller="Adverts" asp-action="AdvertList">Reklamų sąrašas</a>
                     </li>
 
@@ -52,7 +52,7 @@
 
                     <!-- Simono -->
                     <li>
-                        <div asp-active-controllers="Content" asp-active-actions="ViewAllRoutes, ViewAllRouteAnalysis, FilterRoutes, SearchRoutes" class="dropdown">
+                        <div asp-active-controllers="Content" asp-active-actions="ViewAllRoutes, FilterRoutes, SearchRoutes" class="dropdown">
                             <a class="nav-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Paieška
                             </a>
@@ -98,6 +98,13 @@
 
         </div>
     </nav>
+    <a href="https://ktu.edu">
+    <div class="row ads mx-auto">
+        <br/>
+        <br/>
+        <br/>
+    </div>
+    </a>
     <div>
         @RenderBody()
     </div>

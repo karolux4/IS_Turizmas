@@ -28,3 +28,9 @@
     height: 10em;
     object-fit:cover;
 }
+
+.ads{
+    background-image: url("../images/defaultad.jpg");
+    background-repeat:repeat;
+    background-size: 3em;
+}
