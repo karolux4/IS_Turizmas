@@ -5,13 +5,13 @@ using Newtonsoft.Json.Linq;
 
 namespace IS_Turizmas.Models
 {
-    public partial class vhs4kNSPtcContext : DbContext
+    public partial class ApplicationDbContext : DbContext
     {
-        public vhs4kNSPtcContext()
+        public ApplicationDbContext()
         {
         }
 
-        public vhs4kNSPtcContext(DbContextOptions<vhs4kNSPtcContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
@@ -41,7 +41,6 @@ namespace IS_Turizmas.Models
                 var myJsonString = System.IO.File.ReadAllText("..\\config.json");
                 var myJObject = JObject.Parse(myJsonString);
                 var conf_string = myJObject.SelectToken("ConfigurationString").Value<string>();
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseMySQL(conf_string);
             }
         }
