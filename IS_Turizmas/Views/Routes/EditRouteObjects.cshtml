@@ -1,62 +1,34 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model List<IS_Turizmas.Models.MarsrutoObjektai>
 @{
     ViewData["Title"] = "RouteObjects";
     <div class="container-fluid">
         <div class="col-md-10 mx-auto text-center py-3 my-3">
             <h4>Maršruto objektų redagavimas</h4>
-            <h5>Maršrutas: Kaunas-Balstogė-Varšuva-Kaunas</h5>
+            <h5>Maršrutas: @Html.DisplayFor(m => Model[0].FkMarsrutasNavigation.Pavadinimas)</h5>
         </div>
         <div class="row">
             <div class="col-md-10 mx-auto">
                 <form asp-controller="Routes" asp-action="EditObjects" method="POST">
                     <label><strong>Objektai(-as)</strong></label>
                     <ul>
-                        <li class="object-row form-group">
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            <li @if(i+1 == Model.Count) { <text>class="last-object-row object-row form-group"</text> } else { <text>class="object-row form-group"</text> }>
+
                             <div class="row">
-                                <div class="col-md-9 mx-auto">
-                                    <input type="text" class="form-control" name="address[]" placeholder="Įveskite adresą" value="Kaunas, Lithuania" />
+                                    <div class="col-md-9 mx-auto">
+                                        <input type="text" class="form-control" name="address[]" placeholder="Įveskite adresą" value="@Html.DisplayFor(m => Model[i].FkLankytinasObjektasNavigation.Pavadinimas)"/>
+                                    </div>
+                                    <div class="col-md-3 mx-auto">
+                                        <button type="button" data-value="object-row" data-hide="add-more" data-last="last-object-row" class="btn btn-primary remove-row">-</button>
+                                        <button type="button" data-value="last-object-row" data-hide="add-more" class="btn btn-primary add-more">+</button>
+                                    </div>
                                 </div>
-                                <div class="col-md-3 mx-auto">
-                                    <button type="button" data-value="object-row" data-hide="add-more" data-last="last-object-row" class="btn btn-primary remove-row">-</button>
-                                    <button type="button" data-value="last-object-row" data-hide="add-more" class="btn btn-primary add-more d-none">+</button>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="object-row form-group">
-                            <div class="row">
-                                <div class="col-md-9 mx-auto">
-                                    <input type="text" class="form-control" name="address[]" placeholder="Įveskite adresą" value="Bialystok, Poland" />
-                                </div>
-                                <div class="col-md-3 mx-auto">
-                                    <button type="button" data-value="object-row" data-hide="add-more" data-last="last-object-row" class="btn btn-primary remove-row">-</button>
-                                    <button type="button" data-value="last-object-row" data-hide="add-more" class="btn btn-primary add-more d-none">+</button>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="object-row form-group">
-                            <div class="row">
-                                <div class="col-md-9 mx-auto">
-                                    <input type="text" class="form-control" name="address[]" placeholder="Įveskite adresą" value="Warsaw, Poland" />
-                                </div>
-                                <div class="col-md-3 mx-auto">
-                                    <button type="button" data-value="object-row" data-hide="add-more" data-last="last-object-row" class="btn btn-primary remove-row">-</button>
-                                    <button type="button" data-value="last-object-row" data-hide="add-more" class="btn btn-primary add-more d-none">+</button>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="object-row last-object-row form-group">
-                            <div class="row">
-                                <div class="col-md-9 mx-auto">
-                                    <input type="text" class="form-control" name="address[]" placeholder="Įveskite adresą" value="Kaunas, Lithuania"/>
-                                </div>
-                                <div class="col-md-3 mx-auto">
-                                    <button type="button" data-value="object-row" data-hide="add-more" data-last="last-object-row" class="btn btn-primary remove-row">-</button>
-                                    <button type="button" data-value="last-object-row" data-hide="add-more" class="btn btn-primary add-more">+</button>
-                                </div>
-                            </div>
-                        </li>
+                            </li>
+                        }
                     </ul>
                     <button class="btn btn-primary" type="submit">Keisti objektus</button>
                 </form>

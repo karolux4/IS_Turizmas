@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using IS_Turizmas.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -17,9 +18,15 @@ namespace IS_Turizmas.Controllers
 {
     public class RoutesController : Controller
     {
-        public IActionResult Index()
+        private readonly ApplicationDbContext _context;
+
+        public RoutesController(ApplicationDbContext context)
         {
-            return View();
+            _context = context;
+        }
+        public async Task<IActionResult> Index()
+        {
+            return View(await _context.Marsrutai.Include(o => o.MarsrutoObjektai).ToListAsync());
         }
 
         public IActionResult CreateRouteDescription()
@@ -37,23 +44,53 @@ namespace IS_Turizmas.Controllers
             return View();
         }
 
-        public IActionResult EditRouteObjects()
+        public async Task<IActionResult> EditRouteObjects(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var route_points = await _context.MarsrutoObjektai.Include(o => o.FkLankytinasObjektasNavigation).
+                Include(o => o.FkMarsrutasNavigation).Where(o => o.FkMarsrutas == id).OrderBy(o => o.EilesNr).ToListAsync();
+
+
+            return View(route_points);
         }
 
-        public IActionResult ViewMap()
+        public async Task<IActionResult> ViewMap(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var route_points = await _context.MarsrutoObjektai.Include(o => o.FkLankytinasObjektasNavigation).
+                Where(o=> o.FkMarsrutas==id).OrderBy(o => o.EilesNr).ToListAsync();
+
             var myJsonString = System.IO.File.ReadAllText("..\\config.json");
             var myJObject = JObject.Parse(myJsonString);
             var key = myJObject.SelectToken("MapEmbeded").Value<string>();
 
             var url = "https://www.google.com/maps/embed/v1/directions?key=" + key + "&";
-            url += "origin=Kaunas,Lithuania&destination=Kaunas,Lithuania&waypoints=Bialystok,Poland|Warsaw,Poland&avoid=tolls|highways";
+
+            int last = route_points.Count-1;
+
+            url += "origin=" + route_points[0].FkLankytinasObjektasNavigation.XKoordinate + "," +route_points[0].FkLankytinasObjektasNavigation.YKoordinate;
+            url += "&destination=" + route_points[last].FkLankytinasObjektasNavigation.XKoordinate + "," + route_points[last].FkLankytinasObjektasNavigation.YKoordinate;
+
+            string start = "&waypoints=";
+            for (var i=1;i<last;i++)
+            {
+                url += start + route_points[i].FkLankytinasObjektasNavigation.XKoordinate + "," +
+                    route_points[i].FkLankytinasObjektasNavigation.YKoordinate;
+                start = "|";
+            }
+            url += "&avoid=tolls|highways";
 
             ViewBag.MapLink = url;
 
-            return View();
+            return View(route_points);
         }
 
         public IActionResult CalculateRouteUniqueness()

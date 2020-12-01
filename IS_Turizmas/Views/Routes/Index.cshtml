@@ -1,6 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model List<IS_Turizmas.Models.Marsrutai>
 @{
     ViewData["Title"] = "RouteDesctiption";
     <div class="col-md-10 mx-auto text-center py-3 my-3">
@@ -24,20 +25,24 @@
                 </tr>
             </thead>
             <tbody>
+                @for(var i=0; i < Model.Count; i++)
+                {
                 <tr>
-                    <th>1</th>
-                    <td>Kaunas-Baltstogė-Varšuva-Kaunas</td>
-                    <td>2020-11-03</td>
-                    <td>2020-11-05</td>
-                    <td><a asp-controller="Content" asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-action="EditRouteDescription">Redaguoti aprašymą</a> | <a asp-action="EditRouteObjects">Redaguoti objektus</a> | <a asp-action="ViewMap"> Žemėlapis</a> | <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a></td>
+                    <th>@(i+1)</th>
+                    <td>@Html.DisplayFor(model => Model[i].Pavadinimas)</td>
+                    @{ string formatedValue = Model[i].SukurimoData.ToShortDateString(); }
+                    <td>@Html.DisplayFor(model => formatedValue)</td>
+                    @{ formatedValue = Model[i].ModifikavimoData.ToShortDateString(); }
+                    <td>@Html.DisplayFor(model => formatedValue)</td>
+                    <td>
+                        <a asp-controller="Content" asp-action="ViewRouteInfo">Maršruto informacija</a> | 
+                        <a asp-action="EditRouteDescription">Redaguoti aprašymą</a> | 
+                        @if (Model[i].MarsrutoObjektai.Count > 0) {<a asp-action="EditRouteObjects" asp-route-id="@Model[i].Id">Redaguoti objektus</a>} else {<a asp-action="AddRouteObjects" asp-route-id="@Model[i].Id">Pridėti objektus</a> } | 
+                        @if (Model[i].MarsrutoObjektai.Count > 0) {<a asp-action="ViewMap" asp-route-id="@Model[i].Id"> Žemėlapis</a>} | 
+                        <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a>
+                    </td>
                 </tr>
-                <tr>
-                    <th>2</th>
-                    <td>Vilnius-Kaunas-Vilnius</td>
-                    <td>2020-11-04</td>
-                    <td>2020-11-04</td>
-                    <td><a asp-controller="Content" asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-action="EditRouteDescription">Redaguoti aprašymą</a> | <a asp-action="AddRouteObjects">Pridėti objektus</a> | <a asp-action="ViewMap"> Žemėlapis</a> | <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a></td>
-                </tr>
+                }
             </tbody>
         </table>
     </div>

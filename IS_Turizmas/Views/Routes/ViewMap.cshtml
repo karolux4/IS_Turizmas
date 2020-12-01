@@ -1,6 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model List<IS_Turizmas.Models.MarsrutoObjektai>
 @{
     ViewData["Title"] = "ViewMap";
     <div class="row mx-auto my-3 py-3">
@@ -12,10 +13,10 @@
         <div class="col-md-10 mx-auto">
             <p><strong>Maršruto objektai:</strong></p>
             <ol>
-                <li>Kaunas (LTU)</li>
-                <li>Bialystok (POL)</li>
-                <li>Warsaw (POL)</li>
-                <li>Kaunas (LTU)</li>
+                @for (var i = 0; i < Model.Count; i++)
+                {
+                <li>@Html.DisplayFor( m => Model[i].FkLankytinasObjektasNavigation.Pavadinimas)</li>
+                }
             </ol>
         </div>
     </div>
