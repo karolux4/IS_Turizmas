@@ -1,6 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model List<IS_Turizmas.Models.Marsrutai>
 @{
     ViewData["Title"] = "AllRoutes";
     <div class="col-md-10 mx-auto text-center py-3 my-3">
@@ -19,22 +20,45 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th>1</th>
-                    <td><a>Kaunas-Baltstogė-Varšuva-Kaunas</a></td>
-                    <td>2020-11-03</td>
-                    <td>4.0/5.0</td>
-                    <td><a asp-controller="User" asp-action="Index">Vardenis420</a></td>
-                    <td><a asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-controller="Routes" asp-action="ViewMap"> Žemėlapis</a></td>
-                </tr>
-                <tr>
-                    <th>2</th>
-                    <td>Vilnius-Kaunas-Vilnius</td>
-                    <td>2020-11-04</td>
-                    <td>3.0/5.0</td>
-                    <td><a asp-controller="User" asp-action="Index">Vardenis420</a></td>
-                    <td><a asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-controller="Routes" asp-action="ViewMap"> Žemėlapis</a></td>
-                </tr>
+                <h3>Hello there</h3>
+                @for (var i = 0; i < Model.Count; i++)
+                {
+                    <tr>
+                        <th>@(i+1)</th>
+                        <td>@Html.DisplayFor(model => Model[i].Pavadinimas)</td>
+                        @{ string formatedValue = Model[i].SukurimoData.ToShortDateString(); }
+                        <td>@Html.DisplayFor(model => formatedValue)</td>
+                        @{ formatedValue = Model[i].ModifikavimoData.ToShortDateString(); }
+                        <td>@Html.DisplayFor(model => formatedValue)</td>
+                        <td>
+                            <a asp-controller="Content" asp-action="ViewRouteInfo">Maršruto informacija</a> |
+                            <a asp-action="EditRouteDescription">Redaguoti aprašymą</a> |
+                            @if (Model[i].MarsrutoObjektai.Count > 0)
+                            {<a asp-action="EditRouteObjects" asp-route-id="@Model[i].Id">Redaguoti objektus</a>}
+                            else
+                            {<a asp-action="AddRouteObjects" asp-route-id="@Model[i].Id">Pridėti objektus</a>} |
+                            @if (Model[i].MarsrutoObjektai.Count > 0)
+                            {<a asp-action="ViewMap" asp-route-id="@Model[i].Id"> Žemėlapis</a>} |
+                            <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a>
+                        </td>
+                    </tr>
+                }
+                @*<tr>
+            <th>1</th>
+            <td><a>Kaunas-Baltstogė-Varšuva-Kaunas</a></td>
+            <td>2020-11-03</td>
+            <td>4.0/5.0</td>
+            <td><a asp-controller="User" asp-action="Index">Vardenis420</a></td>
+            <td><a asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-controller="Routes" asp-action="ViewMap"> Žemėlapis</a></td>
+        </tr>
+        <tr>
+            <th>2</th>
+            <td>Vilnius-Kaunas-Vilnius</td>
+            <td>2020-11-04</td>
+            <td>3.0/5.0</td>
+            <td><a asp-controller="User" asp-action="Index">Vardenis420</a></td>
+            <td><a asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-controller="Routes" asp-action="ViewMap"> Žemėlapis</a></td>
+        </tr>*@
             </tbody>
         </table>
     </div>
