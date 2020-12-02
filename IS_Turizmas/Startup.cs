@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +11,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using IS_Turizmas.Models;
+using IS_Turizmas.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace IS_Turizmas
 {
@@ -26,6 +28,12 @@ namespace IS_Turizmas
 
 
             services.AddDbContext<ApplicationDbContext>();
+
+            services.AddIdentity<RegistruotiVartotojai, VartotojoPlanai>().AddDefaultTokenProviders();
+
+            services.AddTransient<IUserStore<RegistruotiVartotojai>, UserStore>();
+
+            services.AddTransient<IRoleStore<VartotojoPlanai>, RoleStore>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,6 +42,20 @@ namespace IS_Turizmas
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                /*if (s.UserManager.FindByNameAsync("dev").Result == null)
+                {
+                    var result = s.UserManager.CreateAsync(new RegistruotiVartotojai
+                    {
+                        Slapyvardis = "dev",
+                        ElPastas = "dev@app.com",
+                        AktyvumoTaskai = 0,
+                        Pavardė = "B",
+                        Vardas = "A",
+                        RegistracijosData = DateTime.Now,
+                        PrisijungimoData = DateTime.Now
+                    }, "Aut94L#G-a").Result;
+                }*/
             }
 
             /*app.UseRouting();
@@ -47,6 +69,9 @@ namespace IS_Turizmas
             });*/
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseMvc(routes => {
                 routes.MapRoute(

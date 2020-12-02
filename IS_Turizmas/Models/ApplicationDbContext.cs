@@ -1,11 +1,12 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Newtonsoft.Json.Linq;
 
 namespace IS_Turizmas.Models
 {
-    public partial class ApplicationDbContext : DbContext
+    public partial class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext()
         {
@@ -47,6 +48,8 @@ namespace IS_Turizmas.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<AktyvumoLygiai>(entity =>
             {
                 entity.ToTable("Aktyvumo_lygiai");
