@@ -11,7 +11,8 @@
         </div>
         <div class="row">
             <div class="col-md-10 mx-auto">
-                <form asp-controller="Routes" asp-action="EditObjects" method="POST">
+                <form asp-controller="Routes" asp-action="EditRouteObjects" asp method="POST">
+                    <input type="hidden" name="Id" value="@Model[0].FkMarsrutasNavigation.Id"/>
                     <label><strong>Objektai(-as)</strong></label>
                     <ul>
                         @for (int i = 0; i < Model.Count; i++)
