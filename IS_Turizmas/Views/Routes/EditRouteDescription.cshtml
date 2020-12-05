@@ -1,8 +1,10 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@using IS_Turizmas.Models
+@model IS_Turizmas.Models.Marsrutai
 @{
-    ViewData["Title"] = "Edit Route Desctiption";
+    ViewData["Title"] = "Maršruto aprašymo redagavimas";
     <div class="container-fluid">
         <div class="col-md-10 mx-auto py-3 my-3">
             <h4 class="text-center">Maršruto aprašymo redagavimas</h4>
@@ -10,42 +12,45 @@
         <div class="row">
             <div class="col-md-10 mx-auto">
                 <form asp-controller="Routes" asp-action="EditDescription" method="POST">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
                     <div class="form-group">
                         <label><strong>Pavadinimas</strong></label>
-                        <input type="text" class="form-control" placeholder="Įveskite maršruto pavadinimą" value="Kaunas-Baltstogė-Varšuva-Kaunas" />
+                        <input type="text" class="form-control" asp-for="Pavadinimas" placeholder="Įveskite maršruto pavadinimą" />
+                        <span asp-validation-for="Pavadinimas" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label><strong>Aprašymas</strong></label>
-                        <textarea class="form-control" placeholder="Įveskite maršruto aprašymą">Išvykstame anksti apie 5 valandą ryto iš Kauno ir t.t.</textarea>
+                        <textarea class="form-control" asp-for="Aprasymas" placeholder="Įveskite maršruto aprašymą"></textarea>
+                        <span asp-validation-for="Aprasymas" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label><strong>Laiko įvertis</strong></label>
-                        <select class="form-control">
-                            <option>&lt1h</option>
-                            <option>1-2h</option>
-                            <option>2-5h</option>
-                            <option>5-12h</option>
-                            <option>12h-1d</option>
-                            <option selected="selected">1-3d</option>
-                            <option>3-7d</option>
-                            <option>&gt7d</option>
+                        <select class="form-control" asp-for="LaikoIvertis">
+                            @foreach (LaikoIverciai ivertis in ViewBag.LaikoIverciai)
+                            {
+                                <option value="@ivertis.Id">@ivertis.Name</option>
+                            }
                         </select>
+                        <span asp-validation-for="LaikoIvertis" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label><strong>Išlaidos (€)</strong></label>
+                        <label><strong>Išlaidos</strong></label>
                         <div class="row">
                             <div class="col-md-6">
                                 <label>Nuo</label>
-                                <input type="text" class="form-control" placeholder="Įveskite išlaidų minimumą" value="200"/>
+                                <input type="text" class="form-control" asp-for="IslaidosNuo" placeholder="Įveskite išlaidų minimumą" />
+                                <span asp-validation-for="IslaidosNuo" class="text-danger"></span>
                             </div>
                             <div class="col-md-6">
                                 <label>Iki</label>
-                                <input type="text" class="form-control" placeholder="Įveskite išlaidų maksimumą" value="500"/>
+                                <input type="text" class="form-control" asp-for="IslaidosIki" placeholder="Įveskite išlaidų maksimumą" />
+                                <span asp-validation-for="IslaidosIki" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <button type="submit" class="btn btn-primary">Keisti</button>
+                        <button type="submit" class="btn btn-primary">Atnaujinti</button>
                     </div>
                 </form>
             </div>

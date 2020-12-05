@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using IS_Turizmas.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -19,24 +21,94 @@ namespace IS_Turizmas.Controllers
     public class RoutesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly SignInManager<RegistruotiVartotojai> _signInManager;
 
-        public RoutesController(ApplicationDbContext context)
+        public RoutesController(ApplicationDbContext context, SignInManager<RegistruotiVartotojai> signInManager)
         {
             _context = context;
+            _signInManager = signInManager;
         }
         public async Task<IActionResult> Index()
         {
             return View(await _context.Marsrutai.Include(o => o.MarsrutoObjektai).ToListAsync());
         }
 
-        public IActionResult CreateRouteDescription()
+        public async Task<IActionResult> CreateRouteDescription()
         {
+            ViewBag.LaikoIverciai = _context.LaikoIverciai.ToList();
             return View();
         }
 
-        public IActionResult EditRouteDescription()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateDescription([Bind("Pavadinimas, Aprasymas, LaikoIvertis, IslaidosNuo, IslaidosIki")]
+        Marsrutai route)
         {
-            return View();
+            route.Perziuros = 0;
+            route.SukurimoData = DateTime.Now;
+            route.ModifikavimoData = DateTime.Now;
+            //System.Security.Claims.ClaimsPrincipal currentUser = this.User;
+            //route.FkRegistruotasVartotojas = int.Parse(_signInManager.UserManager.GetUserId(User));
+            route.FkRegistruotasVartotojas = 1;
+            if (!ModelState.IsValid)
+            {
+                ViewBag.LaikoIverciai = _context.LaikoIverciai.ToList();
+                return View("~/Views/Routes/CreateRouteDescription.cshtml");
+            }
+            try
+            {
+                _context.Marsrutai.Add(route);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return NotFound();
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> EditRouteDescription(int id)
+        {
+            ViewBag.LaikoIverciai = _context.LaikoIverciai.ToList();
+            return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id==id));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditDescription(int id, [Bind("Id,Pavadinimas, Aprasymas, LaikoIvertis," +
+            " IslaidosNuo, IslaidosIki")] Marsrutai route)
+        {
+            if(id!= route.Id)
+            {
+                return NotFound();
+            }
+            Marsrutai oldRoute = _context.Marsrutai.Find(id);
+            oldRoute.Pavadinimas = route.Pavadinimas;
+            oldRoute.Aprasymas = route.Aprasymas;
+            oldRoute.LaikoIvertis = route.LaikoIvertis;
+            oldRoute.IslaidosNuo = route.IslaidosNuo;
+            oldRoute.IslaidosIki = route.IslaidosIki;
+            oldRoute.ModifikavimoData = DateTime.Now;
+            if (!ModelState.IsValid)
+            {
+                ViewBag.LaikoIverciai = _context.LaikoIverciai.ToList();
+                return View("~/Views/Routes/EditRouteDescription.cshtml");
+            }
+            try
+            {
+                _context.Update(oldRoute);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if(!_context.Marsrutai.Any(o => o.Id == route.Id))
+                {
+                    return NotFound();
+                }
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult AddRouteObjects()
@@ -57,6 +129,7 @@ namespace IS_Turizmas.Controllers
 
             return View(route_points);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -236,14 +309,16 @@ namespace IS_Turizmas.Controllers
 
             int last = route_points.Count-1;
 
-            url += "origin=" + route_points[0].FkLankytinasObjektasNavigation.XKoordinate + "," +route_points[0].FkLankytinasObjektasNavigation.YKoordinate;
-            url += "&destination=" + route_points[last].FkLankytinasObjektasNavigation.XKoordinate + "," + route_points[last].FkLankytinasObjektasNavigation.YKoordinate;
+            url += "origin=" + route_points[0].FkLankytinasObjektasNavigation.YKoordinate.ToString(CultureInfo.InvariantCulture)
+                + "," +route_points[0].FkLankytinasObjektasNavigation.XKoordinate.ToString(CultureInfo.InvariantCulture);
+            url += "&destination=" + route_points[last].FkLankytinasObjektasNavigation.YKoordinate.ToString(CultureInfo.InvariantCulture)
+                + "," + route_points[last].FkLankytinasObjektasNavigation.XKoordinate.ToString(CultureInfo.InvariantCulture);
 
             string start = "&waypoints=";
             for (var i=1;i<last;i++)
             {
-                url += start + route_points[i].FkLankytinasObjektasNavigation.XKoordinate + "," +
-                    route_points[i].FkLankytinasObjektasNavigation.YKoordinate;
+                url += start + route_points[i].FkLankytinasObjektasNavigation.YKoordinate.ToString(CultureInfo.InvariantCulture) + "," +
+                    route_points[i].FkLankytinasObjektasNavigation.XKoordinate.ToString(CultureInfo.InvariantCulture);
                 start = "|";
             }
             url += "&avoid=tolls|highways";
@@ -303,20 +378,6 @@ namespace IS_Turizmas.Controllers
         //{
         //    return View();
         //}
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateDescription()
-        {
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditDescription()
-        {
-            return RedirectToAction(nameof(Index));
-        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

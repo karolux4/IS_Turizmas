@@ -3,7 +3,7 @@
 *@
 @model List<IS_Turizmas.Models.Marsrutai>
 @{
-    ViewData["Title"] = "RouteDesctiption";
+    ViewData["Title"] = "Mano maršrutai";
     <div class="col-md-10 mx-auto text-center py-3 my-3">
         <h1>Mano sukurtų maršrutų langas</h1>
     </div>
@@ -36,9 +36,9 @@
                     <td>@Html.DisplayFor(model => formatedValue)</td>
                     <td>
                         <a asp-controller="Content" asp-action="ViewRouteInfo">Maršruto informacija</a> | 
-                        <a asp-action="EditRouteDescription">Redaguoti aprašymą</a> | 
+                        <a asp-action="EditRouteDescription" asp-route-id="@Model[i].Id">Redaguoti aprašymą</a> | 
                         @if (Model[i].MarsrutoObjektai.Count > 0) {<a asp-action="EditRouteObjects" asp-route-id="@Model[i].Id">Redaguoti objektus</a>} else {<a asp-action="AddRouteObjects" asp-route-id="@Model[i].Id">Pridėti objektus</a> } | 
-                        @if (Model[i].MarsrutoObjektai.Count > 0) {<a asp-action="ViewMap" asp-route-id="@Model[i].Id"> Žemėlapis</a>} | 
+                        @if (Model[i].MarsrutoObjektai.Count > 0) {<a asp-action="ViewMap" asp-route-id="@Model[i].Id"> Žemėlapis</a> @Html.Raw("|")} 
                         <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a>
                     </td>
                 </tr>
