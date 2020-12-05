@@ -65,6 +65,7 @@ namespace IS_Turizmas.Controllers
                 return NotFound();
                 throw;
             }
+            TempData["SuccessMessage"] = "Maršruto aprašymas sukurtas";
             return RedirectToAction(nameof(Index));
         }
 
@@ -108,6 +109,7 @@ namespace IS_Turizmas.Controllers
                 }
                 throw;
             }
+            TempData["SuccessMessage"] = "Maršruto aprašymas atnaujintas";
             return RedirectToAction(nameof(Index));
         }
 
@@ -133,6 +135,7 @@ namespace IS_Turizmas.Controllers
             {
                 if (address[0]==null)
                 {
+                    TempData["SuccessMessage"] = "Maršrutas išliko nepakeistas (objektai nebuvo nurodyti)";
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -220,6 +223,7 @@ namespace IS_Turizmas.Controllers
                 return NotFound();
                 throw;
             }
+            TempData["SuccessMessage"] = "Maršruto objektai pridėti";
             return RedirectToAction(nameof(Index));
         }
 
@@ -257,6 +261,7 @@ namespace IS_Turizmas.Controllers
                     _context.SaveChanges();
                     RemoveAllInnactiveVisitableObjects();
                     RemoveAllInnactiveCountries();
+                    TempData["SuccessMessage"] = "Maršruto objektai buvo pašalinti";
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -348,6 +353,7 @@ namespace IS_Turizmas.Controllers
                 return NotFound();
                 throw;
             }
+            TempData["SuccessMessage"] = "Maršruto objektai atnaujinti";
             return RedirectToAction(nameof(Index));
         }
 
@@ -468,7 +474,8 @@ namespace IS_Turizmas.Controllers
                 _context.SaveChanges();
                 RemoveAllInnactiveVisitableObjects();
                 RemoveAllInnactiveCountries();
-           // }
+            // }
+            TempData["SuccessMessage"] = "Maršrutas pašalintas";
             return RedirectToAction(nameof(Index));
         }
 

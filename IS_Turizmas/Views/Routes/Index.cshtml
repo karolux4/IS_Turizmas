@@ -6,6 +6,10 @@
     ViewData["Title"] = "Mano maršrutai";
     <div class="col-md-10 mx-auto text-center py-3 my-3">
         <h1>Mano sukurtų maršrutų langas</h1>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
     </div>
     <div class="col-md-10 mx-auto">
         <div class="row">
