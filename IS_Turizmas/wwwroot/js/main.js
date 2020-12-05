@@ -8,4 +8,8 @@
         autoclose: true,
     };
     date_input.datepicker(options);
+
+    $(document).on('click', '.deleteLink', function () {
+        $('.deleteForm').find('#deleteID').val($(this).data('id'));
+    });
 });

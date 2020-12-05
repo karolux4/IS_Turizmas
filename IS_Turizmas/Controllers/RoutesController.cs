@@ -111,9 +111,116 @@ namespace IS_Turizmas.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult AddRouteObjects()
+        public async Task<IActionResult> AddRouteObjects(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id == id));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddRouteObjects(int id, string[] address)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewData["Address"] = address;
+                return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id == id));
+            }
+            if (address.Length == 1)
+            {
+                if (address[0]==null)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+            }
+            List<JObject> convertedAdress = new List<JObject>();
+            int index = 1;
+            foreach (string add in address)
+            {
+                JObject obj = GetJsonAddress(add).Result;
+                if (obj == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Nepavyko konvertuoti " + index + " adreso");
+                    ViewData["Address"] = address;
+                    return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id == id));
+                }
+                if (obj.SelectToken("status").Value<string>() == "ZERO_RESULTS")
+                {
+                    ModelState.AddModelError(string.Empty, "Nepavyko konvertuoti " + index + " adreso");
+                    ViewData["Address"] = address;
+                    return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id == id));
+                }
+                convertedAdress.Add(obj);
+                index++;
+            }
+            try
+            {
+                index = 1;
+                foreach (JObject json in convertedAdress)
+                {
+                    string formatted_address = json.SelectToken("results[0].formatted_address").Value<string>();
+                    LankytiniObjektai foundObject = _context.LankytiniObjektai.FirstOrDefault(o => o.Pavadinimas.Equals(formatted_address, StringComparison.OrdinalIgnoreCase));
+                    LankytiniObjektai obj;
+                    if (foundObject == null)
+                    {
+                        JToken country = GetCountry(json);
+                        string countryShort = country.SelectToken("short_name").Value<string>();
+                        Valstybes foundCountry = _context.Valstybes.FirstOrDefault(o => o.Trumpinys.Equals(countryShort, StringComparison.OrdinalIgnoreCase));
+                        if (foundCountry == null)
+                        {
+                            Valstybes newCountry = new Valstybes();
+                            newCountry.Pavadinimas = country.SelectToken("long_name").Value<string>();
+                            newCountry.Trumpinys = countryShort;
+                            newCountry.Zemynas = GetContinent(countryShort);
+                            _context.Valstybes.Add(newCountry);
+                            _context.SaveChanges();
+                            int fk_Country = newCountry.Id;
+
+                            LankytiniObjektai newObject = new LankytiniObjektai();
+                            newObject.Pavadinimas = formatted_address;
+                            newObject.XKoordinate = json.SelectToken("results[0].geometry.location.lng").Value<double>();
+                            newObject.YKoordinate = json.SelectToken("results[0].geometry.location.lat").Value<double>();
+                            newObject.FkValstybe = fk_Country;
+                            _context.LankytiniObjektai.Add(newObject);
+                            _context.SaveChanges();
+                            obj = newObject;
+
+                        }
+                        else
+                        {
+                            LankytiniObjektai newObject = new LankytiniObjektai();
+                            newObject.Pavadinimas = formatted_address;
+                            newObject.XKoordinate = json.SelectToken("results[0].geometry.location.lng").Value<double>();
+                            newObject.YKoordinate = json.SelectToken("results[0].geometry.location.lat").Value<double>();
+                            newObject.FkValstybe = foundCountry.Id;
+                            _context.LankytiniObjektai.Add(newObject);
+                            _context.SaveChanges();
+                            obj = newObject;
+                        }
+                    }
+                    else
+                    {
+                        obj = foundObject;
+                    }
+                    MarsrutoObjektai routeObject = new MarsrutoObjektai();
+                    routeObject.EilesNr = index;
+                    routeObject.FkLankytinasObjektas = obj.Id;
+                    routeObject.FkMarsrutas = id;
+                    _context.MarsrutoObjektai.Add(routeObject);
+                    _context.SaveChanges();
+                    index++;
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return NotFound();
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> EditRouteObjects(int? id)
@@ -123,11 +230,13 @@ namespace IS_Turizmas.Controllers
                 return NotFound();
             }
 
-            var route_points = await _context.MarsrutoObjektai.Include(o => o.FkLankytinasObjektasNavigation).
-                Include(o => o.FkMarsrutasNavigation).Where(o => o.FkMarsrutas == id).OrderBy(o => o.EilesNr).ToListAsync();
+
+            var route_points = _context.MarsrutoObjektai.Include(o => o.FkLankytinasObjektasNavigation)
+                .Where(o => o.FkMarsrutas == id).OrderBy(o => o.EilesNr).Select(o=> o.FkLankytinasObjektasNavigation.Pavadinimas).ToArray();
+            ViewData["Address"] = route_points;
 
 
-            return View(route_points);
+            return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id==id));
         }
 
 
@@ -137,7 +246,20 @@ namespace IS_Turizmas.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(id);
+                ViewData["Address"] = address;
+                return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id == id));
+            }
+            if (address.Length == 1)
+            {
+                if (address[0] == null)
+                {
+                    _context.MarsrutoObjektai.RemoveRange(_context.MarsrutoObjektai.Where(o => o.FkMarsrutas == id));
+                    _context.SaveChanges();
+                    RemoveAllInnactiveVisitableObjects();
+                    RemoveAllInnactiveCountries();
+                    return RedirectToAction(nameof(Index));
+                }
+
             }
             List<JObject> convertedAdress = new List<JObject>();
             int index = 1;
@@ -147,7 +269,14 @@ namespace IS_Turizmas.Controllers
                 if (obj == null)
                 {
                     ModelState.AddModelError(string.Empty, "Nepavyko konvertuoti "+index+" adreso");
-                    return View(id);
+                    ViewData["Address"] = address;
+                    return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id == id));
+                }
+                if (obj.SelectToken("status").Value<string>() == "ZERO_RESULTS")
+                {
+                    ModelState.AddModelError(string.Empty, "Nepavyko konvertuoti " + index + " adreso");
+                    ViewData["Address"] = address;
+                    return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id == id));
                 }
                 convertedAdress.Add(obj);
                 index++;
@@ -328,99 +457,25 @@ namespace IS_Turizmas.Controllers
             return View(route_points);
         }
 
+        public async Task<IActionResult> DeleteRoute(int id)
+        {
+            //if (this.User != null && _signInManager.UserManager.GetUserId(this.User) == _context.Marsrutai.Find(id).FkRegistruotasVartotojas.ToString())
+            //{
+                _context.MarsrutoObjektai.RemoveRange(_context.MarsrutoObjektai.Where(o => o.FkMarsrutas == id));
+                _context.Komentarai.RemoveRange(_context.Komentarai.Where(o => o.FkMarsrutas == id));
+                _context.Reitingai.RemoveRange(_context.Reitingai.Where(o => o.FkMarsrutas == id));
+                _context.Marsrutai.Remove(_context.Marsrutai.Find(id));
+                _context.SaveChanges();
+                RemoveAllInnactiveVisitableObjects();
+                RemoveAllInnactiveCountries();
+           // }
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult CalculateRouteUniqueness()
         {
             return View();
-        }
-
-        //public IActionResult ViewAllRoutes()
-        //{
-        //    return View();
-        //}
-
-        //public IActionResult ViewRouteInfo()
-        //{
-        //    return View();
-        //}
-
-        //public IActionResult ViewAllRouteAnalysis()
-        //{
-        //    return View();
-        //}
-
-        //public IActionResult FilterRoutes()
-        //{
-        //    return View();
-        //}
-
-        //public IActionResult SearchRoutes()
-        //{
-        //    return View();
-        //}
-
-        //public IActionResult FoundRoutes()
-        //{
-        //    return View();
-        //}
-
-        //public IActionResult ShareRoute()
-        //{
-        //    return View();
-        //}
-
-        //public IActionResult Rate()
-        //{
-        //    return View();
-        //}
-
-
-        //public IActionResult Comment()
-        //{
-        //    return View();
-        //}
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddObjects(string address)
-        {
-            /*HttpClient client = new HttpClient();
-
-            string line = "address:Kaunas&key=AIzaSyDL5U4rZ7pfwLxxlRWy85rXflMJ93TC5mI";
-            string encoded = HttpUtility.UrlEncode(line, Encoding.UTF8);
-
-            var myJsonString = System.IO.File.ReadAllText("..\\config.json");
-            var myJObject = JObject.Parse(myJsonString);
-            var key=myJObject.SelectToken("GeoCodingkey").Value<string>();
-
-            string url = "https://maps.googleapis.com/maps/api/geocode/json?";
-            url += HttpUtility.UrlPathEncode("address="+address);
-            url += HttpUtility.UrlPathEncode("&key="+key);
-            
-
-
-
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(url),
-
-            };
-
-            
-            var response = await client.SendAsync(request).ConfigureAwait(false);
-
-            if(response.StatusCode != HttpStatusCode.OK)
-            {
-                Console.WriteLine("Blogai");
-            }
-            else
-            {
-                var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                Console.WriteLine(responseBody);
-            }*/
-            return RedirectToAction(nameof(Index));
-        }
+        }      
 
     }
 }

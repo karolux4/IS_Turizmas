@@ -1,27 +1,28 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model List<IS_Turizmas.Models.MarsrutoObjektai>
+@model IS_Turizmas.Models.Marsrutai 
 @{
     ViewData["Title"] = "Redaguoti maršruto objektus";
     <div class="container-fluid">
         <div class="col-md-10 mx-auto text-center py-3 my-3">
             <h4>Maršruto objektų redagavimas</h4>
-            <h5>Maršrutas: @Html.DisplayFor(m => Model[0].FkMarsrutasNavigation.Pavadinimas)</h5>
+            <h5>Maršrutas: @Html.DisplayFor(m => Model.Pavadinimas)</h5>
         </div>
         <div class="row">
             <div class="col-md-10 mx-auto">
                 <form asp-controller="Routes" asp-action="EditRouteObjects" asp method="POST">
-                    <input type="hidden" name="Id" value="@Model[0].FkMarsrutasNavigation.Id"/>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" name="Id" value="@Model.Id"/>
                     <label><strong>Objektai(-as)</strong></label>
                     <ul>
-                        @for (int i = 0; i < Model.Count; i++)
+                        @for (int i = 0; i < (ViewData["Address"] as string[]).Length; i++)
                         {
-                            <li @if(i+1 == Model.Count) { <text>class="last-object-row object-row form-group"</text> } else { <text>class="object-row form-group"</text> }>
+                            <li @if(i+1 == (ViewData["Address"] as string[]).Length) { <text>class="last-object-row object-row form-group"</text> } else { <text>class="object-row form-group"</text> }>
 
                             <div class="row">
                                     <div class="col-md-9 mx-auto">
-                                        <input type="text" class="form-control" name="address[]" placeholder="Įveskite adresą" value="@Html.DisplayFor(m => Model[i].FkLankytinasObjektasNavigation.Pavadinimas)"/>
+                                        <input type="text" class="form-control" name="address[]" placeholder="Įveskite adresą" value="@((ViewData["Address"] as string[])[i])"/>
                                     </div>
                                     <div class="col-md-3 mx-auto">
                                         <button type="button" data-value="object-row" data-hide="add-more" data-last="last-object-row" class="btn btn-primary remove-row">-</button>

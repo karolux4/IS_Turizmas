@@ -39,7 +39,7 @@
                         <a asp-action="EditRouteDescription" asp-route-id="@Model[i].Id">Redaguoti aprašymą</a> | 
                         @if (Model[i].MarsrutoObjektai.Count > 0) {<a asp-action="EditRouteObjects" asp-route-id="@Model[i].Id">Redaguoti objektus</a>} else {<a asp-action="AddRouteObjects" asp-route-id="@Model[i].Id">Pridėti objektus</a> } | 
                         @if (Model[i].MarsrutoObjektai.Count > 0) {<a asp-action="ViewMap" asp-route-id="@Model[i].Id"> Žemėlapis</a> @Html.Raw("|")} 
-                        <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a>
+                        <a class="deleteLink" data-id="@Model[i].Id" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a>
                     </td>
                 </tr>
                 }
@@ -62,7 +62,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Atšaukti</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Šalinti</button>
+                    <form class="deleteForm" method="POST" asp-action="DeleteRoute">
+                        <input id="deleteID" name="id" type="hidden" value="" />
+                        <button type="submit" class="btn btn-danger" >Šalinti</button>
+                    </form>
                 </div>
             </div>
         </div>
