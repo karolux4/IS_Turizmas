@@ -5,6 +5,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Content\FoundFilterRoutes.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Content\Comment.cshtml" />
+    <None Include="Views\Content\FilterRoutes.cshtml" />
+    <None Include="Views\Content\FoundFilterRoutes.cshtml" />
+    <None Include="Views\Content\FoundRoutes.cshtml" />
+    <None Include="Views\Content\Rate.cshtml" />
+    <None Include="Views\Content\SearchRoutes.cshtml" />
+    <None Include="Views\Content\ShareRoute.cshtml" />
+    <None Include="Views\Content\ViewAllRouteAnalysis.cshtml" />
+    <None Include="Views\Content\ViewAllRoutes.cshtml" />
+    <None Include="Views\Content\ViewRouteInfo.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.8">
       <PrivateAssets>all</PrivateAssets>

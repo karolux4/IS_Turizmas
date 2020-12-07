@@ -1,4 +1,4 @@
-﻿
+﻿@model List<IS_Turizmas.Models.Marsrutai>
 @{
     ViewData["Title"] = "SearchRoutes";
     <div class="col-md-10 mx-auto text-center py-3 my-3">
@@ -7,14 +7,17 @@
 
 
     <div class="col-md-10 mx-auto">
-        <form>
+
+        <form asp-controller="Content" asp-action="FoundRoutes" method="POST">
             <div class="form-group">
                 <label for="searchKey">Paieškos laukelis</label>
-                <input type="text" class="form-control" id="searchKey" placeholder="Įveskite paieškos žodį">
+                <input type="text" class="form-control" id="searchKey" name="searchText" placeholder="Įveskite paieškos žodį">
+                <input class="btn btn-primary" value="Ieškoti" type="submit" />
             </div>
-            <a asp-controller="Content" asp-action="FoundRoutes" class="btn btn-primary">Ieškoti</a>
+        </form>                
+            
+            @*<a type="submit" asp-controller="Content" asp-action="FoundRoutes" class="btn btn-primary">Ieškoti</a>*@
             @*<button type="submit" class="btn btn-primary"></button>*@
-        </form>
 
 
     </div>
