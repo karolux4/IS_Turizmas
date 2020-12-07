@@ -1,4 +1,6 @@
-﻿@{
+﻿@using IS_Turizmas.Models
+@model IS_Turizmas.Models.Marsrutai
+@{
     ViewData["Title"] = "FilterRoutes";
     <div class="col-md-10 mx-auto text-center py-3 my-3">
         <h1>Maršrutų paieška pagal filtrą</h1>
@@ -7,18 +9,33 @@
 
     <div class="col-md-10 mx-auto">
         <h3>Paieška pagal šalį</h3>
-        <form>
+        <form asp-controller="Content" asp-action="FoundFilterRoutes" method="POST">
             <div class="form-group">
                 <label for="searchCountry">Pasirinkite šalį</label>
-                <select class="form-control" id="searchCountry">
-                    <option>Lietuva</option>
-                    <option>Lenkija</option>
-                    <option>Latvija</option>
+                <select class="form-control" name="filterCountry">
+                    @foreach (Valstybes valstybe in ViewBag.Valstybes)
+                    {
+                        <option value="@valstybe.Id">@valstybe.Pavadinimas</option>
+                    }
+                </select>
+                <input class="btn btn-primary" value="Filtruoti" type="submit" />
+            </div>
+        </form>
+
+
+            <!--<form>
+            <div class="form-group">
+                <label for="searchCountry">Pasirinkite šalį</label>
+                <select class="form-control" name="filterCountry">
+                    @foreach (Valstybes valstybe in ViewBag.Valstybes)
+                    {
+                        <option value="@valstybe.Id">@valstybe.Pavadinimas</option>
+                    }
                 </select>
             </div>
-            <a asp-controller="Content" asp-action="FoundRoutes" class="btn btn-primary">Ieškoti</a>
+            <a asp-controller="Content" asp-action="FoundFilterRoutes" class="btn btn-primary">Ieškoti</a>-->
             @*<button type="submit" class="btn btn-primary"></button>*@
-        </form>
+            <!--</form>-->
 
 
     </div>
