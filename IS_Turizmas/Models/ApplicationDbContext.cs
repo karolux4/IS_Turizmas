@@ -350,9 +350,9 @@ namespace IS_Turizmas.Models
                     .HasColumnName("nuotrauka")
                     .HasMaxLength(255);
 
-                entity.Property(e => e.Pavardė)
+                entity.Property(e => e.Pavarde)
                     .IsRequired()
-                    .HasColumnName("pavardė")
+                    .HasColumnName("pavarde")
                     .HasMaxLength(60);
 
                 entity.Property(e => e.PrisijungimoData)

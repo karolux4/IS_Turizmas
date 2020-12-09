@@ -1,6 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model IS_Turizmas.Models.RegistruotiVartotojai
 @{
     ViewData["Title"] = "Registracija";
     <div class="col-md-10 mx-auto text-center py-3 my-3">
@@ -10,27 +11,36 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-10 mx-auto">
-                <form asp-controller="User" asp-action="Index" method="POST">
+                <form asp-controller="User" asp-action="Register" method="POST">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group">
+                        <label><strong>Slapyvardis</strong></label>
+                        <input type="text" asp-for="Slapyvardis" class="form-control" placeholder="Vartotojo slapyvardis" />
+                        <span asp-validation-for="Slapyvardis" class="text-danger"></span>
+                    </div>
                     <div class="form-group">
                         <label><strong>Vardas</strong></label>
-                        <input type="text" class="form-control" placeholder="Vartotojo vardas" />
+                        <input type="text" asp-for="Vardas" class="form-control" placeholder="Vartotojo vardas" />
+                        <span asp-validation-for="Vardas" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label><strong>Pavardė</strong></label>
-                        <input type="text" class="form-control" placeholder="Vartotojo pavardė" />
+                        <input type="text" asp-for="Pavarde" class="form-control" placeholder="Vartotojo pavardė" />
+                        <span asp-validation-for="Pavarde" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label><strong>El. paštas</strong></label>
-                        <input type="text" class="form-control" placeholder="Vartotojo el. paštas" />
+                        <input type="text" asp-for="ElPastas" class="form-control" placeholder="Vartotojo el. paštas" />
+                        <span asp-validation-for="ElPastas" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
                         <label><strong>Slaptažodis</strong></label>
-                        <input type="text" class="form-control" placeholder="Slaptažodis" />
+                        <input type="password" asp-for="Slaptazodis" class="form-control" placeholder="Slaptažodis" />
                     </div>
                     <div class="form-group">
                         <label><strong>Patvirtinti slaptažodį</strong></label>
-                        <input type="text" class="form-control" placeholder="Patvirtinti slaptažodį" />
+                        <input type="password" name="passwordConfirmation" class="form-control" placeholder="Patvirtinti slaptažodį" />
                     </div>
                     <div>
                         <button type="submit" class="btn btn-primary">Registruotis</button>

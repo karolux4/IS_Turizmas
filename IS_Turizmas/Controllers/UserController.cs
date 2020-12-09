@@ -36,6 +36,10 @@ namespace IS_Turizmas.Controllers
 
         public IActionResult Login()
         {
+            if (_signInManager.IsSignedIn(User))
+            {
+                return LocalRedirect("/");
+            }
             return View();
         }
 
@@ -63,7 +67,51 @@ namespace IS_Turizmas.Controllers
 
         public IActionResult Register()
         {
+            if (_signInManager.IsSignedIn(User))
+            {
+                return LocalRedirect("/");
+            }
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register([Bind("Vardas, Pavarde, ElPastas, Slapyvardis, Slaptazodis")] RegistruotiVartotojai user, string passwordConfirmation, string returnUrl = null)
+        {
+            returnUrl = returnUrl ?? Url.Content("/");
+            if (ModelState.IsValid)
+            {
+                if (!user.Slaptazodis.Equals(passwordConfirmation))
+                {
+                    ModelState.AddModelError("", "Slaptažodžiai nesutampa");
+                    return View();
+                }
+                user.AktyvumoTaskai = 0;
+                user.RegistracijosData = DateTime.Now;
+                user.PrisijungimoData = DateTime.Now;
+                var result = await _signInManager.UserManager.CreateAsync(user, user.Slaptazodis);
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
+                }
+                else
+                {
+                    foreach(var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+            }
+            return View();
+        }
+
+        public async Task<IActionResult> Logout(string returnUrl = null)
+        {
+            returnUrl = returnUrl ?? Url.Content("/");
+            await _signInManager.SignOutAsync();
+
+            return LocalRedirect(returnUrl);
         }
 
         public IActionResult EditUser()

@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using IS_Turizmas.Models
+@inject SignInManager<RegistruotiVartotojai> SignInManager
+@inject UserManager<RegistruotiVartotojai> UserManager
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -67,32 +71,44 @@
                     <!--Profilis-->
                     <li>
                         <div asp-active-controllers="User" asp-active-actions="Index, Register, Login, ChangePlan" class="dropdown">
-                            <a class="nav-link dropdown-toggle" type="button" id="dropdownProfileButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Profilis
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownProfileButton">
-                                <a class="nav-link text-dark" asp-controller="User" asp-action="Index">Profilis</a>
-                                <a class="nav-link text-dark" asp-controller="User" asp-action="Register">Registruotis</a>
-                                <a class="nav-link text-dark" asp-controller="User" asp-action="Login">Prisijungti</a>
-                            </div>
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <a class="nav-link dropdown-toggle" type="button" id="dropdownProfileButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @User.Identity.Name
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownProfileButton">
+                                    <a class="nav-link text-dark" asp-controller="User" asp-action="Index">Profilis</a>
+                                </div>
+                            }
+                            else
+                            {
+                                <a class="nav-link dropdown-toggle" type="button" id="dropdownProfileButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Profilis
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownProfileButton">
+                                    <a class="nav-link text-dark" asp-controller="User" asp-action="Register">Registruotis</a>
+                                    <a class="nav-link text-dark" asp-controller="User" asp-action="Login">Prisijungti</a>
+                                </div>
+                            }
+
                         </div>
                     </li>
 
 
-                    @*<li asp-active-controllers="Content" asp-active-actions="ViewAllRoutes">
-            <a class="nav-link" asp-controller="Content" asp-action="ViewAllRoutes">Visi maršrutai</a>
-        </li>
-        <li asp-active-controllers="Content" asp-active-actions="ViewAllRouteAnalysis">
-            <a class="nav-link" asp-controller="Content" asp-action="ViewAllRouteAnalysis">Visų maršrutų analizė</a>
-        </li>
-        <li asp-active-controllers="Content" asp-active-actions="FilterRoutes">
-            <a class="nav-link" asp-controller="Content" asp-action="FilterRoutes">Ieškoti maršrutų pagal filtrą</a>
-        </li>
-        <li asp-active-controllers="Content" asp-active-actions="SearchRoutes">
-            <a class="nav-link" asp-controller="Content" asp-action="SearchRoutes">Ieškoti maršrutų pagal raktažodį</a>
-        </li>*@
+                            @*<li asp-active-controllers="Content" asp-active-actions="ViewAllRoutes">
+        <a class="nav-link" asp-controller="Content" asp-action="ViewAllRoutes">Visi maršrutai</a>
+    </li>
+    <li asp-active-controllers="Content" asp-active-actions="ViewAllRouteAnalysis">
+        <a class="nav-link" asp-controller="Content" asp-action="ViewAllRouteAnalysis">Visų maršrutų analizė</a>
+    </li>
+    <li asp-active-controllers="Content" asp-active-actions="FilterRoutes">
+        <a class="nav-link" asp-controller="Content" asp-action="FilterRoutes">Ieškoti maršrutų pagal filtrą</a>
+    </li>
+    <li asp-active-controllers="Content" asp-active-actions="SearchRoutes">
+        <a class="nav-link" asp-controller="Content" asp-action="SearchRoutes">Ieškoti maršrutų pagal raktažodį</a>
+    </li>*@
 
-                </ul>
+</ul>
 
             </div>
 
@@ -108,6 +124,7 @@
     <div>
         @RenderBody()
     </div>
+    <br/>
 
     <footer class="footer bg-dark">
         <div class="container-fluid text-center">

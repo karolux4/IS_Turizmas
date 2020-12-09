@@ -29,7 +29,13 @@ namespace IS_Turizmas
 
             services.AddDbContext<ApplicationDbContext>();
 
-            services.AddIdentity<RegistruotiVartotojai, VartotojoPlanai>().AddDefaultTokenProviders();
+            services.AddIdentity<RegistruotiVartotojai, VartotojoPlanai>(config =>
+            {
+                config.SignIn.RequireConfirmedEmail = false;
+                config.Password.RequireUppercase = false;
+                config.Password.RequireNonAlphanumeric = false;
+                config.Password.RequiredLength = 8;
+            }).AddDefaultTokenProviders();
 
             services.AddTransient<IUserStore<RegistruotiVartotojai>, UserStore>();
 
