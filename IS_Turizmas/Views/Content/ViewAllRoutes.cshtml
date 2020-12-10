@@ -31,15 +31,16 @@
                         @{ formatedValue = Model[i].ModifikavimoData.ToShortDateString(); }
                         <td>@Html.DisplayFor(model => formatedValue)</td>
                         <td>
-                            <a asp-controller="Content" asp-action="ViewRouteInfo">Maršruto informacija</a> |
-                            <a asp-action="EditRouteDescription">Redaguoti aprašymą</a> |
+                            <a asp-controller="Content" asp-action="ViewRouteInfo" 
+                               asp-route-id="@Model[i].Id">Maršruto informacija</a> |
+                            @*<a asp-action="EditRouteDescription">Redaguoti aprašymą</a> |
                             @if (Model[i].MarsrutoObjektai.Count > 0)
                             {<a asp-action="EditRouteObjects" asp-route-id="@Model[i].Id">Redaguoti objektus</a>}
                             else
                             {<a asp-action="AddRouteObjects" asp-route-id="@Model[i].Id">Pridėti objektus</a>} |
                             @if (Model[i].MarsrutoObjektai.Count > 0)
                             {<a asp-action="ViewMap" asp-route-id="@Model[i].Id"> Žemėlapis</a>} |
-                            <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a>
+                            <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a>*@
                         </td>
                     </tr>
                 }

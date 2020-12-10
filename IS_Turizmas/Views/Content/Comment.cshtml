@@ -1,4 +1,5 @@
-﻿
+﻿@using IS_Turizmas.Models
+@model IS_Turizmas.Models.Komentarai
 @{
     ViewData["Title"] = "Comment";
     <div class="col-md-10 mx-auto text-center py-3 my-3">
@@ -7,16 +8,27 @@
 
 
     <div class="col-md-10 mx-auto">
-        <form>
+        <form asp-controller="Content" asp-action="CreateComment" method="POST">
+            @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
+            
             <div class="form-group">
+
+
+
+
                 <label for="comment">Parašykite komentarą</label>
-                <textarea class="form-control" id="comment" rows="3"></textarea>
+                <textarea asp-for="Tekstas" class="form-control" id="comment" rows="3"></textarea>
+                <span asp-validation-for="Tekstas" class="text-danger"></span>
+                <input type="hidden" asp-for="FkMarsrutas" value=@ViewBag.id />
             </div>
-            <a asp-controller="Content" asp-action="ViewRouteInfo" class="btn btn-primary">Komentuoti</a>
+            <div>
+                <button type="submit" class="btn btn-primary">Sukurti</button>
+            </div>
+            @*<a asp-controller="Content" asp-action="ViewRouteInfo" class="btn btn-primary">Komentuoti</a>*@
             @*<button type="submit" class="btn btn-primary"></button>*@
         </form>
         <div class="my-2">
-        <a asp-controller="Content" asp-action="ViewRouteInfo" class="btn btn-primary">Atgal</a>
+            <a asp-controller="Content" asp-action="ViewRouteInfo" class="btn btn-primary">Atgal</a>
         </div>
     </div>
 }
