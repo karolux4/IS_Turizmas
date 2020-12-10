@@ -41,6 +41,7 @@ namespace IS_Turizmas.Controllers
 
         public async Task<IActionResult> ViewRouteInfo(int id)
         {
+            ViewBag.URL = "https://localhost:44390"+Request.Path;
             int test = id;
             return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id == id));
         }

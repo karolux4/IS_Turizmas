@@ -25,6 +25,8 @@
 
 </head>
 <body>
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/lt_LT/sdk.js#xfbml=1&version=v9.0" nonce="lhUiO7FX"></script>
     <!--Navigation-->
     <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
         <div class="container-fluid">
@@ -95,36 +97,36 @@
                     </li>
 
 
-                            @*<li asp-active-controllers="Content" asp-active-actions="ViewAllRoutes">
-        <a class="nav-link" asp-controller="Content" asp-action="ViewAllRoutes">Visi maršrutai</a>
-    </li>
-    <li asp-active-controllers="Content" asp-active-actions="ViewAllRouteAnalysis">
-        <a class="nav-link" asp-controller="Content" asp-action="ViewAllRouteAnalysis">Visų maršrutų analizė</a>
-    </li>
-    <li asp-active-controllers="Content" asp-active-actions="FilterRoutes">
-        <a class="nav-link" asp-controller="Content" asp-action="FilterRoutes">Ieškoti maršrutų pagal filtrą</a>
-    </li>
-    <li asp-active-controllers="Content" asp-active-actions="SearchRoutes">
-        <a class="nav-link" asp-controller="Content" asp-action="SearchRoutes">Ieškoti maršrutų pagal raktažodį</a>
-    </li>*@
+                    @*<li asp-active-controllers="Content" asp-active-actions="ViewAllRoutes">
+                            <a class="nav-link" asp-controller="Content" asp-action="ViewAllRoutes">Visi maršrutai</a>
+                        </li>
+                        <li asp-active-controllers="Content" asp-active-actions="ViewAllRouteAnalysis">
+                            <a class="nav-link" asp-controller="Content" asp-action="ViewAllRouteAnalysis">Visų maršrutų analizė</a>
+                        </li>
+                        <li asp-active-controllers="Content" asp-active-actions="FilterRoutes">
+                            <a class="nav-link" asp-controller="Content" asp-action="FilterRoutes">Ieškoti maršrutų pagal filtrą</a>
+                        </li>
+                        <li asp-active-controllers="Content" asp-active-actions="SearchRoutes">
+                            <a class="nav-link" asp-controller="Content" asp-action="SearchRoutes">Ieškoti maršrutų pagal raktažodį</a>
+                        </li>*@
 
-</ul>
+                </ul>
 
             </div>
 
         </div>
     </nav>
     <a href="https://ktu.edu">
-    <div class="row ads mx-auto">
-        <br/>
-        <br/>
-        <br/>
-    </div>
+        <div class="row ads mx-auto">
+            <br />
+            <br />
+            <br />
+        </div>
     </a>
     <div>
         @RenderBody()
     </div>
-    <br/>
+    <br />
 
     <footer class="footer bg-dark">
         <div class="container-fluid text-center">

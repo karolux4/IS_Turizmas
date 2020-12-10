@@ -34,7 +34,10 @@
                     <td>Reitingas ?</td>
                     <td>Autorius ?</td>
                     <td>
-                        <a asp-action="ShareRoute">Dalintis</a>
+                        <div class="fb-share-button" data-href=@ViewBag.URL data-layout="button" data-size="large">
+                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fmakaliai-fake.lt%2F&amp;src=sdkpreparse" 
+                           class="fb-xfbml-parse-ignore">Bendrinti</a>
+                        </div>
                         | <a asp-action="Comment" asp-route-id="@Model.Id">Rašyti komentarą</a>
                         | <a asp-action="Rate" asp-route-id="@Model.Id">Suteikti reitingą</a>
                     </td>
