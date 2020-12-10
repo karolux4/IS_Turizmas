@@ -36,7 +36,7 @@
                     <td>
                         <a asp-action="ShareRoute">Dalintis</a>
                         | <a asp-action="Comment" asp-route-id="@Model.Id">Rašyti komentarą</a>
-                        | <a asp-action="Rate">Suteikti reitingą</a>
+                        | <a asp-action="Rate" asp-route-id="@Model.Id">Suteikti reitingą</a>
                     </td>
                     @*<a asp-action="EditRouteDescription">Redaguoti aprašymą</a> |
         @if (Model[i].MarsrutoObjektai.Count > 0)

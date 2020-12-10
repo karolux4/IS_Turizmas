@@ -90,9 +90,47 @@ namespace IS_Turizmas.Controllers
             return View();
         }
 
-        public IActionResult Rate()
+        public async Task<IActionResult> Rate(int Id)
         {
+            ViewBag.id = Id;
+
+            bool auth = _signInManager.Context.User.Identity.IsAuthenticated;
+
+            if (!auth)
+            {
+                TempData["ErrorMessage"] = "Kad suteiktumėte reitingą, turite prisijungti.";
+                return RedirectToAction("ViewRouteInfo", new { id = Id });
+            }
+
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LeaveRating([Bind("Reitingas, FkMarsrutas")] Reitingai rating)
+        {
+            int userId = Int32.Parse(_signInManager.UserManager.GetUserId(this.User));
+
+            rating.Data = DateTime.Now;
+            rating.FkRegistruotasVartotojas = userId;
+            int routeId = rating.FkMarsrutas;
+
+
+            try
+            {
+                _context.Reitingai.Add(rating);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return NotFound();
+                throw;
+            }
+
+
+
+            TempData["SuccessMessage"] = "Reitingas pateiktas";
+            return RedirectToAction("ViewRouteInfo", new { id = routeId });
         }
 
 
