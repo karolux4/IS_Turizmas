@@ -514,10 +514,214 @@ namespace IS_Turizmas.Controllers
             }
         }
 
-        public IActionResult CalculateRouteUniqueness()
+        public async Task<IActionResult> CalculateRouteUniqueness()
         {
-            return View();
-        }      
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(await _context.Marsrutai.Where(o => o.FkRegistruotasVartotojas.ToString()==_signInManager.UserManager.GetUserId(User)).ToListAsync());
+            }
+            else
+            {
+                return LocalRedirect("/");
+            }
+        }  
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CalculateUniquenessIndex(string route, string start, string end)
+        {
+            int routeID;
+            bool isGood = Int32.TryParse(route, out routeID);
+            if (!isGood)
+            {
+                ModelState.AddModelError("", "Neteisingas maršruto ID");
+                return View("~/Views/Routes/CalculateRouteUniqueness.cshtml");
+            }
+
+            bool useDates = false;
+            if (start != null && end!=null)
+            {
+                useDates = true;
+            }
+
+            List<MarsrutoObjektai> route_objects = _context.MarsrutoObjektai.Include(o => o.FkLankytinasObjektasNavigation).Where(o => o.FkMarsrutas == routeID).OrderBy(o => o.EilesNr).ToList();
+            if (route_objects.Count < 2)
+            {
+                return RedirectToAction(nameof(CalculateRouteUniqueness));
+            }
+
+            List<Rectangle> rectangles = new List<Rectangle>();
+            for (int i=0; i < route_objects.Count-1; i++)
+            {
+                //Declare objects
+                LankytiniObjektai firstObject = route_objects[i].FkLankytinasObjektasNavigation;
+                LankytiniObjektai secondObject = route_objects[i+1].FkLankytinasObjektasNavigation;
+
+                Rectangle r = GetRectangle(firstObject, secondObject);
+                Pixelate(ref r);
+                Console.WriteLine("MiddlePoints:");
+                NumberFormatInfo nfi = new NumberFormatInfo();
+                nfi.NumberDecimalSeparator = ".";
+                foreach (Point p in r.middlePoints)
+                {
+                    Console.WriteLine("("+p.x.ToString(nfi) + ", " + p.y.ToString(nfi)+")");
+                }
+                rectangles.Add(r);
+
+            }
+
+
+            return RedirectToAction(nameof(CalculateRouteUniqueness));
+        }
+
+        const double vertical1kmDegree = 0.009009;
+        const double horizontal1kmDegree = 0.009009;
+
+        double additionalAngle = Math.Atan(vertical1kmDegree / horizontal1kmDegree);
+
+        private void Pixelate(ref Rectangle r)
+        {
+            double length = Math.Sqrt(Math.Pow(r.p3.x - r.p1.x, 2) + Math.Pow(r.p3.y - r.p1.y, 2))/0.009009;
+            int rotationModifier = 1;
+            Console.WriteLine("Length: " + length);
+            r.middlePoints = new List<Point>();
+            if (r.angle < 0)
+            {
+                rotationModifier = -1;
+            }
+            for (double i = 0.5; i < length; i+=1)
+            {
+                Point start_point = new Point();
+                start_point.x = r.p1.x+i*horizontal1kmDegree*Math.Cos(r.angle);
+                start_point.y = r.p1.y+i*vertical1kmDegree*Math.Sin(r.angle);
+                for(double j=0.5; j< 10; j+=1)
+                {
+                    Point p = new Point();
+                    p.x = start_point.x+(j * horizontal1kmDegree) * Math.Cos(rotationModifier*1.570797 + r.angle);
+                    p.y = start_point.y +(j*vertical1kmDegree)*Math.Sin(rotationModifier*1.570797 + r.angle);
+
+                    r.middlePoints.Add(p);
+                }
+            }
+        }
+
+        private Rectangle GetRectangle(LankytiniObjektai firstObject, LankytiniObjektai secondObject)
+        {
+
+            //Calculate angle with horizontal axis
+            double angle = GetAngle(firstObject.XKoordinate, firstObject.YKoordinate, secondObject.XKoordinate, secondObject.YKoordinate);
+            double rotationAngle1 = 1.570797 - Math.Abs(angle);
+            double rotationAngle2 = 1.570797 + Math.Abs(angle);
+
+            Rectangle r = new Rectangle();
+            r.angle = angle;
+            //Calculate four points of rectangle
+            if (angle >= 0)
+            {
+                Point p1 = new Point();
+                p1.x = firstObject.XKoordinate + (5 * horizontal1kmDegree) * Math.Cos(rotationAngle1 * -1);
+                p1.y = firstObject.YKoordinate + (5 * vertical1kmDegree) * Math.Sin(rotationAngle1 * -1);
+                Point p2 = new Point();
+                p2.x = firstObject.XKoordinate + (5 * horizontal1kmDegree) * Math.Cos(rotationAngle2);
+                p2.y = firstObject.YKoordinate + (5 * vertical1kmDegree) * Math.Sin(rotationAngle2);
+
+
+                Point p3 = new Point();
+                p3.x = secondObject.XKoordinate + (5 * horizontal1kmDegree) * Math.Cos(rotationAngle1 * -1);
+                p3.y = secondObject.YKoordinate + (5 * vertical1kmDegree) * Math.Sin(rotationAngle1 * -1);
+                Point p4 = new Point();
+                p4.x = secondObject.XKoordinate + (5 * horizontal1kmDegree) * Math.Cos(rotationAngle2);
+                p4.y = secondObject.YKoordinate + (5 * vertical1kmDegree) * Math.Sin(rotationAngle2);
+
+                r.p1 = p1;
+                r.p2 = p2;
+                r.p3 = p3;
+                r.p4 = p4;
+
+                if (secondObject.XKoordinate < firstObject.XKoordinate)
+                {
+                    r.p1 = p3;
+                    r.p2 = p4;
+                    r.p3 = p1;
+                    r.p4 = p2;
+                }
+            }
+            else
+            {
+                Point p1 = new Point();
+                p1.x = firstObject.XKoordinate + (5 * horizontal1kmDegree) * Math.Cos(rotationAngle1);
+                p1.y = firstObject.YKoordinate + (5 * vertical1kmDegree) * Math.Sin(rotationAngle1);
+                Point p2 = new Point();
+                p2.x = firstObject.XKoordinate + (5 * horizontal1kmDegree) * Math.Cos(rotationAngle2 * -1);
+                p2.y = firstObject.YKoordinate + (5 * vertical1kmDegree) * Math.Sin(rotationAngle2 * -1);
+
+
+                Point p3 = new Point();
+                p3.x = secondObject.XKoordinate + (5 * horizontal1kmDegree) * Math.Cos(rotationAngle1);
+                p3.y = secondObject.YKoordinate + (5 * vertical1kmDegree) * Math.Sin(rotationAngle1);
+                Point p4 = new Point();
+                p4.x = secondObject.XKoordinate + (5 * horizontal1kmDegree) * Math.Cos(rotationAngle2 * -1);
+                p4.y = secondObject.YKoordinate + (5 * vertical1kmDegree) * Math.Sin(rotationAngle2 * -1);
+
+                r.p1 = p1;
+                r.p2 = p2;
+                r.p3 = p3;
+                r.p4 = p4;
+
+                if (secondObject.XKoordinate < firstObject.XKoordinate) {
+                    r.p1 = p3;
+                    r.p2 = p4;
+                    r.p3 = p1;
+                    r.p4 = p2;
+                }
+            }
+            NumberFormatInfo nfi = new NumberFormatInfo();
+            nfi.NumberDecimalSeparator = ".";
+            Console.WriteLine("Rectangle:");
+            Console.WriteLine("1: (" + r.p1.x.ToString(nfi) + ", " + r.p1.y.ToString(nfi)+")");
+            Console.WriteLine("2: (" + r.p2.x.ToString(nfi) + ", " + r.p2.y.ToString(nfi) + ")");
+            Console.WriteLine("3: (" + r.p3.x.ToString(nfi) + ", " + r.p3.y.ToString(nfi) + ")");
+            Console.WriteLine("4: (" + r.p4.x.ToString(nfi) + ", " + r.p4.y.ToString(nfi) + ")");
+            Console.WriteLine("Objektas:");
+            Console.WriteLine("First: " + firstObject.XKoordinate + " " + firstObject.YKoordinate);
+            Console.WriteLine("Second: " + secondObject.XKoordinate + " " + secondObject.YKoordinate);
+
+            return r;
+        }
+
+        struct Rectangle
+        {
+            public Point p1 { get; set; }
+            public Point p2 { get; set; }
+            public Point p3 { get; set; }
+            public Point p4 { get; set; }
+
+            public List<Point> middlePoints { get; set; } 
+
+            public double angle { get; set; }
+        }
+
+        struct Point
+        {
+            public double x { get; set; }
+            public double y { get; set; }
+        }
+
+        private double GetAngle(double x1, double y1, double x2, double y2)
+        {
+            if (x1 == x2)
+            {
+                return 1.570797; //90 degrees in radians
+            }
+            else if (y1 == y2)
+            {
+                return 0;
+            }
+            else
+            {
+                return Math.Atan((y2 - y1) / (x2 - x1));
+            }
+        }
 
     }
 }
