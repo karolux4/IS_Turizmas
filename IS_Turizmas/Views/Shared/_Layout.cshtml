@@ -37,9 +37,13 @@
                     <li asp-active-controllers="Home" asp-active-actions="Index">
                         <a class="nav-link" asp-controller="Home" asp-action="Index">Pagrindinis</a>
                     </li>
-                    <li asp-active-controllers="Routes" asp-active-actions="Index, CreateRouteDescription, EditRouteDescription, ViewMap, AddRouteObjects, EditRouteObjects, CalculateRouteUniqueness">
-                        <a class="nav-link" asp-controller="Routes" asp-action="Index">Mano maršrutai</a>
-                    </li>
+
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li asp-active-controllers="Routes" asp-active-actions="Index, CreateRouteDescription, EditRouteDescription, ViewMap, AddRouteObjects, EditRouteObjects, CalculateRouteUniqueness">
+                            <a class="nav-link" asp-controller="Routes" asp-action="Index">Mano maršrutai</a>
+                        </li>
+                    }
 
 
 

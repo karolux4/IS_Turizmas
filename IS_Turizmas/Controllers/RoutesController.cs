@@ -30,13 +30,26 @@ namespace IS_Turizmas.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Marsrutai.Include(o => o.MarsrutoObjektai).ToListAsync());
+            var userId = _signInManager.UserManager.GetUserId(User);
+            if (userId == null)
+            {
+                return LocalRedirect("/");
+            }
+            int id = int.Parse(userId);
+            return View(await _context.Marsrutai.Include(o => o.MarsrutoObjektai).Where(o => o.FkRegistruotasVartotojas==id).ToListAsync());
         }
 
         public async Task<IActionResult> CreateRouteDescription()
         {
-            ViewBag.LaikoIverciai = _context.LaikoIverciai.ToList();
-            return View();
+            if (_signInManager.IsSignedIn(User))
+            {
+                ViewBag.LaikoIverciai = _context.LaikoIverciai.ToList();
+                return View();
+            }
+            else
+            {
+                return LocalRedirect("/");
+            }
         }
 
         [HttpPost]
@@ -71,8 +84,16 @@ namespace IS_Turizmas.Controllers
 
         public async Task<IActionResult> EditRouteDescription(int id)
         {
-            ViewBag.LaikoIverciai = _context.LaikoIverciai.ToList();
-            return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id==id));
+            if (_signInManager.IsSignedIn(User)&& 
+                _context.Marsrutai.FirstOrDefault(o => o.Id == id).FkRegistruotasVartotojas == int.Parse(_signInManager.UserManager.GetUserId(User)))
+            {
+                ViewBag.LaikoIverciai = _context.LaikoIverciai.ToList();
+                return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id == id));
+            }
+            else
+            {
+                return LocalRedirect("/");
+            }
         }
 
         [HttpPost]
@@ -85,6 +106,9 @@ namespace IS_Turizmas.Controllers
                 return NotFound();
             }
             Marsrutai oldRoute = _context.Marsrutai.Find(id);
+            if (oldRoute.FkRegistruotasVartotojas != int.Parse(_signInManager.UserManager.GetUserId(User))){
+                return NotFound();
+            }
             oldRoute.Pavadinimas = route.Pavadinimas;
             oldRoute.Aprasymas = route.Aprasymas;
             oldRoute.LaikoIvertis = route.LaikoIvertis;
@@ -113,13 +137,17 @@ namespace IS_Turizmas.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> AddRouteObjects(int? id)
+        public async Task<IActionResult> AddRouteObjects(int id)
         {
-            if (id == null)
+            if (_signInManager.IsSignedIn(User) &&
+                _context.Marsrutai.FirstOrDefault(o => o.Id == id).FkRegistruotasVartotojas == int.Parse(_signInManager.UserManager.GetUserId(User)))
             {
-                return NotFound();
+                return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id == id));
             }
-            return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id == id));
+            else
+            {
+                return LocalRedirect("/");
+            }
         }
 
         [HttpPost]
@@ -227,20 +255,22 @@ namespace IS_Turizmas.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> EditRouteObjects(int? id)
+        public async Task<IActionResult> EditRouteObjects(int id)
         {
-            if (id == null)
+            if (_signInManager.IsSignedIn(User) &&
+                _context.Marsrutai.FirstOrDefault(o => o.Id == id).FkRegistruotasVartotojas == int.Parse(_signInManager.UserManager.GetUserId(User)))
             {
-                return NotFound();
+                var route_points = _context.MarsrutoObjektai.Include(o => o.FkLankytinasObjektasNavigation)
+                .Where(o => o.FkMarsrutas == id).OrderBy(o => o.EilesNr).Select(o => o.FkLankytinasObjektasNavigation.Pavadinimas).ToArray();
+                ViewData["Address"] = route_points;
+
+
+                return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id == id));
             }
-
-
-            var route_points = _context.MarsrutoObjektai.Include(o => o.FkLankytinasObjektasNavigation)
-                .Where(o => o.FkMarsrutas == id).OrderBy(o => o.EilesNr).Select(o=> o.FkLankytinasObjektasNavigation.Pavadinimas).ToArray();
-            ViewData["Address"] = route_points;
-
-
-            return View(await _context.Marsrutai.FirstOrDefaultAsync(o => o.Id==id));
+            else
+            {
+                return LocalRedirect("/");
+            }
         }
 
 
@@ -465,8 +495,8 @@ namespace IS_Turizmas.Controllers
 
         public async Task<IActionResult> DeleteRoute(int id)
         {
-            //if (this.User != null && _signInManager.UserManager.GetUserId(this.User) == _context.Marsrutai.Find(id).FkRegistruotasVartotojas.ToString())
-            //{
+            if (_signInManager.IsSignedIn(User)&&_signInManager.UserManager.GetUserId(User) == _context.Marsrutai.Find(id).FkRegistruotasVartotojas.ToString())
+            {
                 _context.MarsrutoObjektai.RemoveRange(_context.MarsrutoObjektai.Where(o => o.FkMarsrutas == id));
                 _context.Komentarai.RemoveRange(_context.Komentarai.Where(o => o.FkMarsrutas == id));
                 _context.Reitingai.RemoveRange(_context.Reitingai.Where(o => o.FkMarsrutas == id));
@@ -474,9 +504,14 @@ namespace IS_Turizmas.Controllers
                 _context.SaveChanges();
                 RemoveAllInnactiveVisitableObjects();
                 RemoveAllInnactiveCountries();
-            // }
-            TempData["SuccessMessage"] = "Maršrutas pašalintas";
-            return RedirectToAction(nameof(Index));
+
+                TempData["SuccessMessage"] = "Maršrutas pašalintas";
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return LocalRedirect("/");
+            }
         }
 
         public IActionResult CalculateRouteUniqueness()
