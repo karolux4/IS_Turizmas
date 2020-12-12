@@ -14,28 +14,28 @@ namespace IS_Turizmas.Models
             Reitingai = new HashSet<Reitingai>();
         }
 
-        [Required]
+        [Required(ErrorMessage ="Laukas yra privalomas")]
         [StringLength(255, ErrorMessage = "Reikšmė per ilga. Turi būti iki 255 simbolių")]
         public string Pavadinimas { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public string Aprasymas { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public DateTime ModifikavimoData { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public DateTime SukurimoData { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         [Range(0, int.MaxValue, ErrorMessage ="Bloga reikšmė. Turi būti didesnė arba lygi 0")]
         public int IslaidosNuo { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         [Range(0, int.MaxValue, ErrorMessage = "Bloga reikšmė. Turi būti didesnė arba lygi 0")]
         public int IslaidosIki { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         [Range(0, int.MaxValue, ErrorMessage = "Bloga reikšmė. Turi būti didesnė arba lygi 0")]
         public int Perziuros { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public int LaikoIvertis { get; set; }
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public int FkRegistruotasVartotojas { get; set; }
 
         public virtual RegistruotiVartotojai FkRegistruotasVartotojasNavigation { get; set; }

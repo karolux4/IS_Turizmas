@@ -24,7 +24,12 @@ namespace IS_Turizmas
         {
             services.AddSession();
 
-            services.AddMvc(options => options.EnableEndpointRouting=false);
+            services.AddMvc(options => { options.EnableEndpointRouting = false;
+                options.ModelBindingMessageProvider.SetValueMustBeANumberAccessor(
+                    (x) => "Reikšmė turi būti skaičius.");
+                options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(
+                    (x) => "Reikšmė negali būti tuščia.");
+            });
 
 
             services.AddDbContext<ApplicationDbContext>();

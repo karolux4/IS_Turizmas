@@ -11,17 +11,17 @@ namespace IS_Turizmas.Models
             MarsrutoObjektai = new HashSet<MarsrutoObjektai>();
         }
 
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         [Range(-180,180, ErrorMessage = "Bloga reikšmė. Reikšmė turi būti nuo -180 iki 180")]
         public double XKoordinate { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         [Range(-90, 90, ErrorMessage = "Bloga reikšmė. Reikšmė turi būti nuo -90 iki 90")]
         public double YKoordinate { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public string Pavadinimas { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public int FkValstybe { get; set; }
 
         public virtual Valstybes FkValstybeNavigation { get; set; }

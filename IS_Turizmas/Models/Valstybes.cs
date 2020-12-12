@@ -10,13 +10,13 @@ namespace IS_Turizmas.Models
         {
             LankytiniObjektai = new HashSet<LankytiniObjektai>();
         }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public string Pavadinimas { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public string Trumpinys { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public string Zemynas { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public int Id { get; set; }
 
         public virtual ICollection<LankytiniObjektai> LankytiniObjektai { get; set; }
