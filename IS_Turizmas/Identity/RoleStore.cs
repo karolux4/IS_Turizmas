@@ -5,63 +5,91 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IS_Turizmas.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace IS_Turizmas.Identity
 {
     public class RoleStore : IRoleStore<VartotojoPlanai>
     {
+        private readonly ApplicationDbContext _context;
+
+        public RoleStore(ApplicationDbContext _context)
+        {
+            this._context = _context;
+        }
+
         public void Dispose()
         {
         }
 
-        public Task<IdentityResult> CreateAsync(VartotojoPlanai role, CancellationToken cancellationToken)
+        public async Task<IdentityResult> CreateAsync(VartotojoPlanai role, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            _context.Add(role);
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return await Task.FromResult(IdentityResult.Success);
         }
 
-        public Task<IdentityResult> UpdateAsync(VartotojoPlanai role, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateAsync(VartotojoPlanai role, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            _context.Update(role);
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return await Task.FromResult(IdentityResult.Success);
         }
 
-        public Task<IdentityResult> DeleteAsync(VartotojoPlanai role, CancellationToken cancellationToken)
+        public async Task<IdentityResult> DeleteAsync(VartotojoPlanai role, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            _context.Remove(role);
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return await Task.FromResult(IdentityResult.Success);
         }
 
         public Task<string> GetRoleIdAsync(VartotojoPlanai role, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(role.Id.ToString());
         }
 
         public Task<string> GetRoleNameAsync(VartotojoPlanai role, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            var type = _context.VartotojoPlanoTipai.Where(o => o.Id == role.Tipas).FirstOrDefault();
+            return Task.FromResult(type.Name.ToString());
         }
 
         public Task SetRoleNameAsync(VartotojoPlanai role, string roleName, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException(nameof(SetRoleNameAsync));
         }
 
         public Task<string> GetNormalizedRoleNameAsync(VartotojoPlanai role, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException(nameof(GetNormalizedRoleNameAsync));
         }
 
         public Task SetNormalizedRoleNameAsync(VartotojoPlanai role, string normalizedName, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult((object)null);
         }
 
-        public Task<VartotojoPlanai> FindByIdAsync(string roleId, CancellationToken cancellationToken)
+        public async Task<VartotojoPlanai> FindByIdAsync(string roleId, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            if (int.TryParse(roleId, out int id))
+            {
+                return await _context.VartotojoPlanai.FindAsync(id);
+            }
+            else
+            {
+                return await Task.FromResult((VartotojoPlanai)null);
+            }
         }
 
-        public Task<VartotojoPlanai> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
+        public async Task<VartotojoPlanai> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            return await _context.VartotojoPlanai.FirstOrDefaultAsync(p => p.TipasNavigation.Name.Equals(normalizedRoleName, StringComparison.OrdinalIgnoreCase), cancellationToken);
         }
     }
 }

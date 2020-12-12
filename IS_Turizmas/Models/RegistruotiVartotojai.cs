@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace IS_Turizmas.Models
 {
-    public partial class RegistruotiVartotojai
+    public partial class RegistruotiVartotojai :IValidatableObject
     {
         public RegistruotiVartotojai()
         {
@@ -50,6 +52,20 @@ namespace IS_Turizmas.Models
         public virtual ICollection<Prenumeratos> PrenumeratosFkPrenumeruojamasisNavigation { get; set; }
         public virtual ICollection<Reitingai> Reitingai { get; set; }
         public virtual ICollection<VartotojoPlanai> VartotojoPlanai { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var existingUser = context.RegistruotiVartotojai.FirstOrDefault(o => o.ElPastas == ElPastas &&
+                o.Id!=Id);
+                if (existingUser!=null) {
+                    yield return new ValidationResult("Šitas el. pašto adresas užimtas",
+                        new[] { nameof(ElPastas) });
+                }
+            }
+
+        }
 
     }
 }

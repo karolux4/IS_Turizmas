@@ -21,11 +21,14 @@ namespace IS_Turizmas.Controllers
 
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<RegistruotiVartotojai> _signInManager;
+        private readonly RoleManager<VartotojoPlanai> _roleManager;
 
-        public UserController(ApplicationDbContext context, SignInManager<RegistruotiVartotojai> signInManager)
+        public UserController(ApplicationDbContext context, SignInManager<RegistruotiVartotojai> signInManager,
+            RoleManager<VartotojoPlanai> roleManager)
         {
             _context = context;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
 
@@ -92,6 +95,11 @@ namespace IS_Turizmas.Controllers
                 var result = await _signInManager.UserManager.CreateAsync(user, user.Slaptazodis);
                 if (result.Succeeded)
                 {
+                    VartotojoPlanai plan = new VartotojoPlanai();
+                    plan.DataNuo = DateTime.Now;
+                    plan.Tipas = _context.VartotojoPlanoTipai.Where(o => o.Name == "nemokamas").FirstOrDefault().Id;
+                    plan.FkRegistruotasVartotojas = user.Id;
+                    var role = await _roleManager.CreateAsync(plan);
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
                 }
