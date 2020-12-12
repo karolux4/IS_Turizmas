@@ -62,7 +62,7 @@ namespace IS_Turizmas.Controllers
             route.ModifikavimoData = DateTime.Now;
             //System.Security.Claims.ClaimsPrincipal currentUser = this.User;
             //route.FkRegistruotasVartotojas = int.Parse(_signInManager.UserManager.GetUserId(User));
-            route.FkRegistruotasVartotojas = 1;
+            route.FkRegistruotasVartotojas = int.Parse(_signInManager.UserManager.GetUserId(User));
             if (!ModelState.IsValid)
             {
                 ViewBag.LaikoIverciai = _context.LaikoIverciai.ToList();
@@ -528,20 +528,48 @@ namespace IS_Turizmas.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CalculateUniquenessIndex(string route, string start, string end)
+        public async Task<IActionResult> CalculateUniquenessIndex(string route, string start, string end, string intChecked)
         {
+            Console.WriteLine(start + " " + end);
             int routeID;
             bool isGood = Int32.TryParse(route, out routeID);
+            bool intCheck = (intChecked == "on") ? true : false;
             if (!isGood)
             {
+                if (intCheck)
+                {
+                    TempData["StartDate"] = start;
+                    TempData["EndDate"] = end;
+                }
                 ModelState.AddModelError("", "Neteisingas maršruto ID");
-                return View("~/Views/Routes/CalculateRouteUniqueness.cshtml");
+                return View("~/Views/Routes/CalculateRouteUniqueness.cshtml",
+                    await _context.Marsrutai.Where(o => o.FkRegistruotasVartotojas.ToString() == _signInManager.UserManager.GetUserId(User)).ToListAsync());
             }
 
             bool useDates = false;
-            if (start != null && end!=null)
+
+            DateTime startDate, endDate;
+            if (start != null && end!=null && intCheck)
             {
+                bool isGoodDate1 = DateTime.TryParseExact(start, "yyyy-dd-mm", CultureInfo.InvariantCulture,
+                    DateTimeStyles.None, out startDate);
+                bool isGoodDate2 = DateTime.TryParseExact(end, "yyyy-dd-mm", CultureInfo.InvariantCulture,
+                    DateTimeStyles.None, out endDate);
+                if (!isGoodDate1||!isGoodDate2)
+                {
+                    TempData["StartDate"] = start;
+                    TempData["EndDate"] = end;
+                    TempData["RouteID"] = route;
+                    ModelState.AddModelError("", "Neteisingas datos formatas");
+                    return View("~/Views/Routes/CalculateRouteUniqueness.cshtml", 
+                        await _context.Marsrutai.Where(o => o.FkRegistruotasVartotojas.ToString() == _signInManager.UserManager.GetUserId(User)).ToListAsync());
+                }
                 useDates = true;
+            }
+            else
+            {
+                startDate = DateTime.Now;
+                endDate = DateTime.Now;
             }
 
             List<MarsrutoObjektai> route_objects = _context.MarsrutoObjektai.Include(o => o.FkLankytinasObjektasNavigation).Where(o => o.FkMarsrutas == routeID).OrderBy(o => o.EilesNr).ToList();
@@ -559,19 +587,108 @@ namespace IS_Turizmas.Controllers
 
                 Rectangle r = GetRectangle(firstObject, secondObject);
                 Pixelate(ref r);
-                Console.WriteLine("MiddlePoints:");
-                NumberFormatInfo nfi = new NumberFormatInfo();
-                nfi.NumberDecimalSeparator = ".";
-                foreach (Point p in r.middlePoints)
-                {
-                    Console.WriteLine("("+p.x.ToString(nfi) + ", " + p.y.ToString(nfi)+")");
-                }
                 rectangles.Add(r);
 
             }
 
 
+            List<Marsrutai> comparingData;
+            if (useDates)
+            {
+                comparingData = _context.Marsrutai.Include(o => o.MarsrutoObjektai).ThenInclude(o => o.FkLankytinasObjektasNavigation).Where(o => o.MarsrutoObjektai.Count > 1 &&
+                    o.SukurimoData>=startDate && o.SukurimoData <= endDate && o.Id!=routeID).ToList();
+            }
+            else
+            {
+                comparingData = _context.Marsrutai.Include(o => o.MarsrutoObjektai).ThenInclude(o => o.FkLankytinasObjektasNavigation).
+                    Where(o => o.MarsrutoObjektai.Count > 1 && o.Id!=routeID).ToList();
+            }
+
+            double best_score = 0;
+
+            foreach(Marsrutai m in comparingData)
+            {
+                List<Rectangle> comparing_rectangles = new List<Rectangle>();
+                List<MarsrutoObjektai> object_list = m.MarsrutoObjektai.ToList();
+                for (int i = 0; i < object_list.Count - 1; i++)
+                {
+                    //Declare objects
+                    LankytiniObjektai firstObject = object_list[i].FkLankytinasObjektasNavigation;
+                    LankytiniObjektai secondObject = object_list[i + 1].FkLankytinasObjektasNavigation;
+
+                    Rectangle r = GetRectangle(firstObject, secondObject);
+                    comparing_rectangles.Add(r);
+
+                }
+
+                double inR= 0;
+                double totalR = 0;
+
+                for(int i = 0; i < rectangles.Count; i++)
+                {
+                    foreach(Point p in rectangles[i].middlePoints)
+                    {
+                        for(int j = 0; j < comparing_rectangles.Count; j++)
+                        {
+                            if(isPointInRectangle(p, comparing_rectangles[j]))
+                            {
+                                inR++;
+                                break;
+                            }
+                        }
+                        totalR++;
+                    }
+                }
+
+                double score = 0;
+                if (totalR > 0)
+                {
+                    score = inR / totalR;
+                }
+                if (score > best_score)
+                {
+                    best_score = score;
+                }
+            }
+
+            double index = (1 - best_score) * 100;
+            TempData["UniquenessIndex"] = index.ToString("F2", CultureInfo.InvariantCulture);
+            TempData["RouteCount"] = comparingData.Count;
+            TempData["RouteID"] = route;
+            if (intCheck)
+            {
+                TempData["StartDate"] = start;
+                TempData["EndDate"] = end;
+            }
+
+
             return RedirectToAction(nameof(CalculateRouteUniqueness));
+        }
+
+        private bool isPointInRectangle(Point p, Rectangle r)
+        {
+            double area1 = TriangleArea(r.p1, p, r.p4);
+            double area2 = TriangleArea(r.p4, p, r.p3);
+            double area3 = TriangleArea(r.p3, p, r.p2);
+            double area4 = TriangleArea(p, r.p2, r.p1);
+            double sum = area1 + area2 + area3 + area4;
+            if (sum > RectangleArea(r))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private double TriangleArea(Point p1, Point p2, Point p3)
+        {
+            double area = Math.Abs((p2.x*p1.y-p1.x*p2.y)+(p3.x*p2.y-p2.x*p3.y)+(p1.x*p3.y-p3.x*p1.y))/2;
+            return area;
+        }
+
+        private double RectangleArea(Rectangle r)
+        {
+            double area=TriangleArea(r.p1, r.p2, r.p3) + TriangleArea(r.p2, r.p3, r.p4);
+            return area;
         }
 
         const double vertical1kmDegree = 0.009009;

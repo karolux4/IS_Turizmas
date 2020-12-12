@@ -4,7 +4,7 @@
 @using IS_Turizmas.Models
 @model List<IS_Turizmas.Models.Marsrutai>
 @{
-    ViewData["Title"] = "RouteUniqueness";
+    ViewData["Title"] = "Maršruto unikalumo indeksas";
     <div class="row mx-auto my-3 py-3">
         <div class="col-md-10 mx-auto text-center">
             <h4>Maršruto geografinis unikalumas</h4>
@@ -13,7 +13,8 @@
     <div class="row mx-auto">
         <div class="col-md-10 mx-auto">
             <form method="POST" asp-action="CalculateUniquenessIndex">
-                @if (Model.Count==0)
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @if (Model.Count == 0)
                 {
                     <p>Deja, neturite sukūrę jokių maršrutų</p>
                 }
@@ -24,43 +25,75 @@
                         <select class="form-control" name="route">
                             @foreach (Marsrutai m in Model)
                             {
-                                <option value="@m.Id">@Html.DisplayFor(model => m.Pavadinimas)</option>
+                                @if (m.Id.ToString().Equals(TempData["RouteID"])) {<option selected value="@m.Id">@Html.DisplayFor(model => m.Pavadinimas)</option>}
+                                else { <option value="@m.Id">@Html.DisplayFor(model => m.Pavadinimas)</option>}
                             }
                         </select>
                     </div>
-                    <div class="row mx-auto px-4">
-                        <label for="intervalChecked">Nurodyti lyginimo intervalą</label>
-                        <input class="form-check-input" type="checkbox" id="intervalChecked" data-toggle="collapse" href="#interval">
-                    </div>
-                    <div class="form-group collapse" id="interval">
-                        <label><strong>Nurodykite maršruto sukūrimo intervalą</strong></label>
-                        <div class="row input-daterange">
-                            <div class="col-md-6">
-                                <label>Nuo</label>
-                                <input type="text" class="form-control" name="start" placeholder="Pasirinkite pradžios datą" />
-                            </div>
-                            <div class="col-md-6">
-                                <label>Iki</label>
-                                <input type="text" class="form-control" name="end" placeholder="Pasirinkite pabaigos datą" />
+                    @if (TempData["StartDate"] == null)
+                    {
+                        <div class="row mx-auto px-4">
+                            <label for="intervalChecked">Nurodyti lyginimo intervalą</label>
+                            <input class="form-check-input" type="checkbox" id="intervalChecked" name="intChecked" data-toggle="collapse" href="#interval">
+                        </div>
+                        <div class="form-group collapse" id="interval">
+                            <label><strong>Nurodykite maršruto sukūrimo intervalą</strong></label>
+                            <div class="row input-daterange">
+                                <div class="col-md-6">
+                                    <label>Nuo</label>
+                                    <input type="text" class="form-control" name="start" placeholder="Pasirinkite pradžios datą" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Iki</label>
+                                    <input type="text" class="form-control" name="end" placeholder="Pasirinkite pabaigos datą" />
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
+                    else
+                    {
+                        <div class="row mx-auto px-4">
+                            <label for="intervalChecked">Nurodyti lyginimo intervalą</label>
+                            <input class="form-check-input" type="checkbox" id="intervalChecked" name="intChecked" data-toggle="collapse" href="#interval" checked aria-expanded="true">
+                        </div>
+                        <div class="form-group collapse show" id="interval">
+                            <label><strong>Nurodykite maršruto sukūrimo intervalą</strong></label>
+                            <div class="row input-daterange">
+                                <div class="col-md-6">
+                                    <label>Nuo</label>
+                                    <input type="text" class="form-control" name="start" placeholder="Pasirinkite pradžios datą" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Iki</label>
+                                    <input type="text" class="form-control" name="end" placeholder="Pasirinkite pabaigos datą" />
+                                </div>
+                            </div>
+                        </div>
+                    }
                 }
-            <div>
-                @if (Model.Count > 0)
-                {
-                    <button class="btn btn-primary" type="submit">Skaičiuoti</button>
-                }
-                <a class="btn btn-primary" type="button" asp-action="Index">Grįžti</a>
-            </div>
-            </form>
-            <div class="collapse my-3" id="score">
-                <label><strong>Rezultatas:</strong></label>
-                <p>Maršrutas padengia 75% unikalaus ploto</p>
-                <div class="progress">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+                <div>
+                    @if (Model.Count > 0)
+                    {
+                        <button class="btn btn-primary" type="submit">Skaičiuoti</button>
+                    }
+                    <a class="btn btn-primary" type="button" asp-action="Index">Grįžti</a>
                 </div>
-            </div>
+            </form>
+            @if (TempData["UniquenessIndex"] != null)
+            {
+                <div class="my-3" id="score">
+                    <label><strong>Rezultatas:</strong></label>
+                    @if (TempData["StartDate"] != null)
+                    {
+                        <p>Lyginimo intervalas: @(((DateTime)TempData["StartDate"]).ToShortDateString())-@(((DateTime)TempData["EndDate"]).ToShortDateString())</p>
+                    }
+                    <p>Lyginta su @TempData["RouteCount"] maršrutų(-ais)</p>
+                    <p>Maršrutas padengia @Html.Raw(TempData["UniquenessIndex"])% unikalaus ploto</p>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:@TempData["UniquenessIndex"]%" aria-valuenow="@TempData["UniquenessIndex"]%" aria-valuemin="0" aria-valuemax="100">@TempData["UniquenessIndex"]%</div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 }

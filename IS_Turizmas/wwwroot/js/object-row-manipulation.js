@@ -7,7 +7,11 @@
         $row.after($row.clone());
         $row.removeClass($value);
         $row.find('.' + $hide).addClass('d-none');
-        $('.' + $value).find('input').val('');
+        $('.' + $value).find('input').val('')
+        var $count = $('.object-row').length;
+        if ($count == 20) {
+            $('.' + $value).find('.' + $hide).addClass('d-none');
+        };
     });
 
     $(document).on('click', '.remove-row', function () {

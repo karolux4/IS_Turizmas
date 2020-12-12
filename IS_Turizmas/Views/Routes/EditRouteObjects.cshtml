@@ -18,7 +18,7 @@
                     <ul>
                         @for (int i = 0; i < (ViewData["Address"] as string[]).Length; i++)
                         {
-                            <li @if(i+1 == (ViewData["Address"] as string[]).Length) { <text>class="last-object-row object-row form-group"</text> } else { <text>class="object-row form-group"</text> }>
+                            <li @if (i + 1 == (ViewData["Address"] as string[]).Length) { <text>class="last-object-row object-row form-group"</text> } else { <text>class="object-row form-group"</text> }>
 
                             <div class="row">
                                     <div class="col-md-9 mx-auto">
@@ -26,7 +26,8 @@
                                     </div>
                                     <div class="col-md-3 mx-auto">
                                         <button type="button" data-value="object-row" data-hide="add-more" data-last="last-object-row" class="btn btn-primary remove-row">-</button>
-                                        <button type="button" data-value="last-object-row" data-hide="add-more" class="btn btn-primary add-more">+</button>
+                                        <button type="button" data-value="last-object-row" data-hide="add-more" 
+                                                @if (i + 1 == (ViewData["Address"] as string[]).Length) {<text>class="btn btn-primary add-more"</text>} else{<text>class="btn btn-primary add-more d-none"</text>}>+</button>
                                     </div>
                                 </div>
                             </li>
