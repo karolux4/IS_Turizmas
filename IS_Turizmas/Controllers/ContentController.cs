@@ -50,6 +50,29 @@ namespace IS_Turizmas.Controllers
 
         public IActionResult ViewAllRouteAnalysis()
         {
+            int MaxUpToPrice = _context.Marsrutai.Max(o => o.IslaidosIki);
+            ViewBag.HighestUpToPricesRoutes = _context.Marsrutai.Where(ob => ob.IslaidosIki == MaxUpToPrice).ToList();
+
+            var allCountries = _context.Valstybes.ToList();
+            int hasMostCountriesCount = 0;
+            foreach (var item in allCountries)
+            {
+                var foundCount = _context.Marsrutai.Where(
+                obj => obj.MarsrutoObjektai.Any(
+                    b => b.FkLankytinasObjektasNavigation.FkValstybeNavigation.Id == item.Id)).Count();
+
+                if (foundCount> hasMostCountriesCount)
+                {
+                    hasMostCountriesCount = foundCount;
+                    ViewBag.MostPopularCountry = item.Pavadinimas;
+                }
+            }
+
+            
+
+
+            //ViewBag.searchedRoutes = _context.Marsrutai.Where(obj => obj.MarsrutoObjektai.Any
+            //(b => b.FkLankytinasObjektasNavigation.FkValstybeNavigation.Id == countryId)).ToList();
             return View();
         }
 
