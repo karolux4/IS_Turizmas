@@ -486,7 +486,6 @@ namespace IS_Turizmas.Controllers
                     route_points[i].FkLankytinasObjektasNavigation.XKoordinate.ToString(CultureInfo.InvariantCulture);
                 start = "|";
             }
-            url += "&avoid=tolls|highways";
 
             ViewBag.MapLink = url;
 
@@ -719,6 +718,10 @@ namespace IS_Turizmas.Controllers
 
                     r.middlePoints.Add(p);
                 }
+            }
+            if (r.middlePoints.Count == 0)
+            {
+                r.middlePoints.Add(r.p1);
             }
         }
 
