@@ -28,8 +28,9 @@
                         <td>@ViewBag.searchedRoutes[i].Pavadinimas</td>
                         @{ string formatedValue = ViewBag.searchedRoutes[i].SukurimoData.ToShortDateString(); }
                         <td>@Html.DisplayFor(model => formatedValue)</td>
-                        @{ formatedValue = ViewBag.searchedRoutes[i].ModifikavimoData.ToShortDateString(); }
-                        <td>@Html.DisplayFor(model => formatedValue)</td>
+                        <td>@ViewBag.searchedRoutes[i].GetRatingAverage()</td>
+                        <td>@ViewBag.searchedRoutes[i].FkRegistruotasVartotojasNavigation.Vardas 
+                        @ViewBag.searchedRoutes[i].FkRegistruotasVartotojasNavigation.Pavarde</td>
                         <td>
                             @*<a asp-controller="Content" asp-action="ViewRouteInfo">Maršruto informacija</a> |
                             <a asp-action="EditRouteDescription" asp-route-id="@ViewBag.searchedRoutes[i].Id">Redaguoti aprašymą</a> |*@

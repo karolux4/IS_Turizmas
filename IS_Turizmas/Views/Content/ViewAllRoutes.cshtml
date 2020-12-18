@@ -14,7 +14,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Pavadinimas</th>
                     <th scope="col">Sukūrimo data</th>
-                    <th scope="col">Reitingas</th>
+                    <th scope="col">Reitingo vidurkis</th>
                     <th scope="col">Autorius</th>
                     <th scope="col">Veiksmai</th>
                 </tr>
@@ -28,8 +28,11 @@
                         <td>@Html.DisplayFor(model => Model[i].Pavadinimas)</td>
                         @{ string formatedValue = Model[i].SukurimoData.ToShortDateString(); }
                         <td>@Html.DisplayFor(model => formatedValue)</td>
-                        @{ formatedValue = Model[i].ModifikavimoData.ToShortDateString(); }
-                        <td>@Html.DisplayFor(model => formatedValue)</td>
+                        <td>@Model[i].GetRatingAverage()</td>
+                        <td>
+                        @Model[i].FkRegistruotasVartotojasNavigation.Vardas
+                        @Model[i].FkRegistruotasVartotojasNavigation.Pavarde
+                        </td>
                         <td>
                             <a asp-controller="Content" asp-action="ViewRouteInfo" 
                                asp-route-id="@Model[i].Id">Maršruto informacija</a> |
