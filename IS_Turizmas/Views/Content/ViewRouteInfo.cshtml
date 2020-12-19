@@ -27,7 +27,6 @@
             </thead>
             <tbody>
                 <tr>
-                    @*<th>@(i+1)</th>*@
                     <td>@Html.DisplayFor(model => Model.Pavadinimas)</td>
                     @{ string formatedValue = Model.SukurimoData.ToShortDateString(); }
                     <td>@Html.DisplayFor(model => formatedValue)</td>
@@ -44,26 +43,7 @@
                         <a class="d-inline-block" asp-action="Comment" asp-route-id="@Model.Id">Rašyti komentarą</a>
                         <a class="d-inline-block" asp-action="Rate" asp-route-id="@Model.Id">Suteikti reitingą</a>
                     </td>
-                    @*<a asp-action="EditRouteDescription">Redaguoti aprašymą</a> |
-        @if (Model[i].MarsrutoObjektai.Count > 0)
-        {<a asp-action="EditRouteObjects" asp-route-id="@Model[i].Id">Redaguoti objektus</a>}
-        else
-        {<a asp-action="AddRouteObjects" asp-route-id="@Model[i].Id">Pridėti objektus</a>} |
-        @if (Model[i].MarsrutoObjektai.Count > 0)
-        {<a asp-action="ViewMap" asp-route-id="@Model[i].Id"> Žemėlapis</a>} |
-        <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a>*@
-                    @*</td>*@
                 </tr>
-                
-                @*<tr>
-                    <td><a>Kaunas-Baltstogė-Varšuva-Kaunas</a></td>
-                    <td>2020-11-03</td>
-                    <td>4.0/5.0</td>
-                    <td><a asp-controller="User" asp-action="Index">Vardenis420</a></td>
-                    <td><a asp-action="ShareRoute">Dalintis</a> 
-                    | <a asp-action="Comment">Rašyti komentarą</a> 
-                    | <a asp-action="Rate">Suteikti reitingą</a></td>
-                </tr>*@
             </tbody>
         </table>
         <div class="row">

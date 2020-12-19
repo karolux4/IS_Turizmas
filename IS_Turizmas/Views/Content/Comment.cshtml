@@ -6,16 +6,10 @@
         <h1>Komentavimo langas</h1>
     </div>
 
-
     <div class="col-md-10 mx-auto">
         <form asp-controller="Content" asp-action="CreateComment" method="POST">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>            
             <div class="form-group">
-
-
-
-
                 <label for="comment">Parašykite komentarą</label>
                 <textarea asp-for="Tekstas" class="form-control" id="comment" rows="3"></textarea>
                 <span asp-validation-for="Tekstas" class="text-danger"></span>
@@ -24,8 +18,6 @@
             <div>
                 <button type="submit" class="btn btn-primary">Sukurti</button>
             </div>
-            @*<a asp-controller="Content" asp-action="ViewRouteInfo" class="btn btn-primary">Komentuoti</a>*@
-            @*<button type="submit" class="btn btn-primary"></button>*@
         </form>
         <div class="my-2">
             <a asp-controller="Content" asp-action="ViewRouteInfo" class="btn btn-primary">Atgal</a>

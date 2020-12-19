@@ -99,10 +99,10 @@ namespace IS_Turizmas.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult FoundFilterRoutes(string filterCountry)
         {
-            int countryId = Int32.Parse(filterCountry);
-            //ViewBag.searchedRoutes = _context.Marsrutai.Where(obj => obj.MarsrutoObjektai.Any(b => b.FkLankytinasObjektasNavigation.FkValstybeNavigation.Pavadinimas == filterCountry)).ToList();
-            ViewBag.searchedRoutes = _context.Marsrutai.Where(obj => obj.MarsrutoObjektai.Any
-            (b => b.FkLankytinasObjektasNavigation.FkValstybeNavigation.Id == countryId)).ToList();
+            int countryId = Int32.Parse(filterCountry);            
+            ViewBag.searchedRoutes = _context.Marsrutai.Include(o => o.FkRegistruotasVartotojasNavigation).Include(b => b.Reitingai)
+            .Where(obj => obj.MarsrutoObjektai
+            .Any(b => b.FkLankytinasObjektasNavigation.FkValstybeNavigation.Id == countryId)).ToList();
             return View();
         }
 
@@ -191,11 +191,18 @@ namespace IS_Turizmas.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateComment([Bind("Tekstas, FkMarsrutas")] Komentarai comment)
         {
+            int routeId = comment.FkMarsrutas;
+            if (comment.Tekstas == null)
+            {
+                TempData["ErrorMessage"] = "Jūs neparašėte komentaro";
+                return RedirectToAction("ViewRouteInfo", new { id = routeId });
+            }
+
             int userId = Int32.Parse(_signInManager.UserManager.GetUserId(this.User));
 
             comment.Data = DateTime.Now;
             comment.FkRegistruotasVartotojas = userId;
-            int routeId = comment.FkMarsrutas;           
+                     
 
 
             try
