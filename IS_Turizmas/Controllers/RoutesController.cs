@@ -486,7 +486,6 @@ namespace IS_Turizmas.Controllers
                     route_points[i].FkLankytinasObjektasNavigation.XKoordinate.ToString(CultureInfo.InvariantCulture);
                 start = "|";
             }
-            url += "&avoid=tolls|highways";
 
             ViewBag.MapLink = url;
 
@@ -575,7 +574,15 @@ namespace IS_Turizmas.Controllers
             List<MarsrutoObjektai> route_objects = _context.MarsrutoObjektai.Include(o => o.FkLankytinasObjektasNavigation).Where(o => o.FkMarsrutas == routeID).OrderBy(o => o.EilesNr).ToList();
             if (route_objects.Count < 2)
             {
-                return RedirectToAction(nameof(CalculateRouteUniqueness));
+                if (intCheck)
+                {
+                    TempData["StartDate"] = start;
+                    TempData["EndDate"] = end;
+                }
+                TempData["RouteID"] = route;
+                ModelState.AddModelError("", "Maršrutas turi turėti bent du lankytinus objektus");
+                return View("~/Views/Routes/CalculateRouteUniqueness.cshtml",
+                    await _context.Marsrutai.Where(o => o.FkRegistruotasVartotojas.ToString() == _signInManager.UserManager.GetUserId(User)).ToListAsync());
             }
 
             List<Rectangle> rectangles = new List<Rectangle>();
@@ -719,6 +726,10 @@ namespace IS_Turizmas.Controllers
 
                     r.middlePoints.Add(p);
                 }
+            }
+            if (r.middlePoints.Count == 0)
+            {
+                r.middlePoints.Add(r.p1);
             }
         }
 
