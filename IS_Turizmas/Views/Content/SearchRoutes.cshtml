@@ -1,8 +1,13 @@
 ﻿@model List<IS_Turizmas.Models.Marsrutai>
+@using IS_Turizmas.Models
 @{
     ViewData["Title"] = "SearchRoutes";
     <div class="col-md-10 mx-auto text-center py-3 my-3">
         <h1>Maršrutų paieška pagal raktažodį</h1>
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
     </div>
 
 
@@ -10,15 +15,19 @@
 
         <form asp-controller="Content" asp-action="FoundRoutes" method="POST">
             <div class="form-group">
-                <label for="searchKey">Paieškos laukelis</label>
+                <label for="searchKey">Paieškos tekstas (privalomas)</label>
                 <input type="text" class="form-control" id="searchKey" name="searchText" placeholder="Įveskite paieškos žodį">
+                <label for="searchCountry">Paieškos geografinis regionas (neprivalomas)</label>
+                <select id="searchCountry" class="form-control" name="filterCountry">
+                    <option>Jokio</option>
+                    @foreach (Valstybes valstybe in ViewBag.Valstybes)
+                    {
+                        <option value="@valstybe.Id">@valstybe.Pavadinimas</option>
+                    }
+                </select>
                 <input class="btn btn-primary" value="Ieškoti" type="submit" />
             </div>
-        </form>                
-            
-            @*<a type="submit" asp-controller="Content" asp-action="FoundRoutes" class="btn btn-primary">Ieškoti</a>*@
-            @*<button type="submit" class="btn btn-primary"></button>*@
-
+        </form>
 
     </div>
 }

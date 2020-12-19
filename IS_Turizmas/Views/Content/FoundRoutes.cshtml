@@ -8,73 +8,45 @@
     <div class="col-md-10 mx-auto text-center py-3 my-3">
         <h1>Visų sistemos maršrutų langas</h1>
     </div>
-    <div class="col-md-10 mx-auto">
-        <table class="table table-striped text-center">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Pavadinimas</th>
-                    <th scope="col">Sukūrimo data</th>
-                    <th scope="col">Reitingas</th>
-                    <th scope="col">Autorius</th>
-                    <th scope="col">Veiksmai</th>
-                </tr>
-            </thead>
-            <tbody>
+    @if (ViewBag.searchedRoutes.Count > 0)
+    {
+        <div class="col-md-10 mx-auto">
+            <table class="table table-striped text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Pavadinimas</th>
+                        <th scope="col">Sukūrimo data</th>
+                        <th scope="col">Reitingas</th>
+                        <th scope="col">Autorius</th>
+                        <th scope="col">Veiksmai</th>
+                    </tr>
+                </thead>
+                <tbody>
                 @for (var i = 0; i < ViewBag.searchedRoutes.Count; i++)
                 {
                     <tr>
-                        <th>@(i+1)</th>
+                        <th>@(i + 1)</th>
                         <td>@ViewBag.searchedRoutes[i].Pavadinimas</td>
                         @{ string formatedValue = ViewBag.searchedRoutes[i].SukurimoData.ToShortDateString(); }
                         <td>@Html.DisplayFor(model => formatedValue)</td>
                         <td>@ViewBag.searchedRoutes[i].GetRatingAverage()</td>
-                        <td>@ViewBag.searchedRoutes[i].FkRegistruotasVartotojasNavigation.Vardas 
-                        @ViewBag.searchedRoutes[i].FkRegistruotasVartotojasNavigation.Pavarde</td>
                         <td>
-                            @*<a asp-controller="Content" asp-action="ViewRouteInfo">Maršruto informacija</a> |
-                            <a asp-action="EditRouteDescription" asp-route-id="@ViewBag.searchedRoutes[i].Id">Redaguoti aprašymą</a> |*@
-                            @*@if (ViewBag.searchedRoutes[i].MarsrutoObjektai.Count > 0)
-                            {<a asp-action="EditRouteObjects" asp-route-id="@Model[i].Id">Redaguoti objektus</a>}
-                            else
-                            {<a asp-action="AddRouteObjects" asp-route-id="@Model[i].Id">Pridėti objektus</a>} |
-                            @if (Model[i].MarsrutoObjektai.Count > 0)
-                            {<a asp-action="ViewMap" asp-route-id="@Model[i].Id"> Žemėlapis</a> @Html.Raw("|")}
-                            <a class="deleteLink" data-id="@Model[i].Id" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a>*@
+                            @ViewBag.searchedRoutes[i].FkRegistruotasVartotojasNavigation.Vardas
+                            @ViewBag.searchedRoutes[i].FkRegistruotasVartotojasNavigation.Pavarde
                         </td>
+                        <td><a asp-controller="Content" asp-action="ViewRouteInfo"
+                            asp-route-id="@ViewBag.searchedRoutes[i].Id">Maršruto informacija</a></td>
                     </tr>
                 }
-
-                <!--@foreach (Marsrutai res in ViewBag.searchedRoutes)
+                </tbody>
+            </table>
+        </div>
+    }
+    else
     {
-    <tr>
-        <td>@res.Pavadinimas</td>
-        <td>2020-11-04</td>
-        <td>?</td>
-        <td><a asp-controller="User" asp-action="Index">Vardenis420</a></td>
-        <td><a asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-controller="Routes" asp-action="ViewMap"> Žemėlapis</a></td>
-    </tr>
+        <h3 class="mx-auto text-center">Maršrutų rasti nepavyko</h3>
+    }
 
-        }-->
-                @*
-                    <tr>
-            <th>1</th>
-            <td><a>Kaunas-Baltstogė-Varšuva-Kaunas</a></td>
-            <td>2020-11-03</td>
-            <td>4.0/5.0</td>
-            <td><a asp-controller="User" asp-action="Index">Vardenis420</a></td>
-            <td><a asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-controller="Routes" asp-action="ViewMap"> Žemėlapis</a></td>
-        </tr>
-        <tr>
-            <th>2</th>
-            <td>Vilnius-Kaunas-Vilnius</td>
-            <td>2020-11-04</td>
-            <td>3.0/5.0</td>
-            <td><a asp-controller="User" asp-action="Index">Vardenis420</a></td>
-            <td><a asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-controller="Routes" asp-action="ViewMap"> Žemėlapis</a></td>
-        </tr>*@
-            </tbody>
-        </table>
-    </div>
 }
 

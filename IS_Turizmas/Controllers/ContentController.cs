@@ -42,7 +42,8 @@ namespace IS_Turizmas.Controllers
 
         public async Task<IActionResult> ViewRouteInfo(int id)
         {
-            ViewBag.URL = "https://localhost:44390"+Request.Path;
+            //ViewBag.URL = "https://localhost:44390"+Request.Path;
+            ViewBag.URL = "https://www.makalius.lt/";
             int test = id;
             ViewBag.route_points = _context.MarsrutoObjektai.Include(o => o.FkLankytinasObjektasNavigation)
                 .Where(o => o.FkMarsrutas == id).OrderBy(o => o.EilesNr).Select(o => o.FkLankytinasObjektasNavigation.Pavadinimas).ToArray();
@@ -99,26 +100,41 @@ namespace IS_Turizmas.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult FoundFilterRoutes(string filterCountry)
         {
-            int countryId = Int32.Parse(filterCountry);
-            //ViewBag.searchedRoutes = _context.Marsrutai.Where(obj => obj.MarsrutoObjektai.Any(b => b.FkLankytinasObjektasNavigation.FkValstybeNavigation.Pavadinimas == filterCountry)).ToList();
-            ViewBag.searchedRoutes = _context.Marsrutai.Where(obj => obj.MarsrutoObjektai.Any
-            (b => b.FkLankytinasObjektasNavigation.FkValstybeNavigation.Id == countryId)).ToList();
+            int countryId = Int32.Parse(filterCountry);            
+            ViewBag.searchedRoutes = _context.Marsrutai.Include(o => o.FkRegistruotasVartotojasNavigation).Include(b => b.Reitingai)
+            .Where(obj => obj.MarsrutoObjektai.Any(b => b.FkLankytinasObjektasNavigation.FkValstybeNavigation.Id == countryId)).ToList();
             return View();
         }
 
         public async Task<IActionResult> searchRoutes()
         {
+            ViewBag.Valstybes = _context.Valstybes.ToList();
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> FoundRoutes(string searchText)
+        public async Task<IActionResult> FoundRoutes(string searchText, string filterCountry)
         {
-            //return "From [HttpPost]Index: filter on " + searchText;
-            //var searchedRoutes = await _context.Marsrutai.Where(obj => EF.Functions.Like(obj.Pavadinimas, "%" + searchText + "%")).ToListAsync();
-            //return View();
-            ViewBag.searchedRoutes = _context.Marsrutai.Include(o => o.FkRegistruotasVartotojasNavigation).Include(b => b.Reitingai).Where(obj => EF.Functions.Like(obj.Pavadinimas, "%" + searchText + "%")).ToList();
+            if (searchText == null)
+            {
+                TempData["ErrorMessage"] = "Paieškos žodis yra privalomas";
+                return RedirectToAction("searchRoutes");
+            }
+            if (filterCountry == "Jokio")
+            {
+                ViewBag.searchedRoutes = _context.Marsrutai
+            .Include(o => o.FkRegistruotasVartotojasNavigation).Include(b => b.Reitingai)
+            .Where(obj => EF.Functions.Like(obj.Pavadinimas, "%" + searchText + "%")).ToList();
+            }
+            else
+            {
+                int countryId = Int32.Parse(filterCountry);
+                ViewBag.searchedRoutes = _context.Marsrutai
+            .Include(o => o.FkRegistruotasVartotojasNavigation).Include(b => b.Reitingai)
+            .Where(obj => EF.Functions.Like(obj.Pavadinimas, "%" + searchText + "%"))
+            .Where(obj => obj.MarsrutoObjektai.Any(b => b.FkLankytinasObjektasNavigation.FkValstybeNavigation.Id == countryId)).ToList();
+            }            
             return View();
             //return View(await _context.Marsrutai.Where(obj => EF.Functions.Like(obj.Pavadinimas, "%" + searchText + "%")).ToListAsync);
         }
@@ -191,11 +207,18 @@ namespace IS_Turizmas.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateComment([Bind("Tekstas, FkMarsrutas")] Komentarai comment)
         {
+            int routeId = comment.FkMarsrutas;
+            if (comment.Tekstas == null)
+            {
+                TempData["ErrorMessage"] = "Jūs neparašėte komentaro";
+                return RedirectToAction("ViewRouteInfo", new { id = routeId });
+            }
+
             int userId = Int32.Parse(_signInManager.UserManager.GetUserId(this.User));
 
             comment.Data = DateTime.Now;
             comment.FkRegistruotasVartotojas = userId;
-            int routeId = comment.FkMarsrutas;           
+                     
 
 
             try
