@@ -53,5 +53,22 @@ namespace IS_Turizmas.Models
             }
 
         }
+
+        public string GetRatingAverage()
+        {
+            //var test = _context.Marsrutai.Where(o => o.FkRegistruotasVartotojasNavigation)
+            
+            if (Reitingai.Count > 0)
+            {
+                double sum = 0.0;
+                foreach (var item in Reitingai)
+                {
+                    sum += item.Reitingas;
+                }
+                double ans = sum / Reitingai.Count;
+                return String.Format("{0:N2}", ans);
+            };
+            return "Nėra reitingų";
+        }
     }
 }

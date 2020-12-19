@@ -31,12 +31,18 @@
                     <td>@Html.DisplayFor(model => Model.Pavadinimas)</td>
                     @{ string formatedValue = Model.SukurimoData.ToShortDateString(); }
                     <td>@Html.DisplayFor(model => formatedValue)</td>
-                    <td>Reitingas ?</td>
-                    <td>Autorius ?</td>
+                    <td>@Model.GetRatingAverage()</td>
                     <td>
-                        <a asp-action="ShareRoute">Dalintis</a>
-                        | <a asp-action="Comment" asp-route-id="@Model.Id">Rašyti komentarą</a>
-                        | <a asp-action="Rate">Suteikti reitingą</a>
+                    @Model.FkRegistruotasVartotojasNavigation.Vardas
+                    @Model.FkRegistruotasVartotojasNavigation.Pavarde
+                    </td>
+                    <td>
+                        <div class="fb-share-button d-inline-block" data-href=@ViewBag.URL data-layout="button" data-size="large">
+                            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fmakaliai-fake.lt%2F&amp;src=sdkpreparse" 
+                           class="fb-xfbml-parse-ignore">Bendrinti</a>
+                        </div>
+                        <a class="d-inline-block" asp-action="Comment" asp-route-id="@Model.Id">Rašyti komentarą</a>
+                        <a class="d-inline-block" asp-action="Rate" asp-route-id="@Model.Id">Suteikti reitingą</a>
                     </td>
                     @*<a asp-action="EditRouteDescription">Redaguoti aprašymą</a> |
         @if (Model[i].MarsrutoObjektai.Count > 0)
@@ -63,21 +69,26 @@
         <div class="row">
             <h3>Aprašymas</h3>
             <div class="col-12 my-3">
-                Aprašymo duomenys
+                <p>@Model.Aprasymas</p>
             </div>
             <h3>Maršruto objektai</h3>
             <div class="col-12">
                 <ol>
-                    <li>Kaunas</li>
-                    <li>Balstogė</li>
-                    <li>Varšuva</li>
-                    <li>Kaunas</li>
+                    @foreach (var item in ViewBag.route_points)
+                    {
+                        <li>@item</li>
+                    }
                 </ol>
             </div>
             <h3>Komentarai</h3>
-            <div class="col-12 border rounded">
-                Labai šaunus maršrutas!
-            </div>
+
+            @foreach (var item in ViewBag.comments)
+            {
+                <div class="col-12 border rounded">
+                    <p>@item</p>
+                </div>
+            }
+                
         </div>
     </div>
     <br />
