@@ -19,6 +19,8 @@
             <thead>
                 <tr>
                     <th scope="col">Pavadinimas</th>
+                    <th scope="col">Kaina nuo</th>
+                    <th scope="col">Kaina iki</th>
                     <th scope="col">Sukūrimo data</th>
                     <th scope="col">Reitingas</th>
                     <th scope="col">Autorius</th>
@@ -28,6 +30,8 @@
             <tbody>
                 <tr>
                     <td>@Html.DisplayFor(model => Model.Pavadinimas)</td>
+                    <td>@Model.IslaidosNuo &#8364;</td>
+                    <td>@Model.IslaidosIki &#8364;</td>
                     @{ string formatedValue = Model.SukurimoData.ToShortDateString(); }
                     <td>@Html.DisplayFor(model => formatedValue)</td>
                     <td>@Model.GetRatingAverage()</td>

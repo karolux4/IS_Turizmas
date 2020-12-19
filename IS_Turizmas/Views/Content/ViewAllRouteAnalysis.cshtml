@@ -1,39 +1,57 @@
 ﻿@using IS_Turizmas.Models
 @model IS_Turizmas.Models.Reitingai
 @{
+    <script>
+window.onload = function () {
+
+var chart = new CanvasJS.Chart("chartContainer", {
+	animationEnabled: true,
+	theme: "light2", // "light1", "dark1", "dark2"
+	exportEnabled: true,
+	title: {
+		text: "Sukurtų maršrutų skaičius atskirose valstybėse"
+	},
+	data: [{
+		type: "column",
+		dataPoints:  @Html.Raw(ViewBag.DataPoints)
+	}]
+});
+chart.render();
+
+}
+    </script>
+
     ViewData["Title"] = "ViewAllRouteAnalysis";
     <div class="col-md-10 mx-auto text-center py-3 my-3">
         <h1>Visų maršrutų analizė</h1>
     </div>
 
+    <div class="mx-auto" id="chartContainer" style="height: 370px; width: 80%;"></div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+
 
     <div class="col-md-10 mx-auto">
         <table class="table table-striped text-center table-bordered">
-            <h3>Brangiausi galimi maršrutai:</h3>
+            <h3>Pigiausi galimi maršrutai:</h3>
             <table class="table table-striped text-center">
                 <thead>
                     <tr>
                         <th scope="col">Pavadinimas</th>
-                        <th scope="col">Išlaidos iki</th>
+                        <th scope="col">Išlaidos nuo</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (Marsrutai route in ViewBag.HighestUpToPricesRoutes)
+                    @foreach (Marsrutai route in ViewBag.LowestPricesRoutes)
                     {
-                    <tr>
-                        <td>@Html.DisplayFor(model => route.Pavadinimas)</td>
-                        <td>@Html.DisplayFor(model => route.IslaidosIki)</td>
-                    </tr>
+                        <tr>
+                            <td>@Html.DisplayFor(model => route.Pavadinimas)</td>
+                            <td>@Html.DisplayFor(model => route.IslaidosNuo) &#8364;</td>
+                        </tr>
                     }
                 </tbody>
             </table>
 
-            <h3>Populiariausia valstybė: @ViewBag.MostPopularCountry</h3>
-
-            <tr>
-                <td>Populiariausias metų laikas</td>
-                <td>Liepa</td>
-            </tr>
         </table>
     </div>
 }
