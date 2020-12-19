@@ -35,17 +35,8 @@
                             @ViewBag.searchedRoutes[i].FkRegistruotasVartotojasNavigation.Vardas
                             @ViewBag.searchedRoutes[i].FkRegistruotasVartotojasNavigation.Pavarde
                         </td>
-                        <td>
-                            @*<a asp-controller="Content" asp-action="ViewRouteInfo">Maršruto informacija</a> |
-                                <a asp-action="EditRouteDescription" asp-route-id="@ViewBag.searchedRoutes[i].Id">Redaguoti aprašymą</a> |*@
-                            @*@if (ViewBag.searchedRoutes[i].MarsrutoObjektai.Count > 0)
-                                {<a asp-action="EditRouteObjects" asp-route-id="@Model[i].Id">Redaguoti objektus</a>}
-                                else
-                                {<a asp-action="AddRouteObjects" asp-route-id="@Model[i].Id">Pridėti objektus</a>} |
-                                @if (Model[i].MarsrutoObjektai.Count > 0)
-                                {<a asp-action="ViewMap" asp-route-id="@Model[i].Id"> Žemėlapis</a> @Html.Raw("|")}
-                                <a class="deleteLink" data-id="@Model[i].Id" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a>*@
-                        </td>
+                        <td><a asp-controller="Content" asp-action="ViewRouteInfo"
+                            asp-route-id="@ViewBag.searchedRoutes[i].Id">Maršruto informacija</a></td>
                     </tr>
                 }
                 </tbody>
