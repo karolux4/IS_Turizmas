@@ -60,25 +60,48 @@ namespace IS_Turizmas.Controllers
 
         public IActionResult ViewAllRouteAnalysis()
         {
-            int MaxUpToPrice = _context.Marsrutai.Max(o => o.IslaidosIki);
-            ViewBag.HighestUpToPricesRoutes = _context.Marsrutai.Where(ob => ob.IslaidosIki == MaxUpToPrice).ToList();
+            //int MaxUpToPrice = _context.Marsrutai.Max(o => o.IslaidosIki);
+            //ViewBag.HighestUpToPricesRoutes = _context.Marsrutai.Where(ob => ob.IslaidosIki == MaxUpToPrice).ToList();
+
+            int LowestPrice = _context.Marsrutai.Min(o => o.IslaidosNuo);
+            ViewBag.LowestPricesRoutes = _context.Marsrutai.Where(ob => ob.IslaidosNuo == LowestPrice).ToList();
 
             var allCountries = _context.Valstybes.ToList();
-            int hasMostCountriesCount = 0;
+            //int hasMostCountriesCount = 0;
+            List<DataPoint> dataPoints = new List<DataPoint>();
+
             foreach (var item in allCountries)
             {
                 var foundCount = _context.Marsrutai.Where(
                 obj => obj.MarsrutoObjektai.Any(
                     b => b.FkLankytinasObjektasNavigation.FkValstybeNavigation.Id == item.Id)).Count();
 
-                if (foundCount> hasMostCountriesCount)
-                {
-                    hasMostCountriesCount = foundCount;
-                    ViewBag.MostPopularCountry = item.Pavadinimas;
-                }
+                dataPoints.Add(new DataPoint(item.Pavadinimas, foundCount));
+
+                //if (foundCount> hasMostCountriesCount)
+                //{
+                //    hasMostCountriesCount = foundCount;
+                //    ViewBag.MostPopularCountry = item.Pavadinimas;
+                //}
             }
 
+
+
+
             
+
+            //dataPoints.Add(new DataPoint("USA", 121));
+            //dataPoints.Add(new DataPoint("Great Britain", 67));
+            //dataPoints.Add(new DataPoint("China", 70));
+            //dataPoints.Add(new DataPoint("Russia", 56));
+            //dataPoints.Add(new DataPoint("Germany", 42));
+            //dataPoints.Add(new DataPoint("Japan", 41));
+            //dataPoints.Add(new DataPoint("France", 42));
+            //dataPoints.Add(new DataPoint("South Korea", 21));
+
+            ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
+
+
 
 
             //ViewBag.searchedRoutes = _context.Marsrutai.Where(obj => obj.MarsrutoObjektai.Any
