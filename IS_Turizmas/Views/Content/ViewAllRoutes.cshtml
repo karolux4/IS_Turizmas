@@ -20,7 +20,6 @@
                 </tr>
             </thead>
             <tbody>
-                <h3>Hello there</h3>
                 @for (var i = 0; i < Model.Count; i++)
                 {
                     <tr>
@@ -35,34 +34,10 @@
                         </td>
                         <td>
                             <a asp-controller="Content" asp-action="ViewRouteInfo" 
-                               asp-route-id="@Model[i].Id">Maršruto informacija</a> |
-                            @*<a asp-action="EditRouteDescription">Redaguoti aprašymą</a> |
-                            @if (Model[i].MarsrutoObjektai.Count > 0)
-                            {<a asp-action="EditRouteObjects" asp-route-id="@Model[i].Id">Redaguoti objektus</a>}
-                            else
-                            {<a asp-action="AddRouteObjects" asp-route-id="@Model[i].Id">Pridėti objektus</a>} |
-                            @if (Model[i].MarsrutoObjektai.Count > 0)
-                            {<a asp-action="ViewMap" asp-route-id="@Model[i].Id"> Žemėlapis</a>} |
-                            <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a>*@
+                               asp-route-id="@Model[i].Id">Maršruto informacija</a>
                         </td>
                     </tr>
-                }
-                @*<tr>
-            <th>1</th>
-            <td><a>Kaunas-Baltstogė-Varšuva-Kaunas</a></td>
-            <td>2020-11-03</td>
-            <td>4.0/5.0</td>
-            <td><a asp-controller="User" asp-action="Index">Vardenis420</a></td>
-            <td><a asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-controller="Routes" asp-action="ViewMap"> Žemėlapis</a></td>
-        </tr>
-        <tr>
-            <th>2</th>
-            <td>Vilnius-Kaunas-Vilnius</td>
-            <td>2020-11-04</td>
-            <td>3.0/5.0</td>
-            <td><a asp-controller="User" asp-action="Index">Vardenis420</a></td>
-            <td><a asp-action="ViewRouteInfo">Maršruto informacija</a> | <a asp-controller="Routes" asp-action="ViewMap"> Žemėlapis</a></td>
-        </tr>*@
+                }                
             </tbody>
         </table>
     </div>

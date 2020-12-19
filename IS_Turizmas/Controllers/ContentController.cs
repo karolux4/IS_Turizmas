@@ -30,7 +30,8 @@ namespace IS_Turizmas.Controllers
 
         public async Task<IActionResult> ViewAllRoutes()
         {
-            return View(await _context.Marsrutai.Include(o => o.FkRegistruotasVartotojasNavigation).Include(b => b.Reitingai).Include(o => o.MarsrutoObjektai).ToListAsync());
+            return View(await _context.Marsrutai.Include(o => o.FkRegistruotasVartotojasNavigation)
+                .Include(b => b.Reitingai).Include(o => o.MarsrutoObjektai).ToListAsync());
         }
 
 
