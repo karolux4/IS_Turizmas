@@ -1,6 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model List<IS_Turizmas.Models.Reklamos>
 @{
     ViewData["Title"] = "Adverts";
     <div class="col-md-10 mx-auto text-center py-3 my-3">
@@ -10,7 +11,7 @@
         <table class="table table-striped text-center">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">Id</th>
                     <th scope="col">Pavadinimas</th>
                     <th scope="col">Veiksmai</th>
                 </tr>
@@ -20,18 +21,21 @@
                             <a asp-action="CreateAdvert">Kurti reklamą</a>
                         </div>
                         <div class="col-md-4">
-                            <a asp-action="CreateAdvertPlan">Kurti planą</a>
+                            <a asp-action="CreateAdvertPlan">Kurti plana</a>
                         </div>
                         <div class="col-md-4">
                             <a asp-action="DeleteAdvertPlan">Mano planai</a>
                         </div>
                     </div>
                 </div>
-                <tr>
-                    <td>1</td>
-                    <td>Mano reklama</td>
-                    <td><a asp-action="ViewAdvertStatistics">Reklamos statistika</a> | <a asp-action="EditAdvert">Redaguoti reklama</a> | <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation">Šalinti</a></td>
-                </tr>
+                @for (var i = 0; i < Model.Count; i++)
+                {
+            <tr>
+                <td>@Html.DisplayFor(model => Model[i].Id)</td>
+                <td>@Html.DisplayFor(model => Model[i].Pavadinimas)</td>
+                <td><a asp-action="ViewAdvertStatistics" asp-route-id="@Model[i].Id">Reklamos statistika</a> | <a asp-action="EditAdvert" asp-route-id="@Model[i].Id">Redaguoti reklama</a> | <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation" asp-route-id="@Model[i].Id">Šalinti</a></td>
+            </tr>
+                }
             </thead>
         </table>
     </div>

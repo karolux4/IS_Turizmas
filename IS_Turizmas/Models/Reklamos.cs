@@ -10,6 +10,7 @@ namespace IS_Turizmas.Models
             ReklamosPlanai = new HashSet<ReklamosPlanai>();
         }
 
+        public string Pavadinimas { get; set; }
         public string Paveikslelis { get; set; }
         public string Url { get; set; }
         public int Paspaudimai { get; set; }

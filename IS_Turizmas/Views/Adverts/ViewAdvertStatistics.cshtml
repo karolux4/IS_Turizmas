@@ -1,6 +1,8 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@using IS_Turizmas.Models
+@model IS_Turizmas.Models.Reklamos
 @{
     ViewData["Title"] = "Advert Statistics";
     <div class="col-md-10 mx-auto text-center py-3 my-3">
@@ -10,19 +12,20 @@
         <table class="table table-striped text-center">
             <tr>
                 <th>ID</th>
-                <th>1</th>
+                <th>@Html.DisplayFor(model => Model.Id)</th>
             </tr>
             <tr>
                 <th>Pavadinimas</th>
-                <th>Mano reklama</th>
+                <th>@Html.DisplayFor(model => Model.Pavadinimas)</th>
             </tr>
             <tr>
                 <th>Paspaudimai</th>
-                <th>Daug</th>
+                <th>@Html.DisplayFor(model => Model.Paspaudimai)</th>
             </tr>
             <tr>
                 <th>Paveikslėlis</th>
-                <th><img src="~/images/defaultad.jpg" alt="Meme"></th>
+                @*This is probably wrong*@
+                <th><img src="@Model.Paveikslelis" alt="Meme"></th>
             </tr>
         </table>
         <div class="col-md-4">
