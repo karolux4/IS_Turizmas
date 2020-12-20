@@ -464,6 +464,7 @@ namespace IS_Turizmas.Controllers
             }
 
             var route_points = await _context.MarsrutoObjektai.Include(o => o.FkLankytinasObjektasNavigation).
+                ThenInclude(o => o.FkValstybeNavigation).Include(o => o.FkMarsrutasNavigation).
                 Where(o=> o.FkMarsrutas==id).OrderBy(o => o.EilesNr).ToListAsync();
 
             var myJsonString = System.IO.File.ReadAllText("..\\config.json");

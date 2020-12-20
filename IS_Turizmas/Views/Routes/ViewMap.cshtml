@@ -6,7 +6,7 @@
     ViewData["Title"] = "Žemėlapis";
     <div class="row mx-auto my-3 py-3">
         <div class="col-md-10 mx-auto text-center">
-            <h4>Kaunas-Balstogė-Varšuva-Kaunas</h4>
+            <h4>@Html.DisplayFor(m=>Model[0].FkMarsrutasNavigation.Pavadinimas)</h4>
         </div>
     </div>
     <div class="row mx-auto">
@@ -15,7 +15,8 @@
             <ol>
                 @for (var i = 0; i < Model.Count; i++)
                 {
-                <li>@Html.DisplayFor( m => Model[i].FkLankytinasObjektasNavigation.Pavadinimas)</li>
+                <li>@Html.DisplayFor( m => Model[i].FkLankytinasObjektasNavigation.Pavadinimas) 
+                <text>(@Model[i].FkLankytinasObjektasNavigation.FkValstybeNavigation.Trumpinys, @Model[i].FkLankytinasObjektasNavigation.FkValstybeNavigation.Zemynas)</text></li>
                 }
             </ol>
         </div>
