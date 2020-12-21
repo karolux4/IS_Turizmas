@@ -32,9 +32,20 @@ namespace IS_Turizmas.Controllers
         }
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var userId = _signInManager.UserManager.GetUserId(User);
+            if (userId == null)
+            {
+                return LocalRedirect("/");
+            }
+
+            int id = int.Parse(userId);
+            RegistruotiVartotojai user = await _context.RegistruotiVartotojai.Include(o => o.VartotojoPlanai).ThenInclude(o => o.TipasNavigation).FirstOrDefaultAsync(o => o.Id == id);
+
+            ViewBag.activityLevel = _context.AktyvumoLygiai.Where(o => o.Nuo <= user.AktyvumoTaskai && (o.Iki == null || o.Iki >= user.AktyvumoTaskai)).FirstOrDefault();
+
+            return View(user);
         }
 
         public IActionResult Login()
@@ -57,6 +68,14 @@ namespace IS_Turizmas.Controllers
 
                 if (result.Succeeded)
                 {
+                    RegistruotiVartotojai user = _context.RegistruotiVartotojai.Where(o => o.Slapyvardis == username).FirstOrDefault();
+                    if(user.PrisijungimoData.Date != DateTime.Now.Date)
+                    {
+                        AddActivityPoints(5, user);
+                    }
+
+                    user.PrisijungimoData = DateTime.Now;
+                    _context.SaveChangesAsync();
                     return LocalRedirect(returnUrl);
                 }
                 else
@@ -122,18 +141,204 @@ namespace IS_Turizmas.Controllers
             return LocalRedirect(returnUrl);
         }
 
-        public IActionResult EditUser()
+        public async Task<IActionResult> EditUser(int id)
         {
-            return View();
-        }
-        public IActionResult DeleteUser()
-        {
-            return View();
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(await _context.RegistruotiVartotojai.Include(o => o.VartotojoPlanai).ThenInclude(o => o.TipasNavigation).FirstOrDefaultAsync(o => o.Id == id));
+            }
+            else
+            {
+                return LocalRedirect("/");
+            }
         }
 
-        public IActionResult ChangePlan()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditUserData(int id, [Bind("Id, Vardas, Pavarde, ElPastas," +
+            " GimimoData")] EditViewRegistruotiVartotojai user, string Slaptazodis, string oldPassword, string passwordConfirmation)
         {
-            return View();
+            if (id != user.Id)
+            {
+                return NotFound();
+            }
+
+            Console.WriteLine("1");
+
+            RegistruotiVartotojai currentUser = _context.RegistruotiVartotojai.Find(id);
+
+            currentUser.Vardas = user.Vardas;
+            currentUser.Pavarde = user.Pavarde;
+            currentUser.ElPastas = user.ElPastas;
+            currentUser.GimimoData = user.GimimoData;
+            
+
+            if (!ModelState.IsValid)
+            {
+                return View("~/Views/User/EditUser.cshtml");
+            }
+
+            Console.WriteLine("2");
+
+            if(!(Slaptazodis == null && oldPassword == null && passwordConfirmation == null))
+            {
+                Console.WriteLine("3");
+
+                if(Slaptazodis == null || oldPassword == null || passwordConfirmation == null)
+                {
+                    Console.WriteLine("4");
+                    ModelState.AddModelError("", "Turi būti nurodyti slaptažodžio laukai");
+                    return View("~/Views/User/EditUser.cshtml");
+                }
+
+                if (!Slaptazodis.Equals(passwordConfirmation))
+                {
+                    Console.WriteLine("5");
+                    ModelState.AddModelError("", "Slaptažodžiai nesutampa");
+                    return View("~/Views/User/EditUser.cshtml");
+                }
+
+                if (!await _signInManager.UserManager.CheckPasswordAsync(currentUser, oldPassword))
+                {
+                    Console.WriteLine("5");
+                    ModelState.AddModelError("", "Neteisingas slaptažodžis");
+                    return View("~/Views/User/EditUser.cshtml");
+                }
+
+                var passwordValidator = new PasswordValidator<RegistruotiVartotojai>();
+
+                var result = await passwordValidator.ValidateAsync(_signInManager.UserManager, null, Slaptazodis);
+
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+
+                    return View("~/Views/User/EditUser.cshtml");
+                }
+
+                var newPasswordHash = _signInManager.UserManager.PasswordHasher.HashPassword(currentUser, Slaptazodis);
+                currentUser.Slaptazodis = newPasswordHash;
+            }
+
+            try
+            {
+                _context.Update(currentUser);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.RegistruotiVartotojai.Any(o => o.Id == user.Id))
+                {
+                    return NotFound();
+                }
+                throw;
+            }
+            TempData["SuccessMessage"] = "Profilis atnaujintas";
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(await _context.RegistruotiVartotojai.Include(o => o.VartotojoPlanai).ThenInclude(o => o.TipasNavigation).FirstOrDefaultAsync(o => o.Id == id));
+            }
+            else
+            {
+                return LocalRedirect("/");
+            }
+        }
+
+        public async Task<IActionResult> DeleteUserData(int id)
+        {
+            if (_signInManager.IsSignedIn(User) && int.Parse(_signInManager.UserManager.GetUserId(User)) == id)
+            {
+                //Vartotojo prenumeratos, bei ji uzprenumerave
+                _context.Prenumeratos.RemoveRange(_context.Prenumeratos.Where(o => o.FkPrenumeratorius == id || o.FkPrenumeruojamasis == id));
+                //Trinami vartotojo palikti komentarai
+                _context.Komentarai.RemoveRange(_context.Komentarai.Where(o => o.FkRegistruotasVartotojas == id));
+                //Trinami vartotojo palikti retingai
+                _context.Reitingai.RemoveRange(_context.Reitingai.Where(o => o.FkRegistruotasVartotojas == id));
+                //Trinami vartotojo planai
+                _context.VartotojoPlanai.RemoveRange(_context.VartotojoPlanai.Where(o => o.FkRegistruotasVartotojas == id));
+                //Trinami pasiulymu pranesimai
+                _context.PasiulymuPranesimai.RemoveRange(_context.PasiulymuPranesimai.Where(o => o.FkRegistruotasVartotojas == id));
+
+
+                //Trinami verslo vartotojai
+                var versloVartotojas = _context.VersloVartotojai.FirstOrDefault(o => o.FkRegistruotasVartotojas == id);
+
+                var versloReklamos = _context.Reklamos.Where(o => o.FkVersloVartotojas == id).ToList<Reklamos>();
+                foreach(var reklama in versloReklamos)
+                {
+                    var reklamosPlanai = _context.ReklamosPlanai.Where(o => o.FkReklama == reklama.Id).ToList<ReklamosPlanai>();
+                    foreach(var planas in reklamosPlanai)
+                    {
+                        //Istrinami atitinkamos reklamos plano laikai.
+                        _context.ReklamavimoLaikai.RemoveRange(_context.ReklamavimoLaikai.Where(o => o.FkReklamosPlanas == planas.Id));
+                    }
+
+                    //Istrinami atitinkami reklamos planai.
+                    _context.ReklamosPlanai.RemoveRange(reklamosPlanai);
+                }
+
+                _context.Reklamos.RemoveRange(versloReklamos);
+                _context.VersloVartotojai.Remove(versloVartotojas);
+
+                //Vartotojo marsrutai
+                var marsrutai = _context.Marsrutai.Where(o => o.FkRegistruotasVartotojas == id).ToList<Marsrutai>();
+                foreach(var marsrutas in marsrutai)
+                {
+                    _context.MarsrutoObjektai.RemoveRange(_context.MarsrutoObjektai.Where(o => o.FkMarsrutas == marsrutas.Id));
+                }
+
+                _context.Marsrutai.RemoveRange(marsrutai);
+                RemoveAllInnactiveVisitableObjects();
+                RemoveAllInnactiveCountries();
+
+                //Istrinamas registruotas vartotojas
+                _context.RegistruotiVartotojai.Remove(_context.RegistruotiVartotojai.Find(id));
+                _context.SaveChanges();
+
+                TempData["SuccessMessage"] = "Profilis pašalintas";
+                return LocalRedirect("/");
+            }
+            else
+            {
+                return LocalRedirect("/");
+            }
+        }
+
+        private async void RemoveAllInnactiveVisitableObjects()
+        {
+            _context.LankytiniObjektai.RemoveRange(_context.LankytiniObjektai.Where(o => o.MarsrutoObjektai.Count == 0));
+            await _context.SaveChangesAsync();
+        }
+
+        private async void RemoveAllInnactiveCountries()
+        {
+            _context.Valstybes.RemoveRange(_context.Valstybes.Where(o => o.LankytiniObjektai.Count == 0));
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IActionResult> ChangePlan(int id)
+        {
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(await _context.RegistruotiVartotojai.Include(o => o.VartotojoPlanai).ThenInclude(o => o.TipasNavigation).FirstOrDefaultAsync(o => o.Id == id));
+            }
+            else
+            {
+                return LocalRedirect("/");
+            }
+        }
+
+        public void AddActivityPoints(int points, RegistruotiVartotojai user)
+        {
+            user.AktyvumoTaskai += points;
         }
     }
 }
