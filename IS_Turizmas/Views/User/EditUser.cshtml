@@ -13,7 +13,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-10 mx-auto">
-                <form asp-controller="User" asp-action="EditUserData" method="POST">
+                <form asp-controller="User" asp-action="EditUserData" enctype="multipart/form-data" method="POST">
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
                     <div class="form-group">
@@ -35,6 +35,22 @@
                         <label><strong>Gimimo data</strong></label>
                         <input type="date" class="form-control" asp-for="GimimoData" placeholder="Vartotojo Gimimo data" />
                         <span asp-validation-for="GimimoData" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>Dabartinė nuotrauka</strong></label>
+                        @if(Model.Nuotrauka == null)
+                        {
+                            <img class="ad-image-preview img-thumbnail" src="~/images/Users/default.png" />
+                        }
+                        else
+                        {
+                            <img class="ad-image-preview img-thumbnail" src="~/@Model.Nuotrauka" />
+                        }
+                        
+                    </div>
+                    <div class="form-group">
+                        <label><strong>Nauja nuotrauka (neprivaloma)</strong></label>
+                        <input type="file" class="form-control" name="naujaNuotrauka" />
                     </div>
                     <div class="form-group">
                         <label><strong>Senas slaptažodis</strong></label>
