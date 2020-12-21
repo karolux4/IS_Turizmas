@@ -200,10 +200,6 @@ namespace IS_Turizmas.Models
                     .HasColumnName("pavadinimas")
                     .HasMaxLength(255);
 
-                entity.Property(e => e.Perziuros)
-                    .HasColumnName("perziuros")
-                    .HasColumnType("int(11)");
-
                 entity.Property(e => e.SukurimoData)
                     .HasColumnName("sukurimo_data")
                     .HasColumnType("date");
@@ -505,10 +501,6 @@ namespace IS_Turizmas.Models
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.Kaina).HasColumnName("kaina");
-
-                entity.Property(e => e.Paspaudimai)
-                    .HasColumnName("paspaudimai")
-                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Laikas_nuo).HasColumnName("laikas_nuo").HasColumnType("date");
 

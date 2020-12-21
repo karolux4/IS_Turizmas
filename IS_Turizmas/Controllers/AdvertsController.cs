@@ -42,8 +42,6 @@ namespace IS_Turizmas.Controllers
         {
             return View();
         }
-
-        //Seems ok. Check needed
         public async Task<IActionResult> AdvertList()
         {
             var userId = _signInManager.UserManager.GetUserId(User);
@@ -54,10 +52,9 @@ namespace IS_Turizmas.Controllers
             int id = int.Parse(userId);
             return View(await _context.Reklamos.Where(o => o.FkVersloVartotojas == id).ToListAsync());
         }
-        //Not ok yet
         public IActionResult CreateAdvert()
         {
-            //IsBuisinessUser(User) Needed
+            //User.IsInRole("Verslo")
             if (_signInManager.IsSignedIn(User))
             {
                 return View();
@@ -79,7 +76,6 @@ namespace IS_Turizmas.Controllers
 
         public async Task<IActionResult> ViewAdvertStatistics(int id)
         {
-            //Clicks calculate elsewhere
             if (_signInManager.IsSignedIn(User) &&
                 _context.Reklamos.FirstOrDefault(o => o.Id == id).FkVersloVartotojas == int.Parse(_signInManager.UserManager.GetUserId(User)))
             {
@@ -90,7 +86,7 @@ namespace IS_Turizmas.Controllers
                 return LocalRedirect("/");
             }
         }
-        //Check needed
+
         public async Task<IActionResult> EditAdvert(int id)
         {
             if (_signInManager.IsSignedIn(User) &&
@@ -112,7 +108,7 @@ namespace IS_Turizmas.Controllers
             return RedirectToAction(nameof(AdvertList));
         }
 
-        //Dont bind Paveikslelis probs
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AdvertCreate([Bind("Pavadinimas, Url")]
@@ -137,8 +133,6 @@ namespace IS_Turizmas.Controllers
             advert.Paspaudimai = 0;
             advert.FkVersloVartotojas = int.Parse(_signInManager.UserManager.GetUserId(User));
 
-            //Toks saugojimo formatas? most likely
-            //Nzn kaip ideti i folderi
             string filename = advert.Pavadinimas + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + Path.GetExtension(Paveikslelis.FileName);
             var saveimg = Path.Combine(_env.WebRootPath, "images", "Adds", filename);
             var stream = new FileStream(saveimg, FileMode.Create);
@@ -146,13 +140,9 @@ namespace IS_Turizmas.Controllers
 
             advert.Paveikslelis = "images/Adds/"+filename;
             
-            // Papildomas failu tvarkymas. Ar reikia?
-            // advert.Paveikslelis = "~/images/Adds/" + _signInManager.UserManager.GetUserId(User) + "/" + advert.Pavadinimas + advert,Id.toString();
-
             try
             {
                 _context.Reklamos.Add(advert);
-                //Ideti png cj cia
 
                 await _context.SaveChangesAsync();
             }
@@ -177,7 +167,7 @@ namespace IS_Turizmas.Controllers
             return RedirectToAction(nameof(ConfirmDelete));
         }
 
-        //Check needed
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AdvertEdit(int id, [Bind("Id,Pavadinimas, Url")]

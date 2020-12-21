@@ -30,9 +30,6 @@ namespace IS_Turizmas.Models
         [Range(0, int.MaxValue, ErrorMessage = "Bloga reikšmė. Turi būti didesnė arba lygi 0")]
         public int IslaidosIki { get; set; }
         [Required(ErrorMessage = "Laukas yra privalomas")]
-        [Range(0, int.MaxValue, ErrorMessage = "Bloga reikšmė. Turi būti didesnė arba lygi 0")]
-        public int Perziuros { get; set; }
-        [Required(ErrorMessage = "Laukas yra privalomas")]
         public int LaikoIvertis { get; set; }
         public int Id { get; set; }
         [Required(ErrorMessage = "Laukas yra privalomas")]

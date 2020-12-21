@@ -11,7 +11,6 @@ namespace IS_Turizmas.Models
         }
 
         public double Kaina { get; set; }
-        public int Paspaudimai { get; set; }
         public int Id { get; set; }
         public int FkReklama { get; set; }
 
