@@ -463,6 +463,11 @@ namespace IS_Turizmas.Models
                     .HasColumnName("fk_Verslo_vartotojas")
                     .HasColumnType("int(11)");
 
+                entity.Property(e => e.Pavadinimas)
+                    .IsRequired()
+                    .HasColumnName("pavadinimas")
+                    .HasMaxLength(255);
+
                 entity.Property(e => e.Paspaudimai)
                     .HasColumnName("paspaudimai")
                     .HasColumnType("int(11)");
