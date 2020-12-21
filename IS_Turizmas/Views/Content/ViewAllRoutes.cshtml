@@ -29,8 +29,10 @@
                         <td>@Html.DisplayFor(model => formatedValue)</td>
                         <td>@Model[i].GetRatingAverage()</td>
                         <td>
-                        @Model[i].FkRegistruotasVartotojasNavigation.Vardas
-                        @Model[i].FkRegistruotasVartotojasNavigation.Pavarde
+                            <a asp-action="Index" asp-controller="User" asp-route-id="@Model[i].FkRegistruotasVartotojasNavigation.Id">
+                                @Model[i].FkRegistruotasVartotojasNavigation.Vardas
+                                @Model[i].FkRegistruotasVartotojasNavigation.Pavarde
+                            </a>
                         </td>
                         <td>
                             <a asp-controller="Content" asp-action="ViewRouteInfo" 

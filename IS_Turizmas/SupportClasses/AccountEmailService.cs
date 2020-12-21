@@ -12,20 +12,20 @@ namespace IS_Turizmas.SupportClasses
     public class AccountEmailService : IHostedService
     {
         //private readonly IAccountService accountServive;
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
 
-        public AccountEmailService(ApplicationDbContext context)
+        public AccountEmailService()
         {
-            _context = context;
+            //_context = context;
             //this.accountServive = accountServive;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            TimeSpan interval = TimeSpan.FromDays(1);
+            TimeSpan interval = TimeSpan.FromHours(24);
             //calculate time to run the first time & delay to set the timer
             //DateTime.Today gives time of midnight 00.00
-            var nextRunTime = DateTime.Today;
+            var nextRunTime = DateTime.Today.AddDays(1);
             var curTime = DateTime.Now;
             var firstInterval = nextRunTime.Subtract(curTime);
 
@@ -65,7 +65,7 @@ namespace IS_Turizmas.SupportClasses
         private void SendEmailsToAccounts(object state)
         {
             Console.WriteLine("Sent emails");
-            UserController userController = new UserController(_context, null, null);
+            //UserController userController = new UserController(_context, null, null);
             //userController.SendEmailsMethod();
         }
     }

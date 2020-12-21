@@ -36,8 +36,10 @@
                     <td>@Html.DisplayFor(model => formatedValue)</td>
                     <td>@Model.GetRatingAverage()</td>
                     <td>
-                    @Model.FkRegistruotasVartotojasNavigation.Vardas
-                    @Model.FkRegistruotasVartotojasNavigation.Pavarde
+                        <a asp-action="Index" asp-controller="User" asp-route-id="@Model.FkRegistruotasVartotojasNavigation.Id">
+                            @Model.FkRegistruotasVartotojasNavigation.Vardas
+                            @Model.FkRegistruotasVartotojasNavigation.Pavarde
+                        </a>
                     </td>
                     <td>
                         <div class="fb-share-button d-inline-block" data-href=@ViewBag.URL data-layout="button" data-size="large">

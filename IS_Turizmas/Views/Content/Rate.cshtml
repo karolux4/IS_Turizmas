@@ -26,7 +26,7 @@
                 <button type="submit" class="btn btn-primary">Palikti reitingą</button>
             </div>
         </form>
-        <a asp-controller="Content" asp-action="ViewRouteInfo" class="btn btn-primary">Atgal</a>
+        <a asp-controller="Content" asp-action="ViewRouteInfo" asp-route-id="@ViewBag.id" class="btn btn-primary">Atgal</a>
     </div>
 }
 

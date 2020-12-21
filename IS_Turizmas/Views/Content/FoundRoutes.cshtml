@@ -32,8 +32,10 @@
                         <td>@Html.DisplayFor(model => formatedValue)</td>
                         <td>@ViewBag.searchedRoutes[i].GetRatingAverage()</td>
                         <td>
-                            @ViewBag.searchedRoutes[i].FkRegistruotasVartotojasNavigation.Vardas
-                            @ViewBag.searchedRoutes[i].FkRegistruotasVartotojasNavigation.Pavarde
+                            <a asp-action="Index" asp-controller="User" asp-route-id="@ViewBag.searchedRoutes[i].FkRegistruotasVartotojasNavigation.Id">
+                                @ViewBag.searchedRoutes[i].FkRegistruotasVartotojasNavigation.Vardas
+                                @ViewBag.searchedRoutes[i].FkRegistruotasVartotojasNavigation.Pavarde
+                            </a>
                         </td>
                         <td><a asp-controller="Content" asp-action="ViewRouteInfo"
                             asp-route-id="@ViewBag.searchedRoutes[i].Id">Maršruto informacija</a></td>
