@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using MailKit.Net.Smtp;
+using MimeKit;
 
 namespace IS_Turizmas.Controllers
 {
@@ -96,6 +98,9 @@ namespace IS_Turizmas.Controllers
         public async Task<IActionResult> Login(string username, string password, string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("/");
+
+            SendEmails();
+
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(username, password, false, lockoutOnFailure: false);
@@ -650,6 +655,61 @@ namespace IS_Turizmas.Controllers
 
 
             return true;
+        }
+
+        public void SendEmails()
+        {
+            var myJsonString = System.IO.File.ReadAllText("..\\config.json");
+            var myJObject = JObject.Parse(myJsonString);
+
+            var vartotojai = _context.RegistruotiVartotojai.ToList<RegistruotiVartotojai>();
+
+            foreach(var vartotojas in vartotojai)
+            {
+                MimeMessage message = new MimeMessage();
+
+                MailboxAddress from = new MailboxAddress("Admin", "skanauslab@gmail.com");
+                message.From.Add(from);
+
+                MailboxAddress to = new MailboxAddress(vartotojas.Slapyvardis,vartotojas.ElPastas);
+                message.To.Add(to);
+
+                message.Subject = "Pasiūlymų pranešimas";
+
+                var text = "Tai Makaliaus pasiūlymų pranešimas!\n";
+
+                List<Prenumeratos> prenumeratos = _context.Prenumeratos.Where(o => o.FkPrenumeratorius == vartotojas.Id && o.FkPrenumeruojamasisNavigation.Marsrutai.Count > 0).ToList<Prenumeratos>();
+                if(prenumeratos.Count != 0)
+                {
+                    Random rand = new Random();
+                    int i = rand.Next(prenumeratos.Count);
+
+                    var prenumeratuMarsrutai = _context.Marsrutai.Where(o => o.FkRegistruotasVartotojas == prenumeratos[i].FkPrenumeruojamasis).OrderByDescending(o => o.SukurimoData).FirstOrDefault();
+
+                    text += "Gal Jus sudomins šis Jūsų prenumeratų maršrutas:\n";
+                    text += "https://localhost:44390/content/ViewRouteInfo/" + prenumeratuMarsrutai.Id.ToString() + "\n";
+                }
+
+
+                var marsrutai = _context.Marsrutai.Where(o => o.FkRegistruotasVartotojas != vartotojas.Id).OrderByDescending(o => o.SukurimoData).FirstOrDefault();
+
+                text += "Gal Jus sudomins šis naujas maršrutas:\n";
+                text += "https://localhost:44390/content/ViewRouteInfo/" + marsrutai.Id.ToString();
+
+                BodyBuilder bodyBuilder = new BodyBuilder();
+                bodyBuilder.TextBody = text;
+
+                message.Body = bodyBuilder.ToMessageBody();
+
+                SmtpClient client = new SmtpClient();
+                client.Connect(myJObject.SelectToken("EmailLogin[0].host").Value<string>(), myJObject.SelectToken("EmailLogin[0].port").Value<int>(), true);
+                Console.WriteLine(myJObject.SelectToken("EmailLogin[0].host").Value<string>());
+                client.Authenticate(myJObject.SelectToken("EmailLogin[0].Username").Value<string>(), myJObject.SelectToken("EmailLogin[0].Password").Value<string>());
+
+                client.Send(message);
+                client.Disconnect(true);
+                client.Dispose();
+            }            
         }
     }
 }
