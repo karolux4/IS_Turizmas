@@ -38,9 +38,9 @@ namespace IS_Turizmas.Controllers
         }
 
 
-        public async Task<IActionResult> Index(int ?id)
+        public async Task<IActionResult> Index(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 var userId = _signInManager.UserManager.GetUserId(User);
                 if (userId == null)
@@ -56,7 +56,7 @@ namespace IS_Turizmas.Controllers
                 {
                     var userId = int.Parse(_signInManager.UserManager.GetUserId(User));
                     var prenumerata = _context.Prenumeratos.Where(o => o.FkPrenumeruojamasis == id && o.FkPrenumeratorius == userId).FirstOrDefault();
-                    if(prenumerata == null)
+                    if (prenumerata == null)
                     {
                         ViewBag.IsSubscribed = false;
                     }
@@ -65,7 +65,7 @@ namespace IS_Turizmas.Controllers
                         ViewBag.IsSubscribed = true;
                     }
 
-                    
+
                 }
                 else
                 {
@@ -98,12 +98,12 @@ namespace IS_Turizmas.Controllers
             returnUrl = returnUrl ?? Url.Content("/");
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(username, password,false, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(username, password, false, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
                     RegistruotiVartotojai user = _context.RegistruotiVartotojai.Where(o => o.Slapyvardis == username).FirstOrDefault();
-                    if(user.PrisijungimoData.Date != DateTime.Now.Date)
+                    if (user.PrisijungimoData.Date != DateTime.Now.Date)
                     {
                         AddActivityPoints(5, user);
                     }
@@ -152,13 +152,14 @@ namespace IS_Turizmas.Controllers
                     plan.DataNuo = DateTime.Now;
                     plan.Tipas = _context.VartotojoPlanoTipai.Where(o => o.Name == "nemokamas").FirstOrDefault().Id;
                     plan.FkRegistruotasVartotojas = user.Id;
-                    var role = await _roleManager.CreateAsync(plan);
+                    _context.VartotojoPlanai.Add(plan);
+                    _context.SaveChangesAsync();
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
                 }
                 else
                 {
-                    foreach(var error in result.Errors)
+                    foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
@@ -225,7 +226,7 @@ namespace IS_Turizmas.Controllers
                         System.IO.File.Delete(path);
                     }
                 }
-                
+
 
                 string filename = currentUser.Slapyvardis + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + Path.GetExtension(naujaNuotrauka.FileName);
                 var saveimg = Path.Combine(_env.WebRootPath, "images", "Users", filename);
@@ -243,11 +244,11 @@ namespace IS_Turizmas.Controllers
 
             Console.WriteLine("2");
 
-            if(!(Slaptazodis == null && oldPassword == null && passwordConfirmation == null))
+            if (!(Slaptazodis == null && oldPassword == null && passwordConfirmation == null))
             {
                 Console.WriteLine("3");
 
-                if(Slaptazodis == null || oldPassword == null || passwordConfirmation == null)
+                if (Slaptazodis == null || oldPassword == null || passwordConfirmation == null)
                 {
                     Console.WriteLine("4");
                     ModelState.AddModelError("", "Turi būti nurodyti slaptažodžio laukai");
@@ -335,10 +336,10 @@ namespace IS_Turizmas.Controllers
                 var versloVartotojas = _context.VersloVartotojai.FirstOrDefault(o => o.FkRegistruotasVartotojas == id);
 
                 var versloReklamos = _context.Reklamos.Where(o => o.FkVersloVartotojas == id).ToList<Reklamos>();
-                foreach(var reklama in versloReklamos)
+                foreach (var reklama in versloReklamos)
                 {
                     var reklamosPlanai = _context.ReklamosPlanai.Where(o => o.FkReklama == reklama.Id).ToList<ReklamosPlanai>();
-                    foreach(var planas in reklamosPlanai)
+                    foreach (var planas in reklamosPlanai)
                     {
                         //Istrinami atitinkamos reklamos plano laikai.
                         _context.ReklamavimoLaikai.RemoveRange(_context.ReklamavimoLaikai.Where(o => o.FkReklamosPlanas == planas.Id));
@@ -353,7 +354,7 @@ namespace IS_Turizmas.Controllers
 
                 //Vartotojo marsrutai
                 var marsrutai = _context.Marsrutai.Where(o => o.FkRegistruotasVartotojas == id).ToList<Marsrutai>();
-                foreach(var marsrutas in marsrutai)
+                foreach (var marsrutas in marsrutai)
                 {
                     _context.MarsrutoObjektai.RemoveRange(_context.MarsrutoObjektai.Where(o => o.FkMarsrutas == marsrutas.Id));
                 }
@@ -391,12 +392,170 @@ namespace IS_Turizmas.Controllers
         {
             if (_signInManager.IsSignedIn(User))
             {
-                return View(await _context.RegistruotiVartotojai.Include(o => o.VartotojoPlanai).ThenInclude(o => o.TipasNavigation).FirstOrDefaultAsync(o => o.Id == id));
+                if(User.IsInRole("Verslo"))
+                {
+                    var versloVartotojas = _context.VersloVartotojai.FirstOrDefault(o => o.FkRegistruotasVartotojas == int.Parse(_signInManager.UserManager.GetUserId(User)));
+                    return View(versloVartotojas);
+                }
+                return View();
             }
             else
             {
                 return LocalRedirect("/");
             }
+        }
+
+
+        public async Task<IActionResult> ChangeSimplePlan(int id)
+        {
+            if (!_signInManager.IsSignedIn(User))
+            {
+                return LocalRedirect("/");
+            }
+
+            var userId = int.Parse(_signInManager.UserManager.GetUserId(User));
+
+            if (id == 1)
+            {
+                if (User.IsInRole("Nemokamas"))
+                {
+                    return RedirectToAction("Index");
+                }
+
+
+                if (User.IsInRole("Verslo"))
+                {
+                    //Trinami verslo vartotojai
+                    var versloVartotojas = _context.VersloVartotojai.FirstOrDefault(o => o.FkRegistruotasVartotojas == userId);
+
+                    var versloReklamos = _context.Reklamos.Where(o => o.FkVersloVartotojas == userId).ToList<Reklamos>();
+                    foreach (var reklama in versloReklamos)
+                    {
+                        var reklamosPlanai = _context.ReklamosPlanai.Where(o => o.FkReklama == reklama.Id).ToList<ReklamosPlanai>();
+                        foreach (var planas in reklamosPlanai)
+                        {
+                            //Istrinami atitinkamos reklamos plano laikai.
+                            _context.ReklamavimoLaikai.RemoveRange(_context.ReklamavimoLaikai.Where(o => o.FkReklamosPlanas == planas.Id));
+                        }
+
+                        //Istrinami atitinkami reklamos planai.
+                        _context.ReklamosPlanai.RemoveRange(reklamosPlanai);
+                    }
+                }
+
+
+                VartotojoPlanai senasPlanas = _context.VartotojoPlanai.Where(o => o.DataIki == null && o.FkRegistruotasVartotojas == userId).FirstOrDefault();
+                senasPlanas.DataIki = DateTime.Now;
+                _context.Update(senasPlanas);
+
+                VartotojoPlanai naujasPlanas = new VartotojoPlanai();
+                naujasPlanas.DataNuo = DateTime.Now;
+                naujasPlanas.Tipas = id;
+                naujasPlanas.FkRegistruotasVartotojas = userId;
+
+                _context.VartotojoPlanai.Add(naujasPlanas);
+                _context.SaveChangesAsync();
+            }
+            else if (id == 2)
+            {
+                if (User.IsInRole("Premium"))
+                {
+                    return RedirectToAction("Index");
+                }
+
+
+                if (User.IsInRole("Verslo"))
+                {
+                    //Trinami verslo vartotojai
+                    var versloVartotojas = _context.VersloVartotojai.FirstOrDefault(o => o.FkRegistruotasVartotojas == userId);
+
+                    var versloReklamos = _context.Reklamos.Where(o => o.FkVersloVartotojas == userId).ToList<Reklamos>();
+                    foreach (var reklama in versloReklamos)
+                    {
+                        var reklamosPlanai = _context.ReklamosPlanai.Where(o => o.FkReklama == reklama.Id).ToList<ReklamosPlanai>();
+                        foreach (var planas in reklamosPlanai)
+                        {
+                            //Istrinami atitinkamos reklamos plano laikai.
+                            _context.ReklamavimoLaikai.RemoveRange(_context.ReklamavimoLaikai.Where(o => o.FkReklamosPlanas == planas.Id));
+                        }
+
+                        //Istrinami atitinkami reklamos planai.
+                        _context.ReklamosPlanai.RemoveRange(reklamosPlanai);
+                    }
+
+                    _context.VersloVartotojai.Remove(versloVartotojas);
+                }
+
+
+                VartotojoPlanai senasPlanas = _context.VartotojoPlanai.Where(o => o.DataIki == null && o.FkRegistruotasVartotojas == userId).FirstOrDefault();
+                senasPlanas.DataIki = DateTime.Now;
+                _context.Update(senasPlanas);
+
+                VartotojoPlanai naujasPlanas = new VartotojoPlanai();
+                naujasPlanas.DataNuo = DateTime.Now;
+                naujasPlanas.Tipas = id;
+                naujasPlanas.FkRegistruotasVartotojas = userId;
+
+                _context.VartotojoPlanai.Add(naujasPlanas);
+                _context.SaveChangesAsync();
+            }
+
+            TempData["SuccessMessage"] = "Profilio planas atnaujintas";
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeUserPlan([Bind ("Imone, PastoKodas, Svetaine, Adresas")]  VersloVartotojai vartotojas)
+        {
+            var userId = int.Parse(_signInManager.UserManager.GetUserId(User));
+
+            if (!ModelState.IsValid)
+            {
+                return View("~/Views/User/ChangePlan.cshtml");
+            }
+
+            if (User.IsInRole("Verslo"))
+            {
+
+                VersloVartotojai senasVartotojas = _context.VersloVartotojai.Where(o => o.FkRegistruotasVartotojas == userId).FirstOrDefault();
+                senasVartotojas.Imone = vartotojas.Imone;
+                senasVartotojas.PastoKodas = vartotojas.PastoKodas;
+                senasVartotojas.Adresas = vartotojas.Adresas;
+                senasVartotojas.Svetaine= vartotojas.Svetaine;
+
+                _context.VersloVartotojai.Update(senasVartotojas);
+                _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Verslo duomenys atnaujinti";
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                VartotojoPlanai senasPlanas = _context.VartotojoPlanai.Where(o => o.DataIki == null && o.FkRegistruotasVartotojas == userId).FirstOrDefault();
+                senasPlanas.DataIki = DateTime.Now;
+                _context.Update(senasPlanas);
+
+                VartotojoPlanai naujasPlanas = new VartotojoPlanai();
+                naujasPlanas.DataNuo = DateTime.Now;
+                naujasPlanas.Tipas = 3;
+                naujasPlanas.FkRegistruotasVartotojas = userId;
+
+                _context.VartotojoPlanai.Add(naujasPlanas);
+
+                vartotojas.FkRegistruotasVartotojas = userId;
+
+                _context.VersloVartotojai.Add(vartotojas);
+                _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Planas atnaujintas";
+
+                return RedirectToAction("Index");
+            }
+
+            return LocalRedirect("/");
         }
 
         public void AddActivityPoints(int points, RegistruotiVartotojai user)

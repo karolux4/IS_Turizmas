@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @using IS_Turizmas.Models
-@model IS_Turizmas.Models.VartotojoPlanai
+@model IS_Turizmas.Models.VersloVartotojai
 @{
     ViewData["Title"] = "User plan";
     <div class="row mx-auto my-3 py-3">
@@ -12,44 +12,95 @@
     </div>
     <div class="row mx-auto my-3 py-3">
         <div class="col-md-10 mx-auto">
-            <form asp-controller="User" asp-action="EditPlan" method="POST">
-                <input type="hidden" asp-for="Id"/>
-                <input type="hidden" asp-for="FkRegistruotasVartotojasNavigation">
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="card px-1 mx-2 my-2">
-                            <img class="mx-auto card-img-top py-1" src="~/images/Plans/free.png" />
-                            <div class="card-body">
-                                <h5 class="card-title">Nemokamas</h5>
-                                <p class="card-text">Pats paprasčiausias planas skirtas visiems vartotojams</p>
-                                <input type="hidden" asp-for="Tipas">
-                                <a asp-action="Index" class="btn btn-primary">Rinktis</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card px-1 mx-2 my-2">
-                            <img class="mx-auto card-img-top py-1" src="~/images/Plans/premium.png" />
-                            <div class="card-body">
-                                <h5 class="card-title">Premium</h5>
-                                <p class="card-text">Nepatinka reklamos - rinkis šį planą!</p>
-                                <br />
-                                <a asp-action="Index" class="btn btn-primary">Rinktis</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card px-1 mx-2 my-2">
-                            <img class="mx-auto card-img-top py-1" src="~/images/Plans/profits.png" />
-                            <div class="card-body">
-                                <h5 class="card-title">Verslo</h5>
-                                <p class="card-text">Nori reklamuoti savo verslą, kodėl gi nepadžiuos šio plano!</p>
-                                <a asp-action="Index" class="btn btn-primary">Rinktis</a>
-                            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card px-1 mx-2 my-2">
+                        <img class="mx-auto card-img-top py-1" src="~/images/Plans/free.png" />
+                        <div class="card-body">
+                            <h5 class="card-title">Nemokamas</h5>
+                            <p class="card-text">Pats paprasčiausias planas skirtas visiems vartotojams</p>
+                            <a asp-action="ChangeSimplePlan"  asp-route-id="1" class="btn btn-primary">Rinktis</a>
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-4">
+                    <div class="card px-1 mx-2 my-2">
+                        <img class="mx-auto card-img-top py-1" src="~/images/Plans/premium.png" />
+                        <div class="card-body">
+                            <h5 class="card-title">Premium</h5>
+                            <p class="card-text">Nepatinka reklamos - rinkis šį planą!</p>
+                            <br />
+                            <a asp-action="ChangeSimplePlan"  asp-route-id="2" class="btn btn-primary">Rinktis</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card px-1 mx-2 my-2">
+                        <img class="mx-auto card-img-top py-1" src="~/images/Plans/profits.png" />
+                        <div class="card-body">
+                            <h5 class="card-title">Verslo</h5>
+                            <p class="card-text">Nori reklamuoti savo verslą, kodėl gi nepadžiuos šio plano!</p>
+                            <a data-toggle="collapse" href="#userBussiness" class="btn btn-primary">Rinktis</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (ViewData.ModelState.ErrorCount > 0 || User.IsInRole("Verslo"))
+        {
+            <div class="col-md-10 mx-auto collapse show" id="userBussiness">
+            <form asp-action="ChangeUserPlan" method="post">
+                    <div class="form-group">
+                        <label><strong>Įmonė</strong></label>
+                        <input type = "text" class="form-control" asp-for="Imone" placeholder="Įmonės pavadinimas" />
+                        <span asp-validation-for="Imone" class="text-danger"></span>
+                    </div>
+                <div class="form-group">
+                        <label><strong>Adresas</strong></label>
+                        <input type = "text" class="form-control" asp-for="Adresas" placeholder="Įmonės adresas" />
+                        <span asp-validation-for="Adresas" class="text-danger"></span>
+                    </div>
+                <div class="form-group">
+                        <label><strong>Pašto kodas</strong></label>
+                        <input type = "text" class="form-control" asp-for="PastoKodas" placeholder="Pašto kodas" />
+                        <span asp-validation-for="PastoKodas" class="text-danger"></span>
+                    </div>
+                <div class="form-group">
+                        <label><strong>Svetainė</strong></label>
+                        <input type = "text" class="form-control" asp-for="Svetaine" placeholder="Svetainė" />
+                        <span asp-validation-for="Svetaine" class="text-danger"></span>
+                    </div>
+                <button type = "submit" class="btn btn-primary">Sukurti</button>
+                </form>
+            </div>
+            }else
+            {
+            <div class="col-md-10 mx-auto collapse" id="userBussiness">
+            <form asp-action="ChangeUserPlan" method="post">
+                    <div class="form-group">
+                        <label><strong>Įmonė</strong></label>
+                        <input type = "text" class="form-control" asp-for="Imone" placeholder="Įmonės pavadinimas" />
+                        <span asp-validation-for="Imone" class="text-danger"></span>
+                    </div>
+                <div class="form-group">
+                        <label><strong>Adresas</strong></label>
+                        <input type = "text" class="form-control" asp-for="Adresas" placeholder="Įmonės adresas" />
+                        <span asp-validation-for="Adresas" class="text-danger"></span>
+                    </div>
+                <div class="form-group">
+                        <label><strong>Pašto kodas</strong></label>
+                        <input type = "text" class="form-control" asp-for="PastoKodas" placeholder="Pašto kodas" />
+                        <span asp-validation-for="PastoKodas" class="text-danger"></span>
+                    </div>
+                <div class="form-group">
+                        <label><strong>Svetainė</strong></label>
+                        <input type = "text" class="form-control" asp-for="Svetaine" placeholder="Svetainė" />
+                        <span asp-validation-for="Svetaine" class="text-danger"></span>
+                    </div>
+                <button type = "submit" class="btn btn-primary">Sukurti</button>
             </form>
         </div>
+        }
+        
     </div>
 }
