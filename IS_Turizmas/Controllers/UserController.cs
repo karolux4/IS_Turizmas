@@ -44,6 +44,29 @@ namespace IS_Turizmas.Controllers
 
                 id = int.Parse(userId);
             }
+            else
+            {
+                if (_signInManager.IsSignedIn(User))
+                {
+                    var userId = int.Parse(_signInManager.UserManager.GetUserId(User));
+                    var prenumerata = _context.Prenumeratos.Where(o => o.FkPrenumeruojamasis == id && o.FkPrenumeratorius == userId).FirstOrDefault();
+                    if(prenumerata == null)
+                    {
+                        ViewBag.IsSubscribed = false;
+                    }
+                    else
+                    {
+                        ViewBag.IsSubscribed = true;
+                    }
+
+                    
+                }
+                else
+                {
+                    ViewBag.IsSubscribed = false;
+                }
+
+            }
 
             RegistruotiVartotojai user = await _context.RegistruotiVartotojai.Include(o => o.VartotojoPlanai).ThenInclude(o => o.TipasNavigation).FirstOrDefaultAsync(o => o.Id == id);
 
@@ -344,6 +367,31 @@ namespace IS_Turizmas.Controllers
         public void AddActivityPoints(int points, RegistruotiVartotojai user)
         {
             user.AktyvumoTaskai += points;
+        }
+
+        public async Task<IActionResult> Subscribe(int id)
+        {
+            if (_signInManager.IsSignedIn(User))
+            {
+                var userId = int.Parse(_signInManager.UserManager.GetUserId(User));
+                var prenumerata = _context.Prenumeratos.Where(o => o.FkPrenumeruojamasis == id && o.FkPrenumeratorius == userId).FirstOrDefault();
+                if(prenumerata == null)
+                {
+                    Prenumeratos naujaPrenumerata = new Prenumeratos();
+                    naujaPrenumerata.FkPrenumeratorius = userId;
+                    naujaPrenumerata.FkPrenumeruojamasis = id;
+                    naujaPrenumerata.Data = DateTime.Now;
+                    _context.Add(naujaPrenumerata);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    _context.Remove(prenumerata);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            return RedirectToAction("Index", new { id });
         }
     }
 }

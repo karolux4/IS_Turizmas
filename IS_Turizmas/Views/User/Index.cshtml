@@ -28,7 +28,16 @@
         <div class="py-2">
             @if (Model.Id != int.Parse(SignInManager.UserManager.GetUserId(User)))
             {
-                <button class="btn btn-danger">Prenumeruoti vartotoją</button>
+                @if (ViewBag.IsSubscribed == false)
+                {
+                    <a asp-action="Subscribe" asp-route-id = "@Model.Id" class="btn btn-danger">Prenumeruoti vartotoją</a>
+                }
+                else
+                {
+                    <a asp-action="Subscribe" asp-route-id = "@Model.Id" class="btn btn-secondary">Vartotojas užprenumeruotas</a>
+                }
+
+
             }
 
         </div>
