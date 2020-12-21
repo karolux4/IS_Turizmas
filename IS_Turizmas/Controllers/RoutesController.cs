@@ -57,7 +57,6 @@ namespace IS_Turizmas.Controllers
         public async Task<IActionResult> CreateDescription([Bind("Pavadinimas, Aprasymas, LaikoIvertis, IslaidosNuo, IslaidosIki")]
         Marsrutai route)
         {
-            route.Perziuros = 0;
             route.SukurimoData = DateTime.Now;
             route.ModifikavimoData = DateTime.Now;
             //System.Security.Claims.ClaimsPrincipal currentUser = this.User;

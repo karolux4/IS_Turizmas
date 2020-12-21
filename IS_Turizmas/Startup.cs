@@ -49,6 +49,8 @@ namespace IS_Turizmas
             services.AddTransient<IRoleStore<VartotojoPlanai>, RoleStore>();
 
             services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
+
+            services.AddHostedService<AccountEmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
