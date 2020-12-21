@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using IS_Turizmas.Models
+@using Microsoft.EntityFrameworkCore;
 @inject SignInManager<RegistruotiVartotojai> SignInManager
 @inject UserManager<RegistruotiVartotojai> UserManager
 <!DOCTYPE html>
@@ -48,11 +49,13 @@
                     }
 
 
-
+                    @if (SignInManager.IsSignedIn(User)&&User.IsInRole("Verslo"))
+                    {
                     <!-- SYMUCIAKAS  -->
                     <li asp-active-controllers="Adverts" asp-active-actions="AdvertList, Confirm, CreateAdvert, CreateAdvertPlan, DeleteAdvertPlan, EditAdvert, ViewAdvertStatistics">
                         <a class="nav-link" asp-controller="Adverts" asp-action="AdvertList">Reklamų sąrašas</a>
                     </li>
+                    }
 
 
 

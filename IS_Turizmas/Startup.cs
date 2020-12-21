@@ -14,6 +14,7 @@ using IS_Turizmas.Models;
 using IS_Turizmas.Identity;
 using Microsoft.AspNetCore.Identity;
 using IS_Turizmas.SupportClasses;
+using Microsoft.AspNetCore.Authentication;
 
 namespace IS_Turizmas
 {
@@ -46,6 +47,8 @@ namespace IS_Turizmas
             services.AddTransient<IUserStore<RegistruotiVartotojai>, UserStore>();
 
             services.AddTransient<IRoleStore<VartotojoPlanai>, RoleStore>();
+
+            services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
