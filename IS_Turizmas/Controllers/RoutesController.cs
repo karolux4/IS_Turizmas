@@ -71,6 +71,8 @@ namespace IS_Turizmas.Controllers
             try
             {
                 _context.Marsrutai.Add(route);
+                //var userController = new UserController(_context, _signInManager, null);
+                //userController.AddActivityPoints(10);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

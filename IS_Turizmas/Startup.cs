@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using IS_Turizmas.Models;
 using IS_Turizmas.Identity;
 using Microsoft.AspNetCore.Identity;
+using IS_Turizmas.SupportClasses;
 
 namespace IS_Turizmas
 {
@@ -40,7 +41,7 @@ namespace IS_Turizmas
                 config.Password.RequireUppercase = false;
                 config.Password.RequireNonAlphanumeric = false;
                 config.Password.RequiredLength = 8;
-            }).AddDefaultTokenProviders();
+            }).AddDefaultTokenProviders().AddErrorDescriber<CustomIdentityErrorDescriber>();
 
             services.AddTransient<IUserStore<RegistruotiVartotojai>, UserStore>();
 
