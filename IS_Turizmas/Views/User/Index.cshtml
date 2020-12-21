@@ -1,17 +1,36 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@using Microsoft.AspNetCore.Identity
+@using IS_Turizmas.Models
+@model IS_Turizmas.Models.RegistruotiVartotojai
+@inject SignInManager<RegistruotiVartotojai> SignInManager
+@inject UserManager<RegistruotiVartotojai> UserManager
 @{
     ViewData["Title"] = "Profilis";
 
     <div class="col-md-10 mx-auto text-center py-3 my-3">
         <h1>Mano profilis</h1>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
+
         <img class="img-thumbnail border rounded-circle profile" src="~/images/Home/statistics.png" />
         <div class="my-2">
-            <a asp-controller="User" asp-action="Logout">Atsijungti</a> | <a asp-action="EditUser">Redaguoti</a> | <a asp-action="DeleteUser">Anuliuoti profilį</a>
+            @if (Model.Id == int.Parse(SignInManager.UserManager.GetUserId(User)))
+            {
+                <a asp-controller="User" asp-action="Logout">Atsijungti</a> <text>|</text> <a asp-action="EditUser" asp-route-id="@Model.Id">Redaguoti </a> <text>|</text> <a asp-action="DeleteUser" asp-route-id="@Model.Id"> Anuliuoti profilį </a>
+            }
         </div>
+
         <div class="py-2">
-            <button class="btn btn-danger">Prenumeruoti vartotoją</button>
+            @if (Model.Id != int.Parse(SignInManager.UserManager.GetUserId(User)))
+            {
+                <button class="btn btn-danger">Prenumeruoti vartotoją</button>
+            }
+
         </div>
     </div>
 
@@ -22,26 +41,33 @@
                 <div>
                     <h5>Jūsu aktyvumos lygis:</h5>
                     <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">15</div>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style=" width:@(Model.AktyvumoTaskai * 100 / (ViewBag.activityLevel.Iki - ViewBag.activityLevel.Nuo))% " aria-valuenow="@Model.AktyvumoTaskai" aria-valuemin="@((ViewBag.activityLevel).Nuo)" aria-valuemax="@((ViewBag.activityLevel).Iki)">@Model.AktyvumoTaskai (@ViewBag.activityLevel.Pavadinimas)</div>
                     </div>
                 </div>
                 <div>
-                <h5>Mano informacija:</h5>
+                    <h5>Mano informacija:</h5>
                     <ul>
-                        <li><p><strong>Prisijungimo vardas: </strong>Vardenis420</p></li>
-                        <li><p><strong>Vardas: </strong>Vardenis</p></li>
-                        <li><p><strong>Pavardė: </strong>Pavardenis</p></li>
-                        <li><p><strong>El. paštas: </strong>test@test.lt</p></li>
+                        <li><p><strong>Prisijungimo vardas: </strong>@Model.Slapyvardis </p></li>
+                        <li><p><strong>Vardas: </strong>@Model.Vardas</p></li>
+                        <li><p><strong>Pavardė: </strong>@Model.Pavarde</p></li>
+                        <li><p><strong>El. paštas: </strong>@Model.ElPastas</p></li>
                     </ul>
                 </div>
                 <div>
                     <h5>Dabartinis planas</h5>
-                    <p>Nemokamas</p>
-                    <a class="btn btn-primary" asp-action="ChangePlan">Keisti planą</a>
+                    @if (Model.VartotojoPlanai.Where(o => o.DataIki == null).FirstOrDefault() != null)
+                    {
+                        <p>@Model.VartotojoPlanai.Where(o => o.DataIki == null).FirstOrDefault().TipasNavigation.Name </p>
+                    }
+                    else
+                    {
+                        <p>Planas nepasirinktas</p>
+                    }
+                    <a class="btn btn-primary" asp-action="ChangePlan" asp-route-id="@Model.Id">Keisti planą</a>
                 </div>
             </div>
         </div>
     </div>
-    <br/>
+    <br />
 
 }

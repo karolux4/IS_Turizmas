@@ -68,4 +68,21 @@ namespace IS_Turizmas.Models
         }
 
     }
+
+    public class EditViewRegistruotiVartotojai
+    {
+        [Required]
+        [StringLength(60, ErrorMessage = "Bloga reikšmė. Maksimalus simbolių skaičius - 60")]
+        public string Vardas { get; set; }
+        [Required]
+        [StringLength(60, ErrorMessage = "Bloga reikšmė. Maksimalus simbolių skaičius - 60")]
+        public string Pavarde { get; set; }
+        public DateTime? GimimoData { get; set; }
+        [Required]
+        [EmailAddress]
+        public string ElPastas { get; set; }
+        public string Nuotrauka { get; set; }
+        [Required]
+        public int Id { get; set; }
+    }
 }
