@@ -10,7 +10,7 @@
     ViewData["Title"] = "Profilis";
 
     <div class="col-md-10 mx-auto text-center py-3 my-3">
-        <h1>Mano profilis</h1>
+        <h1>Profilis</h1>
 
         @if (TempData["SuccessMessage"] != null)
         {
@@ -39,13 +39,13 @@
 
             <div class="col-md-10 mx-auto">
                 <div>
-                    <h5>Jūsu aktyvumos lygis:</h5>
+                    <h5>Aktyvumos lygis: @ViewBag.activityLevel.Pavadinimas</h5>
                     <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style=" width:@(Model.AktyvumoTaskai * 100 / (ViewBag.activityLevel.Iki - ViewBag.activityLevel.Nuo))% " aria-valuenow="@Model.AktyvumoTaskai" aria-valuemin="@((ViewBag.activityLevel).Nuo)" aria-valuemax="@((ViewBag.activityLevel).Iki)">@Model.AktyvumoTaskai (@ViewBag.activityLevel.Pavadinimas)</div>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style=" width:@(Model.AktyvumoTaskai * 100 / (ViewBag.activityLevel.Iki - ViewBag.activityLevel.Nuo))% " aria-valuenow="@Model.AktyvumoTaskai" aria-valuemin="@((ViewBag.activityLevel).Nuo)" aria-valuemax="@((ViewBag.activityLevel).Iki)">@Model.AktyvumoTaskai</div>
                     </div>
                 </div>
                 <div>
-                    <h5>Mano informacija:</h5>
+                    <h5>Profilio informacija:</h5>
                     <ul>
                         <li><p><strong>Prisijungimo vardas: </strong>@Model.Slapyvardis </p></li>
                         <li><p><strong>Vardas: </strong>@Model.Vardas</p></li>
@@ -63,7 +63,10 @@
                     {
                         <p>Planas nepasirinktas</p>
                     }
-                    <a class="btn btn-primary" asp-action="ChangePlan" asp-route-id="@Model.Id">Keisti planą</a>
+                    @if (Model.Id == int.Parse(SignInManager.UserManager.GetUserId(User)))
+                    {
+                        <a class="btn btn-primary" asp-action="ChangePlan" asp-route-id="@Model.Id">Keisti planą</a>
+                    }                        
                 </div>
             </div>
         </div>

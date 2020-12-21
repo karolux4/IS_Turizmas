@@ -32,21 +32,26 @@ namespace IS_Turizmas.Controllers
         }
 
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int ?id)
         {
-            var userId = _signInManager.UserManager.GetUserId(User);
-            if (userId == null)
+            if(id == null)
             {
-                return LocalRedirect("/");
+                var userId = _signInManager.UserManager.GetUserId(User);
+                if (userId == null)
+                {
+                    return LocalRedirect("/");
+                }
+
+                id = int.Parse(userId);
             }
 
-            int id = int.Parse(userId);
             RegistruotiVartotojai user = await _context.RegistruotiVartotojai.Include(o => o.VartotojoPlanai).ThenInclude(o => o.TipasNavigation).FirstOrDefaultAsync(o => o.Id == id);
 
-            ViewBag.activityLevel = _context.AktyvumoLygiai.Where(o => o.Nuo <= user.AktyvumoTaskai && (o.Iki == null || o.Iki >= user.AktyvumoTaskai)).FirstOrDefault();
+            ViewBag.activityLevel = _context.AktyvumoLygiai.Where(o => o.Nuo <= user.AktyvumoTaskai && o.Iki >= user.AktyvumoTaskai).FirstOrDefault();
 
             return View(user);
         }
+
 
         public IActionResult Login()
         {
