@@ -187,25 +187,41 @@ namespace IS_Turizmas.Controllers
         public async Task<IActionResult> LeaveRating([Bind("Reitingas, FkMarsrutas")] Reitingai rating)
         {
             int userId = Int32.Parse(_signInManager.UserManager.GetUserId(this.User));
-
-            rating.Data = DateTime.Now;
-            rating.FkRegistruotasVartotojas = userId;
             int routeId = rating.FkMarsrutas;
 
+            var existingRating = _context.Reitingai.Where(o => o.FkMarsrutas == routeId
+            && o.FkRegistruotasVartotojas == userId).FirstOrDefault();
 
-            try
+            if (existingRating == null)
             {
-                _context.Reitingai.Add(rating);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
+                rating.Data = DateTime.Now;
+                rating.FkRegistruotasVartotojas = userId;
+                try
+                {
+                    _context.Reitingai.Add(rating);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    return NotFound();
+                    throw;
+                }                
+            } else
             {
-                return NotFound();
-                throw;
+                var oldRating = _context.Reitingai.Find(existingRating.Id);
+                oldRating.Data = DateTime.Now;
+                oldRating.Reitingas = rating.Reitingas;
+                try
+                {
+                    _context.Reitingai.Update(oldRating);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    return NotFound();
+                    throw;
+                }
             }
-
-
-
             TempData["SuccessMessage"] = "Reitingas pateiktas";
             return RedirectToAction("ViewRouteInfo", new { id = routeId });
         }
