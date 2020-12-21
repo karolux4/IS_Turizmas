@@ -4,7 +4,7 @@
 @using IS_Turizmas.Models
 @model IS_Turizmas.Models.Reklamos
 @{
-    ViewData["Title"] = "Advert Statistics";
+    ViewData["Title"] = "Reklamos statistika";
     <div class="col-md-10 mx-auto text-center py-3 my-3">
         <h1>Reklamos statistika</h1>
     </div>
@@ -25,7 +25,7 @@
             <tr>
                 <th>Paveikslėlis</th>
                 @*This is probably wrong*@
-                <th><img src="@Model.Paveikslelis" alt="Meme"></th>
+                <th><img class="ad-image-preview img-thumbnail" src="~/@Model.Paveikslelis" alt="Meme"></th>
             </tr>
         </table>
         <div class="col-md-4">

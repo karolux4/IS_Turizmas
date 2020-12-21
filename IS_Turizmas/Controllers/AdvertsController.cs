@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using IS_Turizmas.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,10 +24,13 @@ namespace IS_Turizmas.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<RegistruotiVartotojai> _signInManager;
-        public AdvertsController(ApplicationDbContext context, SignInManager<RegistruotiVartotojai> signInManager)
+        private readonly IWebHostEnvironment _env;
+        public AdvertsController(ApplicationDbContext context, SignInManager<RegistruotiVartotojai> signInManager,
+            IWebHostEnvironment env)
         {
             _context = context;
             _signInManager = signInManager;
+            _env = env;
 
         }
         public IActionResult Confirm()
@@ -109,15 +116,35 @@ namespace IS_Turizmas.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AdvertCreate([Bind("Pavadinimas, Url")]
-        Reklamos advert)
+        Reklamos advert, IFormFile Paveikslelis)
         {
+            if (!ModelState.IsValid)
+            {
+                return View("~/Views/Adverts/CreateAdvert.cshtml");
+            }
+            if (Paveikslelis == null)
+            {
+                ModelState.AddModelError("", "Paveikslėlis yra privalomas");
+                return View("~/Views/Adverts/CreateAdvert.cshtml");
+            }
+
+            if (!IsImage(Paveikslelis))
+            {
+                ModelState.AddModelError("", "Paveikslėlis turi būti paveikslo tipo");
+                return View("~/Views/Adverts/CreateAdvert.cshtml");
+            }
+
             advert.Paspaudimai = 0;
             advert.FkVersloVartotojas = int.Parse(_signInManager.UserManager.GetUserId(User));
 
             //Toks saugojimo formatas? most likely
             //Nzn kaip ideti i folderi
+            string filename = advert.Pavadinimas + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + Path.GetExtension(Paveikslelis.FileName);
+            var saveimg = Path.Combine(_env.WebRootPath, "images", "Adds", filename);
+            var stream = new FileStream(saveimg, FileMode.Create);
+            await Paveikslelis.CopyToAsync(stream);
 
-            advert.Paveikslelis = "~/images/Adds/" + advert.Pavadinimas + advert.Id;
+            advert.Paveikslelis = "images/Adds/"+filename;
             
             // Papildomas failu tvarkymas. Ar reikia?
             // advert.Paveikslelis = "~/images/Adds/" + _signInManager.UserManager.GetUserId(User) + "/" + advert.Pavadinimas + advert,Id.toString();
@@ -153,12 +180,24 @@ namespace IS_Turizmas.Controllers
         //Check needed
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AdvertEdit(int id, [Bind("Id,Pavadinimas, Paveikslelis, Url")]
-        Reklamos advert)
+        public async Task<ActionResult> AdvertEdit(int id, [Bind("Id,Pavadinimas, Url")]
+        Reklamos advert, IFormFile naujasPaveikslas)
         {
             if (id != advert.Id)
             {
                 return NotFound();
+            }
+            if (!ModelState.IsValid)
+            {
+                return View("~/Views/Adverts/EditAdvert.cshtml");
+            }
+            if (naujasPaveikslas != null)
+            {
+                if (!IsImage(naujasPaveikslas))
+                {
+                    ModelState.AddModelError("", "Paveikslėlis turi būti paveikslo tipo");
+                    return View("~/Views/Adverts/EditAdvert.cshtml");
+                }
             }
             Reklamos oldAdvert = _context.Reklamos.Find(id);
             if (oldAdvert.FkVersloVartotojas != int.Parse(_signInManager.UserManager.GetUserId(User)))
@@ -167,11 +206,23 @@ namespace IS_Turizmas.Controllers
             }
             oldAdvert.Pavadinimas = advert.Pavadinimas;
             oldAdvert.Url = advert.Url;
-            oldAdvert.Paveikslelis = advert.Paveikslelis;
-            if (!ModelState.IsValid)
+            if (naujasPaveikslas != null)
             {
-                return View("~/Views/Adverts/EditAdvert.cshtml");
+                var path = Path.Combine(_env.WebRootPath, oldAdvert.Paveikslelis);
+                if (System.IO.File.Exists(path))
+                {
+                    System.IO.File.Delete(path);
+                }
+
+                string filename = advert.Pavadinimas + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + Path.GetExtension(naujasPaveikslas.FileName);
+                var saveimg = Path.Combine(_env.WebRootPath, "images", "Adds", filename);
+                var stream = new FileStream(saveimg, FileMode.Create);
+                await naujasPaveikslas.CopyToAsync(stream);
+
+                advert.Paveikslelis = "images/Adds/" + filename;
+                oldAdvert.Paveikslelis = advert.Paveikslelis;
             }
+            
             try
             {
                 _context.Update(oldAdvert);
@@ -188,5 +239,69 @@ namespace IS_Turizmas.Controllers
             TempData["SuccessMessage"] = "Reklama atnaujinta";
             return RedirectToAction(nameof(AdvertList));
         }
+
+        private bool IsImage(IFormFile postedFile)
+        {
+            const int ImageMinimumBytes = 512;
+
+            //-------------------------------------------
+            //  Check the image mime types
+            //-------------------------------------------
+            if (postedFile.ContentType.ToLower() != "image/jpg" &&
+                        postedFile.ContentType.ToLower() != "image/jpeg" &&
+                        postedFile.ContentType.ToLower() != "image/pjpeg" &&
+                        postedFile.ContentType.ToLower() != "image/gif" &&
+                        postedFile.ContentType.ToLower() != "image/x-png" &&
+                        postedFile.ContentType.ToLower() != "image/png")
+            {
+                return false;
+            }
+
+            //-------------------------------------------
+            //  Check the image extension
+            //-------------------------------------------
+            if (Path.GetExtension(postedFile.FileName).ToLower() != ".jpg"
+                && Path.GetExtension(postedFile.FileName).ToLower() != ".png"
+                && Path.GetExtension(postedFile.FileName).ToLower() != ".gif"
+                && Path.GetExtension(postedFile.FileName).ToLower() != ".jpeg")
+            {
+                return false;
+            }
+
+            //-------------------------------------------
+            //  Attempt to read the file and check the first bytes
+            //-------------------------------------------
+            try
+            {
+                if (!postedFile.OpenReadStream().CanRead)
+                {
+                    return false;
+                }
+                //------------------------------------------
+                //check whether the image size exceeding the limit or not
+                //------------------------------------------ 
+                if (postedFile.Length < ImageMinimumBytes)
+                {
+                    return false;
+                }
+
+                byte[] buffer = new byte[ImageMinimumBytes];
+                postedFile.OpenReadStream().Read(buffer, 0, ImageMinimumBytes);
+                string content = System.Text.Encoding.UTF8.GetString(buffer);
+                if (Regex.IsMatch(content, @"<script|<html|<head|<title|<body|<pre|<table|<a\s+href|<img|<plaintext|<cross\-domain\-policy",
+                    RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Multiline))
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+
+            return true;
+        }
     }
+
 }

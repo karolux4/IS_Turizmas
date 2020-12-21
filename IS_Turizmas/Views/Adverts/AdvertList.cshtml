@@ -3,9 +3,13 @@
 *@
 @model List<IS_Turizmas.Models.Reklamos>
 @{
-    ViewData["Title"] = "Adverts";
+    ViewData["Title"] = "Mano reklamos";
     <div class="col-md-10 mx-auto text-center py-3 my-3">
         <h1>Mano reklamos</h1>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
     </div>
     <div class="col-md-10 mx-auto">
         <table class="table table-striped text-center">
@@ -21,7 +25,7 @@
                             <a asp-action="CreateAdvert">Kurti reklamą</a>
                         </div>
                         <div class="col-md-4">
-                            <a asp-action="CreateAdvertPlan">Kurti plana</a>
+                            <a asp-action="CreateAdvertPlan">Kurti planą</a>
                         </div>
                         <div class="col-md-4">
                             <a asp-action="DeleteAdvertPlan">Mano planai</a>
@@ -33,7 +37,7 @@
             <tr>
                 <td>@Html.DisplayFor(model => Model[i].Id)</td>
                 <td>@Html.DisplayFor(model => Model[i].Pavadinimas)</td>
-                <td><a asp-action="ViewAdvertStatistics" asp-route-id="@Model[i].Id">Reklamos statistika</a> | <a asp-action="EditAdvert" asp-route-id="@Model[i].Id">Redaguoti reklama</a> | <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation" asp-route-id="@Model[i].Id">Šalinti</a></td>
+                <td><a asp-action="ViewAdvertStatistics" asp-route-id="@Model[i].Id">Reklamos statistika</a> | <a asp-action="EditAdvert" asp-route-id="@Model[i].Id">Redaguoti reklamą</a> | <a asp-action="Index" data-toggle="modal" data-target="#deleteConfirmation" asp-route-id="@Model[i].Id">Šalinti</a></td>
             </tr>
                 }
             </thead>
