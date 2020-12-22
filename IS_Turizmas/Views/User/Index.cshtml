@@ -68,6 +68,15 @@
                         <li><p><strong>Vardas: </strong>@Model.Vardas</p></li>
                         <li><p><strong>Pavardė: </strong>@Model.Pavarde</p></li>
                         <li><p><strong>El. paštas: </strong>@Model.ElPastas</p></li>
+                        @if (Model.GimimoData == null)
+                        {
+                            <li><p><strong>Gimimo data: </strong>Nenurodyta</p></li>
+                        }
+                        else
+                        {
+                            string formatedValue = Model.GimimoData.Value.ToShortDateString();
+                            <li><p><strong>Gimimo data: </strong>@formatedValue</p></li>
+                        }
                     </ul>
                 </div>
                 <div>
