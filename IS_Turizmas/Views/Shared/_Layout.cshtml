@@ -58,10 +58,12 @@
                     }
 
 
-
+                    @if (SignInManager.IsSignedIn(User))
+                    {
                     <li asp-active-controllers="Content" asp-active-actions="ViewAllRouteAnalysis">
                         <a class="nav-link" asp-controller="Content" asp-action="ViewAllRouteAnalysis">Maršrutų analizė</a>
                     </li>
+                    }
 
                     <!-- Simono -->
                     <li>
