@@ -20,13 +20,13 @@ using Newtonsoft.Json.Linq;
 
 namespace IS_Turizmas.Controllers
 {
-    public class AdvertsController : Controller
+    public class AdvertsController : HomeController
     {
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<RegistruotiVartotojai> _signInManager;
         private readonly IWebHostEnvironment _env;
         public AdvertsController(ApplicationDbContext context, SignInManager<RegistruotiVartotojai> signInManager,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env):base(context)
         {
             _context = context;
             _signInManager = signInManager;
@@ -228,6 +228,15 @@ namespace IS_Turizmas.Controllers
             }
             TempData["SuccessMessage"] = "Reklama atnaujinta";
             return RedirectToAction(nameof(AdvertList));
+        }
+
+        public IActionResult GoToAdLink(int id)
+        {
+            Reklamos reklama = this._context.Reklamos.Where(o=> o.Id==id).FirstOrDefault();
+            reklama.Paspaudimai=reklama.Paspaudimai+1;
+            _context.Update(reklama);
+            _context.SaveChanges();
+            return Redirect(reklama.Url);
         }
 
         private bool IsImage(IFormFile postedFile)

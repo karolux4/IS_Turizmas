@@ -17,12 +17,12 @@ using Newtonsoft.Json.Linq;
 
 namespace IS_Turizmas.Controllers
 {
-    public class ContentController : Controller
+    public class ContentController : HomeController
     {
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<RegistruotiVartotojai> _signInManager;
         public ContentController(ApplicationDbContext context,
-            SignInManager<RegistruotiVartotojai> signInManager)
+            SignInManager<RegistruotiVartotojai> signInManager):base(context)
         {
             _context = context;
             _signInManager = signInManager;

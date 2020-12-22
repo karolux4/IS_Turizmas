@@ -18,18 +18,19 @@ using Newtonsoft.Json.Linq;
 
 namespace IS_Turizmas.Controllers
 {
-    public class RoutesController : Controller
+    public class RoutesController : HomeController
     {
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<RegistruotiVartotojai> _signInManager;
 
-        public RoutesController(ApplicationDbContext context, SignInManager<RegistruotiVartotojai> signInManager)
+        public RoutesController(ApplicationDbContext context, SignInManager<RegistruotiVartotojai> signInManager):base(context)
         {
             _context = context;
             _signInManager = signInManager;
         }
         public async Task<IActionResult> Index()
         {
+            Console.WriteLine("Called");
             var userId = _signInManager.UserManager.GetUserId(User);
             if (userId == null)
             {
@@ -70,8 +71,9 @@ namespace IS_Turizmas.Controllers
             try
             {
                 _context.Marsrutai.Add(route);
-                //var userController = new UserController(_context, _signInManager, null);
-                //userController.AddActivityPoints(10);
+                var userController = new UserController(_context, _signInManager, null, null);
+                userController.AddActivityPoints(10, _context.RegistruotiVartotojai.Find(int.Parse(_signInManager.UserManager.GetUserId(User))));
+                TempData["AddedPoints"] = "Gavote 10 aktyvumo balų";
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

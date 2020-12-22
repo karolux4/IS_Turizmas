@@ -22,7 +22,7 @@ using MimeKit;
 
 namespace IS_Turizmas.Controllers
 {
-    public class UserController : Controller
+    public class UserController : HomeController
     {
 
         private readonly ApplicationDbContext _context;
@@ -31,7 +31,7 @@ namespace IS_Turizmas.Controllers
         private readonly IWebHostEnvironment _env;
 
         public UserController(ApplicationDbContext context, SignInManager<RegistruotiVartotojai> signInManager,
-            RoleManager<VartotojoPlanai> roleManager, IWebHostEnvironment env)
+            RoleManager<VartotojoPlanai> roleManager, IWebHostEnvironment env):base(context)
         {
             _context = context;
             _signInManager = signInManager;
@@ -99,8 +99,6 @@ namespace IS_Turizmas.Controllers
         {
             returnUrl = returnUrl ?? Url.Content("/");
 
-            SendEmails();
-
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(username, password, false, lockoutOnFailure: false);
@@ -111,6 +109,7 @@ namespace IS_Turizmas.Controllers
                     if (user.PrisijungimoData.Date != DateTime.Now.Date)
                     {
                         AddActivityPoints(5, user);
+                        TempData["AddedPoints"] = "Gavote 5 aktyvumo balus";
                     }
 
                     user.PrisijungimoData = DateTime.Now;
@@ -325,6 +324,7 @@ namespace IS_Turizmas.Controllers
         {
             if (_signInManager.IsSignedIn(User) && int.Parse(_signInManager.UserManager.GetUserId(User)) == id)
             {
+                await _signInManager.SignOutAsync();
                 //Vartotojo prenumeratos, bei ji uzprenumerave
                 _context.Prenumeratos.RemoveRange(_context.Prenumeratos.Where(o => o.FkPrenumeratorius == id || o.FkPrenumeruojamasis == id));
                 //Trinami vartotojo palikti komentarai
@@ -340,22 +340,25 @@ namespace IS_Turizmas.Controllers
                 //Trinami verslo vartotojai
                 var versloVartotojas = _context.VersloVartotojai.FirstOrDefault(o => o.FkRegistruotasVartotojas == id);
 
-                var versloReklamos = _context.Reklamos.Where(o => o.FkVersloVartotojas == id).ToList<Reklamos>();
-                foreach (var reklama in versloReklamos)
+                if (versloVartotojas != null)
                 {
-                    var reklamosPlanai = _context.ReklamosPlanai.Where(o => o.FkReklama == reklama.Id).ToList<ReklamosPlanai>();
-                    foreach (var planas in reklamosPlanai)
+                    var versloReklamos = _context.Reklamos.Where(o => o.FkVersloVartotojas == id).ToList<Reklamos>();
+                    foreach (var reklama in versloReklamos)
                     {
-                        //Istrinami atitinkamos reklamos plano laikai.
-                        _context.ReklamavimoLaikai.RemoveRange(_context.ReklamavimoLaikai.Where(o => o.FkReklamosPlanas == planas.Id));
+                        var reklamosPlanai = _context.ReklamosPlanai.Where(o => o.FkReklama == reklama.Id).ToList<ReklamosPlanai>();
+                        foreach (var planas in reklamosPlanai)
+                        {
+                            //Istrinami atitinkamos reklamos plano laikai.
+                            _context.ReklamavimoLaikai.RemoveRange(_context.ReklamavimoLaikai.Where(o => o.FkReklamosPlanas == planas.Id));
+                        }
+
+                        //Istrinami atitinkami reklamos planai.
+                        _context.ReklamosPlanai.RemoveRange(reklamosPlanai);
                     }
 
-                    //Istrinami atitinkami reklamos planai.
-                    _context.ReklamosPlanai.RemoveRange(reklamosPlanai);
+                    _context.Reklamos.RemoveRange(versloReklamos);
+                    _context.VersloVartotojai.Remove(versloVartotojas);
                 }
-
-                _context.Reklamos.RemoveRange(versloReklamos);
-                _context.VersloVartotojai.Remove(versloVartotojas);
 
                 //Vartotojo marsrutai
                 var marsrutai = _context.Marsrutai.Where(o => o.FkRegistruotasVartotojas == id).ToList<Marsrutai>();
@@ -372,7 +375,7 @@ namespace IS_Turizmas.Controllers
                 _context.RegistruotiVartotojai.Remove(_context.RegistruotiVartotojai.Find(id));
                 _context.SaveChanges();
 
-                TempData["SuccessMessage"] = "Profilis pašalintas";
+                TempData["DeletedMessage"] = "Profilis pašalintas";
                 return LocalRedirect("/");
             }
             else

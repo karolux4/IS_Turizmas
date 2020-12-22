@@ -15,6 +15,7 @@ using IS_Turizmas.Identity;
 using Microsoft.AspNetCore.Identity;
 using IS_Turizmas.SupportClasses;
 using Microsoft.AspNetCore.Authentication;
+using IS_Turizmas.Controllers;
 
 namespace IS_Turizmas
 {
@@ -93,7 +94,7 @@ namespace IS_Turizmas
             app.UseMvc(routes => {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=HOME}/{action=INDEX}/{id?}");
+                    template: "{controller=HOME}/{action=MainIndex}/{id?}");
             });
         }
     }

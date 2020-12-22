@@ -1,5 +1,6 @@
 ﻿using IS_Turizmas.Controllers;
 using IS_Turizmas.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,11 @@ namespace IS_Turizmas.SupportClasses
     public class AccountEmailService : IHostedService
     {
         //private readonly IAccountService accountServive;
-        //private readonly ApplicationDbContext _context;
+        private readonly IServiceScopeFactory scopeFactory;
 
-        public AccountEmailService()
+        public AccountEmailService(IServiceScopeFactory scopeFactory)
         {
-            //_context = context;
+            this.scopeFactory = scopeFactory;
             //this.accountServive = accountServive;
         }
 
@@ -65,8 +66,12 @@ namespace IS_Turizmas.SupportClasses
         private void SendEmailsToAccounts(object state)
         {
             Console.WriteLine("Sent emails");
-            //UserController userController = new UserController(_context, null, null);
-            //userController.SendEmailsMethod();
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var _context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                UserController userController = new UserController(_context, null, null, null);
+                userController.SendEmails();
+            }
         }
     }
 }

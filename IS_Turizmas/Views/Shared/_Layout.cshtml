@@ -38,7 +38,7 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
                     <li asp-active-controllers="Home" asp-active-actions="Index">
-                        <a class="nav-link" asp-controller="Home" asp-action="Index">Pagrindinis</a>
+                        <a class="nav-link" asp-controller="Home" asp-action="MainIndex">Pagrindinis</a>
                     </li>
 
                     @if (SignInManager.IsSignedIn(User))
@@ -49,12 +49,12 @@
                     }
 
 
-                    @if (SignInManager.IsSignedIn(User)&&User.IsInRole("Verslo"))
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Verslo"))
                     {
-                    <!-- SYMUCIAKAS  -->
-                    <li asp-active-controllers="Adverts" asp-active-actions="AdvertList, Confirm, CreateAdvert, CreateAdvertPlan, DeleteAdvertPlan, EditAdvert, ViewAdvertStatistics">
-                        <a class="nav-link" asp-controller="Adverts" asp-action="AdvertList">Reklamų sąrašas</a>
-                    </li>
+                        <!-- SYMUCIAKAS  -->
+                        <li asp-active-controllers="Adverts" asp-active-actions="AdvertList, Confirm, CreateAdvert, CreateAdvertPlan, DeleteAdvertPlan, EditAdvert, ViewAdvertStatistics">
+                            <a class="nav-link" asp-controller="Adverts" asp-action="AdvertList">Reklamų sąrašas</a>
+                        </li>
                     }
 
 
@@ -123,14 +123,29 @@
 
         </div>
     </nav>
-    <a href="https://ktu.edu">
-        <div class="row ads mx-auto">
-            <br />
-            <br />
-            <br />
-        </div>
-    </a>
+    @if (!User.IsInRole("Premium"))
+    {
+        <a asp-action="GoToAdLink" asp-controller="Adverts" asp-route-id="@ViewBag.CurrentAdId">
+            <div class="row ads mx-auto" style="background-image: url('../../@ViewBag.CurrentAd');">
+                <br />
+                <br />
+                <br />
+            </div>
+        </a>
+    }
     <div>
+        <div class="col-md-10 mx-auto text-center">
+            @if (TempData["AddedPoints"] != null)
+            {
+                <div class="alert alert-success">@TempData["AddedPoints"]</div>
+            }
+        </div>
+        <div class="col-md-10 mx-auto text-center">
+            @if (TempData["DeletedMessage"] != null)
+            {
+                <div class="alert alert-success">@TempData["DeletedMessage"]</div>
+            }
+        </div>
         @RenderBody()
     </div>
     <br />
