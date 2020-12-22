@@ -58,7 +58,7 @@
                 <div>
                     <h5>Aktyvumos lygis: @ViewBag.activityLevel.Pavadinimas</h5>
                     <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style=" width:@(Model.AktyvumoTaskai * 100 / (ViewBag.activityLevel.Iki - ViewBag.activityLevel.Nuo))% " aria-valuenow="@Model.AktyvumoTaskai" aria-valuemin="@((ViewBag.activityLevel).Nuo)" aria-valuemax="@((ViewBag.activityLevel).Iki)">@Model.AktyvumoTaskai</div>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style=" width:@((Model.AktyvumoTaskai-ViewBag.activityLevel.Nuo) * 100 / (ViewBag.activityLevel.Iki - ViewBag.activityLevel.Nuo))% " aria-valuenow="@Model.AktyvumoTaskai" aria-valuemin="@((ViewBag.activityLevel).Nuo)" aria-valuemax="@((ViewBag.activityLevel).Iki)">@Model.AktyvumoTaskai</div>
                     </div>
                 </div>
                 <div>
