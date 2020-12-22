@@ -699,6 +699,13 @@ namespace IS_Turizmas.Controllers
                 text += "Gal Jus sudomins šis naujas maršrutas:\n";
                 text += "https://localhost:44390/content/ViewRouteInfo/" + marsrutai.Id.ToString();
 
+                PasiulymuPranesimai pasiulymas = new PasiulymuPranesimai();
+                pasiulymas.Data = DateTime.Now;
+                pasiulymas.FkRegistruotasVartotojas = vartotojas.Id;
+                pasiulymas.Tekstas = text;
+                _context.Add(pasiulymas);
+                _context.SaveChanges();
+
                 BodyBuilder bodyBuilder = new BodyBuilder();
                 bodyBuilder.TextBody = text;
 
