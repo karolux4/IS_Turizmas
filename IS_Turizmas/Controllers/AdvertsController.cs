@@ -33,6 +33,28 @@ namespace IS_Turizmas.Controllers
             _env = env;
 
         }
+
+        //Is it good???
+        public async Task<IActionResult> GetRandomAdvert()
+        {
+            var advert_plans = await _context.ReklamosPlanai.Include(o => o.ReklamavimoLaikai).Where(o=> o.Laikas_nuo < DateTime.Now && o.Laikas_iki > DateTime.Now).ToListAsync();
+            int sum = 0;
+            Random random = new Random();
+            foreach (ReklamosPlanai rp in advert_plans)
+            {
+                sum = sum + (int)rp.Kaina;
+            }
+            int r = random.Next(0, sum);
+            foreach (ReklamosPlanai rp in advert_plans)
+            {
+                sum = sum - (int)rp.Kaina;
+                if (sum <= 0)
+                {
+                    return View(await _context.Reklamos.Where(o => o.Id == rp.FkReklama).ToListAsync());
+                }
+            }
+            return LocalRedirect("/");
+        }
         public IActionResult Confirm()
         {
             return View();
@@ -45,7 +67,7 @@ namespace IS_Turizmas.Controllers
         public async Task<IActionResult> AdvertList()
         {
             var userId = _signInManager.UserManager.GetUserId(User);
-            if (userId == null)
+            if (userId == null || !User.IsInRole("Verslo"))
             {
                 return LocalRedirect("/");
             }
@@ -54,8 +76,7 @@ namespace IS_Turizmas.Controllers
         }
         public IActionResult CreateAdvert()
         {
-            //User.IsInRole("Verslo")
-            if (_signInManager.IsSignedIn(User))
+            if (_signInManager.IsSignedIn(User) && User.IsInRole("Verslo"))
             {
                 return View();
             }
@@ -69,14 +90,22 @@ namespace IS_Turizmas.Controllers
         {
             return View();
         }
-        public IActionResult DeleteAdvertPlan()
+        public async Task<IActionResult> DeleteAdvertPlan()
         {
-            return View();
+            var userId = _signInManager.UserManager.GetUserId(User);
+            if (userId == null || !User.IsInRole("Verslo"))
+            {
+                return LocalRedirect("/");
+            }
+            int id = int.Parse(userId);
+            ViewBag.ReklamosPlanai = _context.ReklamosPlanai.ToList();
+            ViewBag.ReklamavimoLaikai = _context.ReklamavimoLaikai.ToList();
+            return View(await _context.Reklamos.Include(o => o.ReklamosPlanai).Where(o => o.FkVersloVartotojas == id).ToListAsync());
         }
 
         public async Task<IActionResult> ViewAdvertStatistics(int id)
         {
-            if (_signInManager.IsSignedIn(User) &&
+            if (_signInManager.IsSignedIn(User) && User.IsInRole("Verslo") &&
                 _context.Reklamos.FirstOrDefault(o => o.Id == id).FkVersloVartotojas == int.Parse(_signInManager.UserManager.GetUserId(User)))
             {
                 return View(await _context.Reklamos.FirstOrDefaultAsync(o => o.Id == id));
@@ -89,7 +118,7 @@ namespace IS_Turizmas.Controllers
 
         public async Task<IActionResult> EditAdvert(int id)
         {
-            if (_signInManager.IsSignedIn(User) &&
+            if (_signInManager.IsSignedIn(User) && User.IsInRole("Verslo") &&
                 _context.Reklamos.FirstOrDefault(o => o.Id == id).FkVersloVartotojas == int.Parse(_signInManager.UserManager.GetUserId(User)))
             {
                 return View(await _context.Reklamos.FirstOrDefaultAsync(o => o.Id == id));
@@ -104,7 +133,6 @@ namespace IS_Turizmas.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ConfirmActivation()
         {
-            
             return RedirectToAction(nameof(AdvertList));
         }
 
@@ -302,5 +330,4 @@ namespace IS_Turizmas.Controllers
             return true;
         }
     }
-
 }
