@@ -12,11 +12,11 @@ namespace IS_Turizmas.Models
             ReklamosPlanai = new HashSet<ReklamosPlanai>();
         }
 
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         [StringLength(255, ErrorMessage = "Bloga reikšmė. Maksimalus simbolių skaičius 255")]
         public string Pavadinimas { get; set; }
         public string Paveikslelis { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public string Url { get; set; }
         public int Paspaudimai { get; set; }
         public int Id { get; set; }

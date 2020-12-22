@@ -19,28 +19,28 @@ namespace IS_Turizmas.Models
             VartotojoPlanai = new HashSet<VartotojoPlanai>();
         }
 
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         [StringLength(60, ErrorMessage ="Bloga reikšmė. Maksimalus simbolių skaičius - 60")]
         public string Vardas { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         [StringLength(60, ErrorMessage = "Bloga reikšmė. Maksimalus simbolių skaičius - 60")]
         public string Pavarde { get; set; }
         public DateTime? GimimoData { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         [EmailAddress]
         public string ElPastas { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         [StringLength(255, MinimumLength = 8, ErrorMessage = "Bloga reikšmė turi būti tarp 8 ir 255 simbolių")]
         public string Slaptazodis { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         [StringLength(60,MinimumLength = 6, ErrorMessage = "Bloga reikšmė. Simbolių skaičius nuo 6 iki 60")]
         public string Slapyvardis { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public DateTime RegistracijosData { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public DateTime PrisijungimoData { get; set; }
         public string Nuotrauka { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         public int AktyvumoTaskai { get; set; }
         public int Id { get; set; }
 

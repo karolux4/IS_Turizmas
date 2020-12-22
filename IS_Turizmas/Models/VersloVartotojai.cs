@@ -11,15 +11,15 @@ namespace IS_Turizmas.Models
         {
             Reklamos = new HashSet<Reklamos>();
         }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         [StringLength(255, ErrorMessage = "Bloga reikšmė. Maksimalus simbolių skaičius - 2555")]
         public string Imone { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         [StringLength(20, ErrorMessage = "Bloga reikšmė. Maksimalus simbolių skaičius - 20")]
         public string PastoKodas { get; set; }
         [StringLength(255, ErrorMessage = "Bloga reikšmė. Maksimalus simbolių skaičius - 255")]
         public string Svetaine { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Laukas yra privalomas")]
         [StringLength(255, ErrorMessage = "Bloga reikšmė. Maksimalus simbolių skaičius - 255")]
         public string Adresas { get; set; }
         public int FkRegistruotasVartotojas { get; set; }
